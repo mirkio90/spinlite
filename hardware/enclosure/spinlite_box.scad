@@ -68,6 +68,11 @@ ear_slot  = 3.5;  // lunghezza asola per fascetta (0 = solo foro tondo)
 
 $fn = 40;
 
+// Sovrapposizione tra pezzi da unire. Due solidi che si toccano solo su una
+// faccia possono restare separati per un errore di arrotondamento (es. 55,8
+// calcolato come 55,79999): la linguetta o il bordo si staccano in stampa.
+eps = 0.05;
+
 // ---------------------------------------------------------------------------
 // Dimensioni derivate
 // ---------------------------------------------------------------------------
@@ -88,9 +93,10 @@ module cutout(size) {
 // Scatola
 // ---------------------------------------------------------------------------
 module ear(side) { // side = -1 (sinistra) o +1 (destra)
-    x0 = side < 0 ? -ear_l : outer_x;
+    // la linguetta entra di eps nella parete, cosi' l'unione e' un pezzo solo
+    x0 = side < 0 ? -ear_l : outer_x - eps;
     translate([x0, outer_y / 2 - ear_w / 2, 0]) difference() {
-        cube([ear_l, ear_w, ear_t]);
+        cube([ear_l + eps, ear_w, ear_t]);
         // foro o asola per vite M2 / fascetta
         translate([ear_l / 2, ear_w / 2, -0.1]) hull() {
             translate([0, -ear_slot / 2, 0]) cylinder(d = screw_d, h = ear_t + 0.2);
@@ -135,11 +141,12 @@ module lid() {
         union() {
             cube([outer_x, outer_y, lid_t]);
             // bordo di incastro: anello che sta dentro le pareti
-            translate([wall + clearance, wall + clearance, lid_t]) difference() {
-                cube([inner_x - 2 * clearance, inner_y - 2 * clearance, lip_h]);
+            // (parte eps dentro la piastra: deve fondersi con lei)
+            translate([wall + clearance, wall + clearance, lid_t - eps]) difference() {
+                cube([inner_x - 2 * clearance, inner_y - 2 * clearance, lip_h + eps]);
                 translate([lip_t, lip_t, -0.1])
                     cube([inner_x - 2 * clearance - 2 * lip_t,
-                          inner_y - 2 * clearance - 2 * lip_t, lip_h + 0.2]);
+                          inner_y - 2 * clearance - 2 * lip_t, lip_h + eps + 0.2]);
             }
         }
         if (oled) {

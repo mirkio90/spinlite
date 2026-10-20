@@ -59,7 +59,7 @@ firmware/spinlite/
 test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings
 docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
                     flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
-hardware/           scatolina OpenSCAD parametrica (non compilata ne' stampata)
+hardware/           scatolina OpenSCAD parametrica (compila, pezzi unici verificati; non stampata)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 

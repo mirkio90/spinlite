@@ -4,7 +4,7 @@
 
 Contiene SuperMini, TP4056, LiPo e interruttore a slitta. Ha le aperture USB-C di SuperMini e TP4056, il foro per i cavi del sensore, una finestrella OLED opzionale e due linguette con foro/asola per fissarla al supporto del sensore (vite M2 o fascetta).
 
-> Stato: il file non è ancora stato compilato né stampato. Controlla l'anteprima in OpenSCAD e fai una prova di stampa prima di chiudere l'elettronica.
+> Stato: compila in OpenSCAD senza warning; scatola e coperchio escono come un pezzo unico ciascuno (anche con `oled = true`). Non ancora stampata: le misure di USB-C, interruttore e fori sono stime, fai una prova prima di chiudere l'elettronica.
 
 ## Come stampare
 
