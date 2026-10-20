@@ -53,9 +53,11 @@ private:
     const double rpm = p_(t_);
     const double before = theta_;
     theta_ += rpm / 60.0 * dt; // in giri
-    // registra il passaggio del primo segno (giri interi) in avanti
-    if (rpm > 0 && std::floor(theta_) > std::floor(before)) {
-      const double frac = (std::floor(theta_) - before) / (theta_ - before);
+    // Registra il passaggio del primo segno in avanti, nello stesso punto che
+    // usa il rilevatore: meta' discesa, cioe' un quarto di larghezza prima del centro.
+    const double edge = o_.duty / o_.marks / 4;
+    if (rpm > 0 && std::floor(theta_ + edge) > std::floor(before + edge)) {
+      const double frac = (std::floor(theta_ + edge) - (before + edge)) / (theta_ - before);
       marks_.push_back(t_ + frac * dt);
     }
     t_ += dt;
@@ -74,8 +76,6 @@ private:
     double s = 0;
     for (int k = 0; k < o_.marks; ++k) {
       double offset = double(k) / o_.marks + (k == 1 ? o_.markOffset : 0);
-      // il fronte di discesa misurato e' a meta' discesa: spostiamo il segno
-      // in modo che il "passaggio" registrato coincida con il suo centro
       s = std::max(s, shape(theta_ - offset));
     }
     double v = o_.baseline - o_.depth * s + o_.wander * std::sin(2 * M_PI * 0.37 * t_) + o_.noise * n_(rng_);

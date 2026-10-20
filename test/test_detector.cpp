@@ -136,7 +136,7 @@ static void twoLaunches() {
   auto p = sim::sumProfiles(sim::pullProfile(0.5, 9000), sim::pullProfile(4.0, 13000));
   sim::Signal s({}, p, 17);
   auto r = run(s, 7);
-  report("due lanci a 3,5 s", r);
+  std::printf("%-34s lanci=%zu\n", "due lanci a 3,5 s", r.results.size());
   CHECK(r.results.size() == 2, "attesi 2 lanci, trovati %zu", r.results.size());
   if (r.results.size() == 2) {
     auto t1 = sim::truePeak(s.markTimes(), 0, 3.5), t2 = sim::truePeak(s.markTimes(), 3.5, 7);
@@ -152,6 +152,48 @@ static void spikeDuringLaunch() {
   // un disturbo stretto e profondo in mezzo a un giro (es. riflesso)
   s.distort = [](double t, double v) { return (t > 0.75 && t < 0.7504) ? v - 1400 : v; };
   expectOne("disturbo durante il lancio", run(s, 3), 0.5, 1.0);
+}
+
+static void spikeAnywhere() {
+  // Lo stesso disturbo in 12 posizioni diverse dentro un giro (~5 ms a 12000 RPM):
+  // un fronte in piu' non deve mai gonfiare il picco.
+  int worstK = -1;
+  double worst = 0;
+  for (int k = 0; k < 12; ++k) {
+    const double at = 0.76 + k * 0.00042;
+    sim::Signal s({}, sim::pullProfile(0.5, 12000), uint32_t(100 + k));
+    s.distort = [at](double t, double v) { return (t > at && t < at + 0.0004) ? v - 1400 : v; };
+    auto r = run(s, 3);
+    CHECK(r.results.size() == 1, "posizione %d: %zu lanci", k, r.results.size());
+    if (r.results.size() != 1) continue;
+    const double e1 = std::abs(err(r.results[0].sustainedRpm, r.truth.sustained));
+    const double e2 = std::abs(err(r.results[0].singleRpm, r.truth.single));
+    if (std::max(e1, e2) > worst) {
+      worst = std::max(e1, e2);
+      worstK = k;
+    }
+  }
+  std::printf("%-34s errore peggiore %.2f%% (posizione %d)\n", "disturbo in 12 posizioni", worst, worstK);
+  CHECK(worst <= 1.0, "errore %.2f%%", worst);
+}
+
+static void repeatability() {
+  // 25 lanci con rumore diverso: quanto varia l'errore.
+  double worst = 0, sum = 0;
+  for (int i = 0; i < 25; ++i) {
+    sim::Optics o;
+    o.noise = 10;
+    o.depth = 600;
+    sim::Signal s(o, sim::pullProfile(0.5, 9000 + 300 * i, 0.15 + 0.004 * i), uint32_t(500 + i));
+    auto r = run(s, 3);
+    CHECK(r.results.size() == 1, "giro %d: %zu lanci", i, r.results.size());
+    if (r.results.size() != 1) continue;
+    const double e = std::abs(err(r.results[0].sustainedRpm, r.truth.sustained));
+    worst = std::max(worst, e);
+    sum += e;
+  }
+  std::printf("%-34s errore medio %.3f%%, peggiore %.3f%%\n", "ripetibilita' (25 lanci)", sum / 25, worst);
+  CHECK(worst <= 0.3, "errore peggiore %.3f%%", worst);
 }
 
 static void missedMark() {
@@ -190,8 +232,8 @@ static void dataLossDuringLaunch() {
     }
   });
   report("dati persi durante il lancio", r);
-  CHECK(r.results.size() <= 1, "al massimo un risultato, trovati %zu", r.results.size());
-  if (r.results.size() == 1) CHECK(r.results[0].rpm < 15000, "valore assurdo %u", r.results[0].rpm);
+  // il lancio interrotto e' perso e la sua coda non deve diventare un lancio nuovo
+  CHECK(r.results.empty(), "nessun risultato atteso, trovati %zu", r.results.size());
 }
 
 static void sensorFault() {
@@ -219,6 +261,8 @@ int main() {
   rewindIgnored();
   twoLaunches();
   spikeDuringLaunch();
+  spikeAnywhere();
+  repeatability();
   missedMark();
   twoMarks();
   saturatedBaseline();

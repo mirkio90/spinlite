@@ -8,7 +8,6 @@ namespace {
 constexpr uint64_t NS_PER_MIN = 60000000000ULL;
 constexpr uint64_t MS = 1000000ULL;
 constexpr uint64_t SETTLE_NS = 200 * MS;       // assestamento iniziale
-constexpr uint64_t RESYNC_NS = 50 * MS;        // dopo un buco nei dati
 constexpr uint64_t NOISE_QUIET_NS = 200 * MS;  // rumore stimato solo da fermo
 constexpr uint64_t SWING_FORGET_NS = 2000 * MS;
 constexpr uint64_t FAULT_NS = 1000 * MS;
@@ -18,6 +17,12 @@ constexpr uint8_t MAX_BAD_RUN = 4;
 uint16_t clamp16(uint64_t v) { return v > 65535 ? 65535 : static_cast<uint16_t>(v); }
 
 uint64_t periodForRpm(uint32_t rpm) { return rpm ? NS_PER_MIN / rpm : UINT64_MAX; }
+
+// Tre periodi entro il 12% l'uno dall'altro.
+bool consistent(uint64_t a, uint64_t b, uint64_t c) {
+  const uint64_t lo = std::min(a, std::min(b, c)), hi = std::max(a, std::max(b, c));
+  return lo && hi * 100 <= lo * 112;
+}
 
 uint16_t rpmFor(uint64_t periodNs, uint32_t revolutions) {
   if (!periodNs) return 0;
@@ -66,7 +71,7 @@ void RpmDetector::reset() {
   phase_ = Phase::Settling;
   settleUntilNs_ = SETTLE_NS;
   quietSinceNs_ = launchStartNs_ = 0;
-  bestRevNs_ = bestTripleNs_ = 0;
+  bestRevNs_ = bestTripleNs_ = fastestNs_ = anyTripleNs_ = 0;
   edgesSinceCurve_ = 0;
   badRun_ = 0;
   cur_ = LaunchResult();
@@ -88,8 +93,10 @@ void RpmDetector::dataLoss() {
   ringCount_ = 0;
   validRun_ = 0;
   badRun_ = 0;
-  setPhase(Phase::Settling);
-  settleUntilNs_ = nowNs() + RESYNC_NS;
+  // Si passa dal riarmo: se l'albero stava ancora girando, la coda del lancio
+  // non deve essere scambiata per un lancio nuovo.
+  quietSinceNs_ = nowNs();
+  setPhase(Phase::Rearm);
 }
 
 void RpmDetector::setPhase(Phase p) {
@@ -318,8 +325,6 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
   if (valid && validRun_ && lastValidRevNs_ && rev * 100 > uint64_t(lastValidRevNs_) * 167) valid = false;
   lastEdge_.valid = valid;
 
-  const uint64_t triple = (valid && ringCount_ >= 3 * m) ? t - edgeAt(3 * m - 1) : 0;
-
   switch (phase_) {
   case Phase::Ready:
     if (valid && validRun_ + 1 >= 3 * m && ringCount_ >= 3 * m) {
@@ -340,8 +345,11 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
         cur_ = LaunchResult();
         cur_.weakestMark = weakest;
         launchStartNs_ = edgeAt(3 * m - 1);
-        bestRevNs_ = uint32_t(lo);
-        bestTripleNs_ = uint32_t(triple);
+        fastestNs_ = uint32_t(lo);
+        anyTripleNs_ = uint32_t(p1 + p2 + p3);
+        bestRevNs_ = bestTripleNs_ = 0;
+        if (consistent(p1, p2, p3)) bestTripleNs_ = uint32_t(p1 + p2 + p3);
+        if (consistent(p2, p1, p3)) bestRevNs_ = uint32_t(p2);
         edgesSinceCurve_ = 0;
         badRun_ = 0;
         const uint64_t revs[3] = {p3, p2, p1};
@@ -362,8 +370,19 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
         cur_.revolutions++;
         if (cur_.curveCount < LaunchResult::CURVE_MAX) cur_.curveUs[cur_.curveCount++] = uint32_t((rev + 500) / 1000);
       }
-      if (rev < bestRevNs_) bestRevNs_ = uint32_t(rev);
-      if (validRun_ + 1 >= 3 * m && triple && (!bestTripleNs_ || triple < bestTripleNs_)) bestTripleNs_ = uint32_t(triple);
+      if (!fastestNs_ || rev < fastestNs_) fastestNs_ = uint32_t(rev);
+      // Il picco si prende solo da giri coerenti con i vicini (entro il 12%).
+      // Un disturbo che crea un fronte in piu' produce giri incoerenti
+      // (es. 0,8 e 1,2 volte il normale) e resta fuori dal picco.
+      if (ringCount_ >= 2 * m) {
+        const uint32_t r1 = revAt(m - 1), r2 = revAt(2 * m - 1);
+        if (r1 && r2 && rev + r1 + r2 < anyTripleNs_) anyTripleNs_ = uint32_t(rev + r1 + r2);
+        if (r1 && r2 && consistent(rev, r1, r2)) {
+          const uint64_t sum = rev + r1 + r2;
+          if (!bestTripleNs_ || sum < bestTripleNs_) bestTripleNs_ = uint32_t(sum);
+        }
+        if (r1 && r2 && consistent(r1, rev, r2) && (!bestRevNs_ || r1 < bestRevNs_)) bestRevNs_ = r1;
+      }
     } else {
       anomaliesTotal_++;
       ++badRun_;
@@ -383,6 +402,7 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
   // Memorizza il fronte.
   ringT_[ringPos_] = t;
   ringA_[ringPos_] = amp;
+  ringR_[ringPos_] = valid ? uint32_t(rev) : 0;
   ringPos_ = uint8_t((ringPos_ + 1) % RING);
   ringCount_++;
   lastEdgeNs_ = t;
@@ -398,7 +418,7 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
   }
 
   if (phase_ == Phase::Measuring) {
-    const uint64_t ref = bestTripleNs_ ? bestTripleNs_ / 3 : bestRevNs_;
+    const uint64_t ref = bestTripleNs_ ? bestTripleNs_ / 3 : (bestRevNs_ ? bestRevNs_ : fastestNs_);
     if (rev && ref && rev * cfg_.endPercent > ref * 100) {
       finish(EndReason::Slowdown);
     } else if (badRun_ >= MAX_BAD_RUN) {
@@ -409,8 +429,12 @@ void RpmDetector::onEdge(uint64_t t, uint16_t amp) {
 
 void RpmDetector::finish(EndReason why) {
   cur_.end = why;
-  cur_.sustainedRpm = bestTripleNs_ ? rpmFor(bestTripleNs_, 3) : 0;
-  cur_.singleRpm = bestRevNs_ ? rpmFor(bestRevNs_, 1) : 0;
+  // Se nessuna terna di giri e' coerente (lancio cortissimo, accelerazioni
+  // fortissime) si ripiega sui valori grezzi.
+  const uint32_t triple = bestTripleNs_ ? bestTripleNs_ : anyTripleNs_;
+  const uint32_t single = bestRevNs_ ? bestRevNs_ : fastestNs_;
+  cur_.sustainedRpm = triple ? rpmFor(triple, 3) : 0;
+  cur_.singleRpm = single ? rpmFor(single, 1) : 0;
   cur_.rpm = (cfg_.singleRevPeak || !cur_.sustainedRpm) ? cur_.singleRpm : cur_.sustainedRpm;
   cur_.durationMs = uint32_t((lastEdgeNs_ - launchStartNs_) / MS);
   const bool ok = why != EndReason::DataLoss && cur_.revolutions >= 3 && cur_.rpm >= cfg_.minLaunchRpm;

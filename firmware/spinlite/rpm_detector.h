@@ -100,6 +100,7 @@ private:
   uint64_t timeOf(uint64_t index) const { return index * cfg_.tickNs; }
   uint64_t edgeAt(unsigned back) const { return ringT_[(ringPos_ + RING - 1 - back) % RING]; }
   uint16_t ampAt(unsigned back) const { return ringA_[(ringPos_ + RING - 1 - back) % RING]; }
+  uint32_t revAt(unsigned back) const { return ringR_[(ringPos_ + RING - 1 - back) % RING]; }
 
   DetectorConfig cfg_;
   int32_t unit_ = 16;
@@ -132,6 +133,7 @@ private:
   // fronti e giri
   uint64_t ringT_[RING] = {};
   uint16_t ringA_[RING] = {};
+  uint32_t ringR_[RING] = {}; // periodo del giro chiuso da quel fronte, 0 se non valido
   uint8_t ringPos_ = 0;
   uint32_t ringCount_ = 0;
   uint32_t validRun_ = 0;
@@ -144,7 +146,7 @@ private:
   // lancio
   Phase phase_ = Phase::Settling;
   uint64_t settleUntilNs_ = 0, quietSinceNs_ = 0, launchStartNs_ = 0;
-  uint32_t bestRevNs_ = 0, bestTripleNs_ = 0;
+  uint32_t bestRevNs_ = 0, bestTripleNs_ = 0, fastestNs_ = 0, anyTripleNs_ = 0;
   uint32_t edgesSinceCurve_ = 0;
   uint8_t badRun_ = 0;
   LaunchResult cur_, result_;

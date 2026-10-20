@@ -9,8 +9,8 @@ I risultati vanno al telefono via Bluetooth con lo stesso profilo del Bey Battle
 
 | Parte | Stato |
 | --- | --- |
-| Rilevatore RPM (`firmware/spinlite/rpm_detector.*`) | scritto, in collaudo con segnali simulati |
-| Test su PC (`test/`) | `g++ -std=c++17 test/test_detector.cpp firmware/spinlite/rpm_detector.cpp` |
+| Rilevatore RPM (`firmware/spinlite/rpm_detector.*`) | fatto: 21 casi simulati, errore tipico sotto lo 0,1% |
+| Test su PC (`test/`) | `make -C test` |
 | Protocollo BLE compatibile Battle Pass | da fare |
 | Firmware ESP32-C3 (ADC, BLE, OLED) | da fare |
 | Guida, cablaggio, dashboard web | da fare |
