@@ -44,51 +44,48 @@ Il conta giri **più economico possibile** per launcher Beyblade X:
 ## Struttura del repo
 
 ```
+platformio.ini      pioarduino 55.03.312-1 (core 3.3.12), NimBLE-Arduino 2.5.1; env spinlite e spinlite_oled
 firmware/spinlite/
-  config.h          pin, default, flag di compilazione       (fatto)
-  rpm_detector.*    rilevatore portabile, solo interi        (fatto, testato)
-  bbp_protocol.*    pacchetti Battle Pass + salvataggio NVS  (fatto, testato)
-  oled_ui.*         schermate 128x32 + driver SSD1306 I2C    (fatto; disegno testato, driver I2C non provato su hardware)
-  spinlite.ino      DA FARE: setup/loop, acquisizione, BLE, console, batteria
-test/
-  Makefile          make -C test   (g++ C++17 con ASan/UBSan, -Werror)
-  signal_sim.h      simulatore del segnale AO (giri, segni, rumore, deriva, riavvolgimento)
-  test_detector.cpp 21 casi
-  test_protocol.cpp layout pacchetti, checksum, buffer circolare, CRC; --dump file per il confronto incrociato
-  test_oled.cpp     disegna le schermate in ASCII (--pbm cartella per le immagini)
+  config.h          pin, default, flag di compilazione
+  rpm_detector.*    rilevatore portabile, solo interi        (testato su PC)
+  bbp_protocol.*    pacchetti Battle Pass + formato storico  (testato su PC)
+  oled_ui.*         schermate 128x32 + driver SSD1306 I2C    (disegno testato; I2C non provato)
+  adc_sampler.*     ADC1 continuo, task del rilevatore, calibrazione frequenza, batteria
+  ble_bbp.*         servizio BLE Battle Pass (NimBLE), coda comandi, notifiche distanziate
+  settings.*        soglie (blob con CRC) e storico in NVS   (parte portabile testata)
+  battery.*         percentuale LiPo stimata                 (testato)
+  console.*         comandi seriali
+  spinlite.ino      collegamento dei moduli, LED, pulsante, OLED, salvataggi
+test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings
+docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
+                    flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
+hardware/           scatolina OpenSCAD parametrica (non compilata ne' stampata)
+.github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
-## Stato (20/10/2026, sera)
+## Stato (20/10/2026, notte)
 
-Commit su `main`, nell'ordine:
-1. avvio, rilevatore e simulatore;
-2. picco calcolato solo su giri coerenti, test più severi;
-3. pacchetti Battle Pass;
-4. OLED e questo file.
+Fatto e verificato:
+- firmware completo, compila senza warning in locale e in CI (RAM ~9%, flash ~49%);
+- CI verde: 4 test C++ con sanitizer + test Node del parser web;
+- sito online: https://mirkio90.github.io/spinlite/ (dashboard) e /flasher/ con i `.bin` (firmware.factory.bin di pioarduino, offset 0) pubblicati dalla CI;
+- rilevatore sui segnali simulati: errore sotto lo 0,1% da 1.500 a 30.000 RPM, niente falsi lanci, riavvolgimento ignorato (dettagli nella storia git);
+- pacchetti letti correttamente anche dal parser indipendente di MarkChan0225.
 
-`make -C test` è tutto verde. Risultati del rilevatore sui segnali simulati:
-- da 1.500 a 30.000 RPM l'errore è sotto lo 0,1%; il giro singolo resta sotto lo 0,6% anche con 2 segni per giro;
-- segni deboli (220 conteggi), rumore forte e riposo saturo a 4095 vengono gestiti;
-- un disturbo a metà giro, provato in 12 posizioni, dà un errore massimo dello 0,06%;
-- il riavvolgimento non viene contato come lancio;
-- fermo per 30 s con disturbi: zero falsi lanci;
-- dopo una perdita di dati non nasce un lancio fantasma;
-- il sensore scollegato viene rilevato.
-
-I pacchetti generati sono stati letti correttamente anche dal parser JavaScript indipendente di `MarkChan0225/beyblade-tachometer-web` (`protocol.mjs`): stato, 50 lanci, checksum valido, curva a 10.000 RPM.
-
-**Nulla è stato ancora provato su hardware vero.** In questa sessione cloud non c'era la toolchain ESP32: il proxy blocca il registry PlatformIO e i pacchetti Espressif.
+**Nulla è stato ancora provato su hardware vero.** Toolchain locale: PlatformIO in `%USERPROFILE%\.spinlite-pio\Scripts\pio.exe` (non nel PATH); g++, make e OpenSCAD assenti, i test C++ girano solo in CI.
 
 ## Prossimi passi, in ordine
 
-1. **`spinlite.ino` + `platformio.ini`** (ambiente `esp32-c3-devkitm-1`, framework arduino; core Arduino-ESP32 3.x / pioarduino; NimBLE-Arduino 2.x). Il progetto è descritto sotto.
-2. **Compilare e flashare in locale**, poi provare con il segnale vero. Usa il comando `raw` della console per vedere livello, rumore e ampiezza mentre giri l'albero a mano, e regola `minmark` e la vite del TCRT.
-3. **GitHub Action** che compila con PlatformIO e pubblica il `.bin` come artifact o release.
-4. **Dashboard Web Bluetooth** su GitHub Pages, scritta da zero (non copiare quella di MarkChan, che non ha licenza dichiarata), più un **web flasher** con esp-web-tools.
-5. **README / guida in italiano**: distinta base con prezzi, cablaggio con foto o schema, taratura, limiti (misura sull'albero), app compatibili.
-6. **Scatolina per l'elettronica**, parametrica (OpenSCAD o CadQuery), montata a fianco del sensore, con i supporti sensore di LaunchLab linkati.
+1. **Flashare e provare con il segnale vero** (`pio run -t upload`, poi `pio device monitor`). Controllare all'avvio la riga "ADC: frequenza misurata" (atteso ~10.000 Hz), poi `raw` girando l'albero a mano, regolare vite del TCRT e `minmark`, poi `fronti`.
+2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
+3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
+4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
+5. Stampare la scatolina e correggere le misure (USB-C, interruttore, fori sono stime).
+6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
 
-## Progetto del firmware (da scrivere: `spinlite.ino` + moduli)
+Note di review aperte (minori): `salva` da console scrive in flash anche durante una misura; `notifyLaunch` + un 0x74 dell'app possono mandare il dump due volte; le action GitHub sono fissate per versione maggiore, non per hash.
+
+## Progetto del firmware (implementato: riferimento delle scelte)
 
 ### Acquisizione (task FreeRTOS ad alta priorità)
 - `adc_continuous` (ESP-IDF, `esp_adc/adc_continuous.h`), solo ADC1, formato di uscita `ADC_DIGI_OUTPUT_FORMAT_TYPE2`. Sul C3 si decodifica con `adc_digi_output_data_t.type2.{data,channel,unit}` (4 byte per conversione).
