@@ -1,0 +1,45 @@
+name: Pagina web
+
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", "firmware/**", "platformio.ini", ".github/workflows/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  firmware:
+    uses: ./.github/workflows/_firmware.yml
+
+  deploy:
+    needs: firmware
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: dist
+      # Percorsi referenziati da docs/flasher/manifest*.json: non cambiarli
+      - name: Copia le immagini nel web flasher
+        run: |
+          mkdir -p docs/flasher/firmware
+          cp dist/spinlite-merged.bin docs/flasher/firmware/spinlite-merged.bin
+          cp dist/spinlite-oled-merged.bin docs/flasher/firmware/spinlite-oled-merged.bin
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4

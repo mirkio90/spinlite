@@ -1,0 +1,50 @@
+# Workflow riutilizzabile: compila il firmware e crea le immagini .bin.
+# Pubblica l'artifact "firmware" con, per ogni env, firmware e immagine unica (offset 0).
+name: Firmware (riutilizzabile)
+
+on:
+  workflow_call:
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # La cache dipende da platformio.ini (piattaforma e librerie)
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            ~/.cache/pip
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+          restore-keys: pio-${{ runner.os }}-
+
+      - name: Installa PlatformIO
+        run: pip install platformio
+
+      - name: Compila
+        run: pio run -e spinlite -e spinlite_oled
+
+      # pioarduino crea gia' firmware.factory.bin: bootloader, partizioni,
+      # boot_app0 e app in un'unica immagine da scrivere all'offset 0.
+      - name: Raccogli le immagini
+        run: |
+          mkdir -p dist
+          for pair in "spinlite:spinlite" "spinlite_oled:spinlite-oled"; do
+            env=${pair%%:*}; name=${pair##*:}
+            d=.pio/build/$env
+            cp $d/firmware.factory.bin dist/$name-merged.bin
+            cp $d/firmware.bin dist/$name-firmware.bin
+          done
+          ls -l dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: dist/*.bin
+          if-no-files-found: error

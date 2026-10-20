@@ -4,3 +4,4 @@ build/
 *.o
 test/bin/
 __pycache__/
+docs/flasher/firmware/
