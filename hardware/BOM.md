@@ -10,11 +10,11 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 
 | # | Componente | Q.tà | Requisiti / note | Link | Prezzo |
 | --- | --- | --- | --- | --- | --- |
-| 1 | ESP32-C3 SuperMini | 1 | Con USB-C. | da scegliere | 3-4 € |
+| 1 | ESP32-C3 SuperMini | 1 | 22,5 × 18 mm, USB-C, pulsanti BOOT e RST, LED su GPIO8; pettini inclusi. Alcuni lotti hanno l'antenna debole: conta poco, perché il BLE lavora a 3 dBm su pochi centimetri. | [AliExpress](https://it.aliexpress.com/item/1005007479144456.html) | 3,01 € (2,71 € da 5 pezzi) |
 | 2 | Sensore QRE1113 **analogico** su breakout | 1 | 3 pin **VCC / OUT / GND**, 2 resistenze, **nessun condensatore**. La versione "digitale" ha un condensatore di scarica e **non va bene**. Formato della SparkFun ROB-09453: la sede della base LaunchLab è fatta su quella, quindi misura il clone quando arriva (vedi sotto). | [AliExpress](https://it.aliexpress.com/item/1005012222539797.html) | 7,49 € (7,09 € da 2 pezzi) |
-| 3 | Batteria LiPo 1S | 1 | Da 300-500 mAh, con cavetti o connettore. Le misure devono entrare nella scatola: vedi i parametri `lipo_*` in `enclosure/spinlite_box.scad`. | da scegliere | 2-4 € |
+| 3 | Batteria LiPo 1S | 1 | Formato **502030** (5 × 20 × 30 mm, circa 250 mAh), con cavetti. La scatola è dimensionata su questo; altre misure si impostano con i parametri `lipo_*` in `enclosure/spinlite_top.scad`. | da scegliere | 2-4 € |
 | 4 | Modulo di ricarica TP4056 **con protezione** | 1 | USB-C, 6 pin, con chip DW01 (protezione da scarica eccessiva). | da scegliere | 0,5 € |
-| 5 | Interruttore a slitta | 1 | Piccolo, da saldare (tipo SS12D00). | da scegliere | 0,2 € |
+| 5 | Interruttore a slitta SS12D00 | 1 | Corpo circa 8,7 × 3,7 × 3,6 mm: la scatola ha una culla su misura. | da scegliere | 0,2 € |
 | 6 | Resistenza 100 kΩ | 2 | Partitore per leggere la tensione della batteria. | da scegliere | 0,05 € |
 | 7 | Condensatore ceramico 100 nF | 1 | Sul punto centrale del partitore, verso GND. | da scegliere | 0,05 € |
 | 8 | Header maschio a 90° da 3 pin + cavetto Dupont femmina a 3 fili | 1 | Collegamento al sensore. LaunchLab usa connettori Dupont a 90° sul QRE. | da scegliere | 0,5 € |
@@ -25,10 +25,10 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 | # | Componente | Q.tà | Requisiti / note | Link | Prezzo |
 | --- | --- | --- | --- | --- | --- |
 | 10 | Base sensore QRE1113 **LaunchLab v102** (stampata) | 1 | Clip che si agganciano alla porta del Battle Pass sul launcher, più la sede del sensore. Licenza **CC BY-SA**: non è nel repo, si scarica da LaunchLab. Istruzioni in [README.md](README.md#base-sensore-launchlab). | [3MF](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/compact-base-v102.3mf) · [ZIP con STL/STEP](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/compact-base-v102.zip) | ~10 g di filamento |
-| 11 | Scatola SpinLite (stampata) | 1 | Si avvita sopra la base, contiene l'elettronica. **In riprogettazione:** l'attuale `enclosure/spinlite_box.scad` è la versione laterale, superata. | questo repo | ~10 g di filamento |
+| 11 | Scatola SpinLite + coperchio (stampati) | 1 | `enclosure/spinlite_top.scad`, si avvita sopra la base e contiene l'elettronica. Vedi [README.md](README.md#scatola-spinlite). | questo repo | ~12 g di filamento |
 | 12 | Vite M2×4 a testa cilindrica (pan head) | 2 | Barretta che preme il QRE nella base. | da scegliere | – |
-| 13 | Vite M2×6 a testa cilindrica | 4 | Fissa la scatola SpinLite ai 4 fori della base (rettangolo 29 × 24 mm). | da scegliere | – |
-| 14 | Filamento **PETG** | ~20 g | Consigliato da LaunchLab per clip e parti avvitate. Il PLA va bene per le prove. | da scegliere | ~0,5 € |
+| 13 | Vite M2×6 a testa cilindrica | 8 | 4 fissano la scatola ai fori della base (rettangolo 29 × 24 mm), 4 chiudono il coperchio. | da scegliere | – |
+| 14 | Filamento **PETG** | ~25 g | Consigliato da LaunchLab per clip e parti avvitate. Il PLA va bene per le prove. | da scegliere | ~0,5 € |
 
 Viti: un kit assortito M2 (circa 3-5 €) basta per molti dispositivi. Il costo per pezzo è trascurabile.
 

@@ -58,7 +58,8 @@ test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, pro
 docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
                     flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
 hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
-                    enclosure/spinlite_box.scad (prima versione laterale, SUPERATA: da rifare come scatola sopra la base)
+                    enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: quella di riferimento),
+                    enclosure/spinlite_box.scad (scatola laterale, alternativa per TCRT o altri montaggi)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
@@ -79,8 +80,10 @@ Fatto e verificato:
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
-5. **Riprogettare la scatola** da avvitare sopra la base QRE v102 (fori M2 29x24 mm): ricavare dall'STL di LaunchLab posizione fori, quota superiore e ingombro delle clip; schede bloccate da guide, USB-C allineate, ordine di montaggio; ambiente firmware `spinlite_qre` con default per il QRE1113. Poi stampa di prova.
+5. **Stampa di prova** di `hardware/enclosure/spinlite_top.scad` sulla base QRE v102 di LaunchLab, con i componenti veri: misurare SuperMini, TP4056, LiPo e interruttore e correggere i parametri; verificare la presa delle viti M2x6 e che la presa sul launcher sia libera. Verificata solo a CAD (nessuna collisione con le parti LaunchLab di anteprima, metodo in "Note di verifica").
 6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
+
+Note di verifica della scatola (per rifarle dopo una modifica): gli STL di LaunchLab in coordinate di montaggio sono nella cartella `preview/` del pacchetto top-dock-v098 (base, clip chiuse, spine, barretta, viti). Si esportano `part="box"`, `"lid_mounted"` e `"check_tp|lipo|sm|sw"` (componenti ristretti di 0,1 mm) e si controlla con uno script Python che nessun punto campionato su una superficie cada dentro l'altro solido (raggio verticale, parita' degli attraversamenti). Controprova: contro `04_M5_dock_with_cable_shroud.stl` deve trovare migliaia di punti. OpenSCAD locale e' 2021.01 (niente backend manifold; CGAL rifiuta le mesh LaunchLab).
 
 Note di review aperte (minori): `salva` da console scrive in flash anche durante una misura; `notifyLaunch` + un 0x74 dell'app possono mandare il dump due volte; le action GitHub sono fissate per versione maggiore, non per hash.
 

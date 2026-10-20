@@ -64,6 +64,57 @@ La base è **CC BY-SA** (versione non indicata dalla fonte), derivata dal *BP Ge
 
 ## Scatola SpinLite
 
-> **In riprogettazione.** `enclosure/spinlite_box.scad` è la prima versione: una scatola da montare a fianco con le fascette, **superata**. La nuova versione si avvita sopra la base ai 4 fori M2 (29 × 24 mm), tiene ferme le schede con guide e sedi (non con il biadesivo) e lascia libere le clip.
+File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base ai 4 fori pilota M2 (29 × 24 mm).
 
-Il file attuale compila in OpenSCAD e resta nel repo come riferimento finché la nuova versione non è pronta. Se vuoi guardarlo: apri il file, `F5` per l'anteprima, parametri in **Window → Customizer**.
+> Stato: verificata a CAD, **non ancora stampata**. Scatola e coperchio sono pezzi unici (anche con `oled = true`). Un controllo automatico (punti campionati sulle superfici) non trova sovrapposizioni con la base, le clip chiuse, le spine del sensore, la barretta e le viti di LaunchLab, né tra i componenti (rappresentati come blocchi) e scatola/coperchio. Lo stesso controllo, contro il dock M5 di LaunchLab, trova migliaia di collisioni: quindi funziona. Le misure dei componenti sono tipiche, non misurate: controllale col calibro.
+
+### Ingombro e interfaccia
+
+- 34,6 × 69,5 mm in pianta, alta circa 30 mm dal piano della base (con il coperchio).
+- Resta nell'ingombro del dock M5 di LaunchLab (X ±17,3 mm), che loro hanno verificato a CAD contro il movimento delle clip. Esce solo di 4,5 mm verso il lato del connettore, perché i fili del sensore devono curvare verso l'alto. In quella zona le clip non arrivano.
+- Il fondo sta 0,3 mm sopra i blocchi delle cerniere (Z 13,28). Quattro colonnine scendono sui rilievi dei fori (Z 11,2).
+
+### Disposizione interna
+
+```
+  lato connettore sensore (-Y)                                  (+Y) pareti USB-C
+  ┌──────────┬────────────────────────────┬───────────────────────────────┐
+  │ fili     │ LiPo 502030                │ TP4056 (sotto)                │ ← USB-C ricarica
+  │ sensore  │ (guide laterali)           │ SuperMini (sopra, su traversa │ ← USB-C SuperMini
+  │ ↑ dal    │            interruttore →  │  e mensole)                   │
+  │ fondo    │            (parete +X)     │                               │
+  └──────────┴────────────────────────────┴───────────────────────────────┘
+```
+
+### Montaggio
+
+1. Stampa scatola (`part = "box"`, aperta in alto) e coperchio (`part = "lid"`, già capovolto). PETG o PLA, layer 0,2 mm. Niente supporti: la traversa è un ponte e le mensole sono a 45°.
+2. Avvita la **scatola vuota** alla base con **4 viti M2×6**. Le teste stanno nelle sedi del fondo e il cacciavite scende dritto lungo i canali.
+3. **TP4056**: appoggialo sul fondo davanti alla traversa e fallo scorrere verso le pareti USB-C, sotto la traversa, finché la USB-C entra nel suo foro.
+4. **LiPo** nel vano tra le guide, su un velo di gommapiuma o biadesivo.
+5. Fai salire i fili del sensore dall'apertura nel fondo. Metti l'interruttore nella culla, con la leva nella feritoia.
+6. Salda i collegamenti (vedi la guida). Lascia i fili abbastanza lunghi da poter alzare la SuperMini.
+7. **SuperMini**: inserisci prima la USB-C nel foro superiore, poi abbassa la coda sulla traversa, dentro la battuta.
+8. Chiudi il coperchio con **4 viti M2×6**. Una nervatura preme sulla USB-C e un limitatore resta sopra la coda.
+
+Il pulsante BOOT, che cambia pagina sull'OLED, si preme dal foro nel coperchio con uno stuzzicadenti. Il LED della SuperMini resta dentro: con un filamento chiaro probabilmente si vede in trasparenza (non verificato).
+
+### Parametri da controllare
+
+| Parametro | Cosa |
+| --- | --- |
+| `sm_*`, `tp_*` | misure di SuperMini e TP4056, sporgenza della USB-C oltre il PCB (`*_usb_out`) |
+| `lipo_l/w/h` | misure della LiPo (default 502030). Se è troppo lunga, un `assert` lo segnala |
+| `sw_*` | interruttore SS12D00: corpo, feritoia, posizione |
+| `sm_boot` | posizione del pulsante BOOT, per il foro nel coperchio |
+| `oled` | `true` aggiunge 4 mm di altezza, la finestra nel coperchio e la cornice per il modulo |
+| `fit`, `clearance` | giochi di schede e coperchio |
+| `base_stl` | percorso dell'STL di anteprima di LaunchLab, solo per vederla in `part = "assembly"` |
+
+Le quote d'interfaccia (`pilot_*`, `seat_z`, `hinge_*`, `plug_*`) sono misurate sulla base v102: non cambiarle senza rimisurare.
+
+Con `part = "assembly"` vedi scatola, coperchio e componenti al loro posto. Con `base_stl` puoi aggiungere la base. Usa il file `preview/01_QRE_open_holder_body.stl` del pacchetto [top-dock-v098](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip), che è già nelle coordinate di montaggio.
+
+## Scatola laterale (alternativa)
+
+`enclosure/spinlite_box.scad` è la prima versione: una scatola da fissare a fianco con una fascetta. Resta nel repo per chi usa il TCRT5000 con il supporto laterale di LaunchLab, oppure monta SpinLite in un altro modo. Non è pensata per la base QRE.

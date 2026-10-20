@@ -46,15 +46,19 @@ Attraverso la finestrella della porta il sensore vede un **anello bianco/nero in
 
 ## 4. Installazione del firmware
 
+Ci sono quattro versioni: sensore **QRE1113** (consigliato) o **TCRT5000**, ciascuno con o senza OLED. Cambia solo la soglia di partenza `minmark`: 80 per il QRE1113, come il profilo di LaunchLab, e 150 per il TCRT5000. Se cambi sensore e ricarichi il firmware, le soglie salvate per l'altro sensore vengono ignorate.
+
 ### Web flasher (il più semplice)
 
-Apri il [web flasher](../flasher/) con Chrome o Edge, collega la SuperMini via USB e segui le istruzioni. Adesso: <https://mirkio90.github.io/spinlite/flasher/>.
+Apri il [web flasher](../flasher/) con Chrome o Edge, collega la SuperMini via USB, scegli la versione e segui le istruzioni. Adesso: <https://mirkio90.github.io/spinlite/flasher/>.
 
 ### PlatformIO
 
 ```
-pio run -t upload                  # versione base, solo Bluetooth
-pio run -e spinlite_oled -t upload # con display OLED
+pio run -e spinlite_qre -t upload       # QRE1113 (consigliato)
+pio run -e spinlite_qre_oled -t upload  # QRE1113 con display OLED
+pio run -t upload                       # TCRT5000
+pio run -e spinlite_oled -t upload      # TCRT5000 con display OLED
 pio device monitor                 # console seriale, 115200
 ```
 
@@ -63,7 +67,7 @@ pio device monitor                 # console seriale, 115200
 - Scheda: **ESP32C3 Dev Module**, core `esp32` **3.x**.
 - Attiva **USB CDC On Boot**.
 - Installa la libreria **NimBLE-Arduino 2.x**.
-- Apri `firmware/spinlite/spinlite.ino`. Per l'OLED definisci `SPINLITE_OLED=1`.
+- Apri `firmware/spinlite/spinlite.ino`. Per il QRE1113 definisci `SPINLITE_SENSOR_QRE=1`, per l'OLED `SPINLITE_OLED=1` (in cima a `config.h`).
 
 Se la scheda non viene riconosciuta, tieni premuto BOOT mentre colleghi il cavo USB.
 
