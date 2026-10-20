@@ -6,21 +6,9 @@ Leggi prima la sezione [Limiti](#limiti): cosa misura SpinLite non è esattament
 
 ## 1. Distinta base
 
-Prezzi indicativi da AliExpress, ottobre 2026. Variano col venditore e con le spedizioni.
+La lista completa, con link per ordinare, requisiti e prezzi, è in **[hardware/BOM.md](../hardware/BOM.md)**.
 
-| Componente | Note | Prezzo indicativo |
-| --- | --- | --- |
-| ESP32-C3 SuperMini | la scheda principale | 3-4 € |
-| Modulo TCRT5000 con LM393 | serve l'uscita analogica **AO** | 0,5-1 € |
-| LiPo 1S 300-500 mAh | piccola, con connettore o cavetti | 2-4 € |
-| Modulo TP4056 con protezione | tipo USB-C, 6 pin, con DW01 | 0,5 € |
-| Interruttore a slitta | piccolo, da saldare | 0,2 € |
-| 2 resistenze da 100 kΩ | partitore batteria | 0,05 € |
-| Condensatore 100 nF | sul partitore | 0,05 € |
-| Cavetti, stagno | | 1 € |
-| *Opzionale:* OLED SSD1306 128x32 I2C | display sul launcher | 1,5-2 € |
-
-**Totale stimato: circa 8-11 € senza OLED, 10-13 € con OLED.** Un Bey Battle Pass originale costa molto di più.
+In breve, configurazione di riferimento: ESP32-C3 SuperMini, sensore **QRE1113 analogico**, LiPo 1S, TP4056 con protezione, interruttore, partitore per la batteria, base stampata di LaunchLab più la scatola SpinLite, viti M2. **Circa 15-18 €**, OLED escluso. Con il TCRT5000 (montaggio laterale) circa 9-12 €.
 
 ## 2. Cablaggio
 
@@ -28,9 +16,9 @@ Prezzi indicativi da AliExpress, ottobre 2026. Variano col venditore e con le sp
 
 | Da | A |
 | --- | --- |
-| TCRT5000 VCC | 3V3 della SuperMini |
-| TCRT5000 GND | GND |
-| TCRT5000 AO | GPIO3 (DO non collegato) |
+| Sensore VCC | 3V3 della SuperMini (non 5V: l'uscita deve restare entro la scala dell'ADC) |
+| Sensore GND | GND |
+| QRE1113 **OUT**, oppure TCRT5000 **AO** | GPIO3 (sul TCRT il pin DO resta scollegato) |
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
@@ -42,29 +30,19 @@ Note:
 - Il sensore deve stare su GPIO3 e la batteria su GPIO4: sul C3 l'ADC in modalità continua funziona solo su ADC1 (GPIO0-4).
 - Senza il partitore il firmware funziona lo stesso, ma non conosce la batteria.
 
-## 3. Montaggio del sensore
+## 3. Montaggio sul launcher
 
-### Supporto stampato
+Serve un launcher con la **porta del Battle Pass**: i Takara Tomy a corda e con ingranaggi interni ce l'hanno, gli starter Hasbro europei no.
 
-Il progetto LaunchLab ha supporti 3D per il TCRT5000. Non sono copiati in questo repo: scaricali da lì.
+Il sensore va in una **base stampata di LaunchLab** che si aggancia alla porta con due clip. La scatola SpinLite si avvita sopra con 4 viti M2. Link ai file, istruzioni di stampa e montaggio, adattamenti e licenza (CC BY-SA, derivata dal lavoro di Migbello): **[hardware/README.md](../hardware/README.md)**.
 
-- [`minimal_TCRT_sensor_only_v042`](https://github.com/shadohead/launchlab/tree/main/hardware/minimal_TCRT_sensor_only_v042)
-- [`minimal_TCRT_split_keepers_v043`](https://github.com/shadohead/launchlab/tree/main/hardware/minimal_TCRT_split_keepers_v043)
+### Cosa legge il sensore
 
-Licenza **CC BY-SA**. Derivano dal *BP Gear Port Connector* di Migbello: se li ridistribuisci, cita l'autore e mantieni la stessa licenza.
+Attraverso la finestrella della porta il sensore vede un **anello bianco/nero interno al launcher**, 1-2 mm sotto la superficie. Con ogni probabilità è lo stesso che legge il Battle Pass vero (deduzione: nessun teardown lo conferma). Non serve applicare nastro: il segno è già lì.
 
-**Attenzione al v019**: usa il dock dell'M5 come fermo del PCB, quindi da solo non va bene con questo sensore.
-
-La scatolina per l'elettronica di SpinLite è in [`hardware/`](../hardware/README.md).
-
-### Segno ottico sull'albero
-
-Il sensore vede il contrasto tra una zona chiara e una scura.
-
-- Usa un pezzetto di **nastro nero opaco** su un fondo chiaro, oppure nastro bianco su fondo scuro.
-- Di default il firmware si aspetta **1 segno per giro** (`marks` = 1).
-- Il segno deve passare davanti al sensore a pochi millimetri di distanza, sempre alla stessa distanza.
-- Evita nastro lucido: i riflessi creano falsi fronti.
+- Il numero di settori neri per giro dell'anello **non è documentato** dalle fonti. Il default del firmware è `marks` = 1.
+- Per verificarlo: scrivi `fronti`, fai fare all'albero **un giro lento a mano** (segna un riferimento) e conta i fronti validi. Se sono più di uno, imposta `set marks <numero>` e poi `salva`.
+- Il valore misurato è la rotazione dell'**albero del launcher**, non della trottola: vedi i limiti in fondo.
 
 ## 4. Installazione del firmware
 

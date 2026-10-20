@@ -1,51 +1,69 @@
-# Hardware: scatolina
+# Hardware: montaggio sul launcher
 
-`enclosure/spinlite_box.scad` è una scatolina parametrica in OpenSCAD (millimetri) per l'elettronica di SpinLite. Licenza **MIT**, come il resto del repo.
+SpinLite si monta sulla **porta del Battle Pass** del launcher Beyblade X. Quella porta c'è sui launcher Takara Tomy, a corda e con ingranaggi interni. **Non** c'è sugli starter Hasbro europei.
 
-Contiene SuperMini, TP4056, LiPo e interruttore a slitta. Ha le aperture USB-C di SuperMini e TP4056, il foro per i cavi del sensore, una finestrella OLED opzionale e due linguette con foro/asola per fissarla al supporto del sensore (vite M2 o fascetta).
+Il montaggio è fatto di due pezzi stampati, uniti da 4 viti:
 
-> Stato: compila in OpenSCAD senza warning; scatola e coperchio escono come un pezzo unico ciascuno (anche con `oled = true`). Non ancora stampata: le misure di USB-C, interruttore e fori sono stime, fai una prova prima di chiudere l'elettronica.
+```
+        ┌──────────────────────────┐
+        │  SCATOLA SpinLite (MIT)  │  questo repo: SuperMini, TP4056, LiPo,
+        │                          │  interruttore, USB-C, OLED opzionale
+        └────┬────────────────┬────┘
+   4 x M2x6 │                │  fori su un rettangolo 29 x 24 mm
+        ┌────┴────────────────┴────┐
+        │  BASE QRE1113 LaunchLab  │  da scaricare e stampare senza modifiche
+        │  clip + sede del sensore │  (CC BY-SA, Migbello / LaunchLab)
+        └──────────┬───────────────┘
+           clip nella porta del Battle Pass; il QRE1113 guarda attraverso la
+           finestrella del launcher l'anello bianco/nero interno (1-2 mm sotto)
+```
 
-## Come stampare
+Perché così:
 
-1. Apri il file in OpenSCAD. Scegli `part = "box"`, `"lid"` o `"both"` (in alto nel file).
-2. `F6` per il render, poi esporta in STL.
-3. Stampa **senza supporti**:
-   - la scatola con l'apertura verso l'alto;
-   - il coperchio con la piastra sul piatto (il bordo di incastro è rivolto in alto).
-4. PLA o PETG, altezza layer 0,2 mm, 2-3 perimetri.
+- la base di LaunchLab ha già clip, finestrella ottica e sede del sensore progettate per quella porta, e i 4 fori sono previsti proprio per montarci sopra un dispositivo (loro ci mettono un M5StickS3);
+- la scatola sta sopra il launcher, come il Battle Pass vero, quindi non ingombra la presa per il lancio;
+- la base non viene copiata né modificata: SpinLite resta MIT, la base resta di LaunchLab con la sua licenza.
 
-Se il coperchio è troppo stretto o lento, cambia `clearance` (parti da 0,2 mm e muoviti di 0,05).
+Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
 
-## Parametri principali
+## Base sensore LaunchLab
 
-Tutti sono in cima al file, con i commenti.
+**Versione: QRE1113 v102 ("compact base").** I link puntano a un commit preciso del repo LaunchLab, così i file non cambiano sotto i piedi:
 
-| Parametro | Cosa fa |
-| --- | --- |
-| `part` | `"box"`, `"lid"` o `"both"` |
-| `wall`, `floor_t`, `lid_t`, `lip_t`, `lip_h` | spessori e bordo di incastro |
-| `clearance` | gioco del coperchio |
-| `sm_*`, `tp_*` | dimensioni e aperture USB-C di SuperMini e TP4056 |
-| `lipo_l`, `lipo_w`, `lipo_h` | dimensioni LiPo (default 30x20x6, tipica da 300 mAh) |
-| `sw_w`, `sw_h`, `sw_x` | foro dell'interruttore |
-| `cable_w`, `cable_h`, `cable_x` | foro per i cavi del sensore |
-| `oled`, `oled_win_w/h`, `oled_x/y` | finestrella OLED (`oled = true` la apre e alza la scatola) |
-| `ear_*`, `screw_d`, `ear_slot` | linguette di fissaggio |
+- [progetto 3MF da aprire nello slicer](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/compact-base-v102.3mf) (consigliato);
+- [ZIP con STL, STEP, README e licenza](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/compact-base-v102.zip);
+- elenco delle versioni: [HARDWARE_VERSIONS.md](https://github.com/shadohead/launchlab/blob/87bb60d619c2127c9efd679d7505a144e52a30d8/docs/HARDWARE_VERSIONS.md); versioni più recenti su <https://launchlab.beywatch.gg/downloads>.
 
-Misura i tuoi componenti con un calibro: LiPo e moduli TP4056 cambiano da un venditore all'altro.
+### Stampa
 
-La LiPo sta sul fondo, SuperMini e TP4056 stanno sopra, affiancate, con le USB-C sui lati corti opposti. Fissa i componenti con nastro biadesivo. L'OLED va incollato sotto la finestrella.
+Le istruzioni sono riassunte dal README di LaunchLab: in caso di dubbio vale il loro.
 
-## Supporti sensore (non inclusi)
+1. Apri il **3MF come progetto**, non importare solo l'STL. Il 3MF contiene due oggetti "HINGE SUPPORT BLOCKER" che impediscono ai supporti di saldare le cerniere delle clip. Importando solo l'STL si perdono, e le clip escono incollate.
+2. Scegli la tua stampante e il materiale, poi rifai lo slicing. Non usare il G-code già salvato (è per una Bambu P1S).
+3. Materiale: **PETG** consigliato, perché le clip flettono e le parti ricevono viti. Il PLA va bene per una prima prova di misura.
+4. Impostazioni di riferimento: ugello 0,4 mm, layer 0,2 mm, 4 perimetri, riempimento 25%, supporti ad albero solo dal piatto. Circa 10,5 g e 53 minuti.
+5. Le clip si stampano aperte e già agganciate (print-in-place). Togli i supporti esterni a pezzo freddo, poi ruota le clip con delicatezza fino a chiuderle.
 
-I supporti per il TCRT5000 sono del progetto LaunchLab. Non sono copiati qui: scaricali da lì.
+### Montaggio del sensore
 
-- <https://github.com/shadohead/launchlab/tree/main/hardware/minimal_TCRT_sensor_only_v042>
-- <https://github.com/shadohead/launchlab/tree/main/hardware/minimal_TCRT_split_keepers_v043>
+1. Salda sul QRE1113 l'header a 90° (VCC, OUT, GND).
+2. Metti la scheda nella sede della base, con il sensore verso la finestrella.
+3. Fissala con la barretta (pressure bar) e **2 viti M2×4**.
+4. Aggancia la base alla porta del Battle Pass e controlla che non abbia gioco.
 
-Licenza **CC BY-SA**. Derivano dal *BP Gear Port Connector* di **Migbello**: se li modifichi o li ridistribuisci, cita l'autore e mantieni la stessa licenza.
+### Adattamenti
 
-Non usare il `v019`: usa il dock dell'M5 come fermo del PCB e da solo non va bene con il TCRT5000.
+- **Clone del QRE1113 con misure diverse.** La sede è fatta per la SparkFun ROB-09453. Se la tua scheda non entra, o il sensore non cade sulla finestrella, nello ZIP ci sono i file **STEP** da modificare in un CAD (FreeCAD, Fusion). Una base modificata resta **CC BY-SA**: va distribuita con la stessa licenza e citando Migbello e LaunchLab, e non va messa in questo repo MIT.
+- **Gioco o ritenzione delle clip.** LaunchLab dichiara che incastro, ritenzione e fatica delle clip non sono provati fisicamente. Se la base balla, prova prima il PETG, poi segnalalo a LaunchLab.
+- **Versioni più nuove della base.** Prima di usarle controlla nel loro README che ci siano ancora i **4 fori pilota M2 su 29 × 24 mm**: la scatola SpinLite si avvita lì.
+- **TCRT5000 al posto del QRE1113.** Usa il [supporto TCRT5000 v102](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/standard-sensor-v102.zip). Il sensore è troppo alto per stare sotto la scatola: la scatola va montata a fianco, con un cavo. Configurazione non ancora studiata.
 
-Questa scatolina è indipendente da quei file e resta MIT. Le linguette sono pensate per essere fissate al supporto con fascetta o viti M2: adatta posizione e misure al supporto che scegli.
+### Licenza della base
+
+La base è **CC BY-SA** (versione non indicata dalla fonte), derivata dal *BP Gear Port Connector* di **Migbello** ([Thingiverse 6856080](https://www.thingiverse.com/thing:6856080)), con modifiche di LaunchLab. Per questo non è copiata qui: si linka. Se ridistribuisci la base o una sua modifica, cita Migbello e LaunchLab e mantieni la stessa licenza.
+
+## Scatola SpinLite
+
+> **In riprogettazione.** `enclosure/spinlite_box.scad` è la prima versione: una scatola da montare a fianco con le fascette, **superata**. La nuova versione si avvita sopra la base ai 4 fori M2 (29 × 24 mm), tiene ferme le schede con guide e sedi (non con il biadesivo) e lascia libere le clip.
+
+Il file attuale compila in OpenSCAD e resta nel repo come riferimento finché la nuova versione non è pronta. Se vuoi guardarlo: apri il file, `F5` per l'anteprima, parametri in **Window → Customizer**.

@@ -34,11 +34,9 @@ Il conta giri **più economico possibile** per launcher Beyblade X:
 
 - SpinLite è **MIT**.
 - **BRD è GPL-3.0**: si può consultare per confrontare i valori del protocollo, **mai copiarne codice**. Copiandolo il progetto diventerebbe GPL.
-- I supporti 3D di LaunchLab sono **CC BY-SA**, perché derivano dal BP Gear Port Connector di Migbello. Vanno **citati e linkati**, non copiati nel repo. Quelli compatibili con il TCRT5000 sono:
-  - `hardware/minimal_TCRT_sensor_only_v042`
-  - `hardware/minimal_TCRT_split_keepers_v043`
-
-  Il v019 invece usa il dock dell'M5 come fermo del PCB, quindi non va bene da solo.
+- I supporti 3D di LaunchLab sono **CC BY-SA**, perché derivano dal BP Gear Port Connector di Migbello (Thingiverse 6856080). Vanno **citati e linkati**, non copiati nel repo né fusi con i nostri modelli.
+- **Decisione (20/10/2026):** sensore di riferimento **QRE1113 analogico** (breakout tipo SparkFun ROB-09453) nella **base QRE v102 di LaunchLab** (compact-base, linkata al commit `87bb60d`), stampata senza modifiche. La nostra scatola (MIT) si **avvita sopra** ai 4 fori pilota M2 su 29 x 24 mm, come il loro "Top Mount" dell'M5. Dalla base prendiamo solo quote d'interfaccia (fori, ingombri), non la geometria. Il TCRT5000 resta un'alternativa con il loro supporto laterale standard-sensor v102.
+- Motivi: la porta del Battle Pass ha una finestrella a trapezio da 5-6 mm sopra un anello bianco/nero interno (1-2 mm sotto); il TCRT (lenti 7x6 mm, alto ~19 mm) è troppo grosso, il QRE lavora a ~1 mm. Fondere gli STL rovinerebbe le cerniere print-in-place (servono i "hinge support blocker" del loro 3MF).
 - Il nome BLE di default è `BEYBLADE_TOOL01`, quello del dispositivo originale, perché alcune app lo cercano per nome. Il progetto non è affiliato a Takara Tomy o Hasbro.
 
 ## Struttura del repo
@@ -59,7 +57,8 @@ firmware/spinlite/
 test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings
 docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
                     flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
-hardware/           scatolina OpenSCAD parametrica (compila, pezzi unici verificati; non stampata)
+hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
+                    enclosure/spinlite_box.scad (prima versione laterale, SUPERATA: da rifare come scatola sopra la base)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
@@ -80,7 +79,7 @@ Fatto e verificato:
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
-5. Stampare la scatolina e correggere le misure (USB-C, interruttore, fori sono stime).
+5. **Riprogettare la scatola** da avvitare sopra la base QRE v102 (fori M2 29x24 mm): ricavare dall'STL di LaunchLab posizione fori, quota superiore e ingombro delle clip; schede bloccate da guide, USB-C allineate, ordine di montaggio; ambiente firmware `spinlite_qre` con default per il QRE1113. Poi stampa di prova.
 6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
 
 Note di review aperte (minori): `salva` da console scrive in flash anche durante una misura; `notifyLaunch` + un 0x74 dell'app possono mandare il dump due volte; le action GitHub sono fissate per versione maggiore, non per hash.
@@ -143,9 +142,9 @@ Note di review aperte (minori): `salva` da console scrive in flash anche durante
 
 | Da | A |
 | --- | --- |
-| TCRT5000 VCC | 3V3 della SuperMini |
-| TCRT5000 GND | GND |
-| TCRT5000 AO | GPIO3 (DO non collegato) |
+| Sensore VCC | 3V3 della SuperMini |
+| Sensore GND | GND |
+| QRE1113 OUT (o TCRT5000 AO) | GPIO3 (sul TCRT il DO resta scollegato) |
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
