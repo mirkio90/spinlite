@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpinLite - Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header>
+  <h1>SpinLite</h1>
+  <nav><a href="flasher/">Installa il firmware</a></nav>
+</header>
+<p class="note">Dashboard Bluetooth per il conta giri SpinLite (e per un Bey Battle Pass BX-09). Gli RPM sono misurati sull'<b>albero del launcher</b>, non sulla trottola.</p>
+
+<div id="nosupport" class="card warn" hidden>
+  <b>Questo browser non supporta Web Bluetooth.</b> Usa Chrome o Edge su computer o Android.
+  Su iPhone/iPad non funziona: installa l'app <b>Bluefy</b> e apri questa pagina da lì.
+</div>
+
+<div class="card">
+  <div class="row">
+    <button id="connect" class="primary">Collega</button>
+    <button id="refresh" disabled>Aggiorna</button>
+    <button id="clear" disabled>Azzera storico</button>
+    <span id="state" class="note">Non collegato</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Ultimo lancio</h2>
+  <div class="big"><span id="last">-</span> <span class="unit">RPM</span></div>
+  <div style="margin-top:8px"><span id="flags"></span></div>
+</div>
+
+<div class="grid">
+  <div class="card"><h2>Massimo</h2><div class="val"><span id="best">-</span> <span class="unit">RPM</span></div></div>
+  <div class="card"><h2>Lanci totali</h2><div class="val" id="total">-</div></div>
+  <div class="card"><h2>Batteria</h2><div class="val"><span id="batt">-</span><span class="unit"> %</span></div></div>
+  <div class="card"><h2>Checksum</h2><div class="val" id="chk">-</div></div>
+</div>
+
+<div class="card"><h2>Storico (ultimi 50 lanci, dal più vecchio)</h2><canvas id="hist"></canvas></div>
+<div class="card"><h2>Curva dell'ultimo lancio (RPM per giro)</h2><canvas id="curve"></canvas></div>
+
+<div class="card">
+  <details><summary>Pacchetti grezzi (esadecimale)</summary><pre id="log"></pre></details>
+</div>
+<p class="note">SpinLite non è affiliato a Takara Tomy o Hasbro. Il protocollo è ricostruito da fonti indipendenti.</p>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

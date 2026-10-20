@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpinLite - Installa firmware</title>
+<link rel="stylesheet" href="../style.css">
+<script type="module" src="https://unpkg.com/esp-web-tools@10.1.1/dist/web/install-button.js?module"></script>
+</head>
+<body>
+<main>
+<header>
+  <h1>Installa SpinLite</h1>
+  <nav><a href="../">Dashboard</a></nav>
+</header>
+<p class="note">Serve Chrome o Edge su computer (Web Serial). Collega la ESP32-C3 SuperMini con un cavo USB che trasmette dati.</p>
+
+<div class="card">
+  <h2>Versione base</h2>
+  <p>Senza display.</p>
+  <esp-web-install-button manifest="manifest.json"><button slot="activate" class="primary">Installa versione base</button></esp-web-install-button>
+</div>
+<div class="card">
+  <h2>Versione con OLED</h2>
+  <p>Per il display SSD1306 128x32 su GPIO6 (SDA) e GPIO7 (SCL).</p>
+  <esp-web-install-button manifest="manifest-oled.json"><button slot="activate" class="primary">Installa versione OLED</button></esp-web-install-button>
+</div>
+
+<div class="card">
+  <h2>Istruzioni</h2>
+  <ol>
+    <li>Se la porta seriale non compare nell'elenco, tieni premuto il pulsante <b>BOOT</b> mentre colleghi l'USB, poi rilascialo e riprova.</li>
+    <li>Scegli la porta e conferma. Con "cancella" attivo la memoria viene azzerata (perdi storico e impostazioni).</li>
+    <li>A fine installazione scollega e ricollega l'USB.</li>
+    <li>Per la taratura apri una console seriale a <b>115200</b> baud e usa il comando <code>raw</code> mentre giri l'albero a mano; <code>aiuto</code> elenca i comandi.</li>
+  </ol>
+  <p class="note">I file del firmware sono prodotti dalla CI del progetto. Se il pulsante segnala un file mancante, la release non è ancora stata pubblicata.</p>
+</div>
+</main>
+</body>
+</html>
