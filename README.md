@@ -10,9 +10,10 @@ I risultati vanno al telefono via Bluetooth con lo stesso profilo del Bey Battle
 | Parte | Stato |
 | --- | --- |
 | Rilevatore RPM (`firmware/spinlite/rpm_detector.*`) | fatto: 21 casi simulati, errore tipico sotto lo 0,1% |
-| Test su PC (`test/`) | `make -C test` |
+| Test su PC (`test/`) | `make -C test` (rilevatore, protocollo, OLED) |
 | Pacchetti Battle Pass (`bbp_protocol.*`) | fatto: verificati anche con un parser indipendente |
-| Firmware ESP32-C3 (ADC, BLE, OLED) | da fare |
+| Schermate OLED 128x32 (`oled_ui.*`) | disegno fatto e testato; driver I2C da provare su hardware |
+| Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | da fare: progetto in `CLAUDE.md` |
 | Guida, cablaggio, dashboard web | da fare |
 
 Licenza MIT. Progetto non affiliato con Takara Tomy o Hasbro.
