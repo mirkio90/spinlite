@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" font-family="Arial, Helvetica, sans-serif" font-size="14">
+  <title>Schema di cablaggio SpinLite</title>
+  <rect width="900" height="560" fill="#ffffff"/>
+  <text x="450" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">SpinLite: schema di cablaggio</text>
+  <text x="450" y="48" text-anchor="middle" font-size="12" fill="#555">Rosso = positivo, nero = GND, blu = segnale sensore, verde = batteria (partitore), arancio/viola = I2C</text>
+
+  <!-- LiPo -->
+  <rect x="20" y="90" width="130" height="70" rx="6" fill="#e8f0fe" stroke="#333" stroke-width="2"/>
+  <text x="85" y="120" text-anchor="middle" font-weight="bold">LiPo 1S</text>
+  <text x="85" y="140" text-anchor="middle" font-size="12">300-500 mAh</text>
+  <text x="140" y="108" text-anchor="end" font-size="12" fill="#c00">+</text>
+  <text x="140" y="150" text-anchor="end" font-size="12">-</text>
+
+  <!-- TP4056 -->
+  <rect x="210" y="90" width="150" height="110" rx="6" fill="#fff4e0" stroke="#333" stroke-width="2"/>
+  <text x="285" y="115" text-anchor="middle" font-weight="bold">TP4056</text>
+  <text x="285" y="133" text-anchor="middle" font-size="12">con protezione (DW01)</text>
+  <text x="285" y="151" text-anchor="middle" font-size="12">ingresso USB-C per ricarica</text>
+  <text x="218" y="108" font-size="12">B+</text><text x="218" y="190" font-size="12">B-</text>
+  <text x="352" y="108" text-anchor="end" font-size="12">OUT+</text><text x="352" y="190" text-anchor="end" font-size="12">OUT-</text>
+
+  <!-- Interruttore -->
+  <rect x="425" y="90" width="90" height="40" rx="6" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+  <text x="470" y="115" text-anchor="middle" font-weight="bold">Interruttore</text>
+  <text x="470" y="82" text-anchor="middle" font-size="12">a slitta</text>
+
+  <!-- SuperMini -->
+  <rect x="640" y="90" width="240" height="300" rx="8" fill="#e6f4ea" stroke="#333" stroke-width="2"/>
+  <text x="760" y="115" text-anchor="middle" font-weight="bold">ESP32-C3 SuperMini</text>
+  <text x="648" y="150" font-size="13">5V</text>
+  <text x="648" y="180" font-size="13">GND</text>
+  <text x="648" y="230" font-size="13">3V3</text>
+  <text x="872" y="150" text-anchor="end" font-size="13">GPIO3 (sensore)</text>
+  <text x="872" y="200" text-anchor="end" font-size="13">GPIO4 (batteria)</text>
+  <text x="872" y="300" text-anchor="end" font-size="13">GPIO6 (SDA)</text>
+  <text x="872" y="330" text-anchor="end" font-size="13">GPIO7 (SCL)</text>
+  <text x="760" y="372" text-anchor="middle" font-size="11" fill="#555">DO del TCRT5000 non collegato</text>
+
+  <!-- Fili alimentazione -->
+  <!-- LiPo + -> B+ -->
+  <polyline points="150,105 210,105" fill="none" stroke="#c00" stroke-width="3"/>
+  <!-- LiPo - -> B- -->
+  <polyline points="150,150 180,150 180,187 210,187" fill="none" stroke="#000" stroke-width="3"/>
+  <!-- OUT+ -> interruttore -->
+  <polyline points="360,105 425,105" fill="none" stroke="#c00" stroke-width="3"/>
+  <!-- interruttore -> nodo +batt dopo interruttore -> 5V -->
+  <polyline points="515,105 580,105 580,147 640,147" fill="none" stroke="#c00" stroke-width="3"/>
+  <circle cx="580" cy="105" r="4" fill="#c00"/>
+  <text x="520" y="98" font-size="11" fill="#c00">+ dopo interr.</text>
+  <!-- OUT- -> GND -->
+  <polyline points="360,187 600,187 600,177 640,177" fill="none" stroke="#000" stroke-width="3"/>
+  <circle cx="600" cy="187" r="4" fill="#000"/>
+
+  <!-- Partitore -->
+  <polyline points="580,105 580,230" fill="none" stroke="#2e7d32" stroke-width="3"/>
+  <rect x="560" y="230" width="40" height="50" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="580" y="260" text-anchor="middle" font-size="12">100k</text>
+  <polyline points="580,280 580,300" fill="none" stroke="#2e7d32" stroke-width="3"/>
+  <circle cx="580" cy="300" r="4" fill="#2e7d32"/>
+  <rect x="560" y="320" width="40" height="50" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="580" y="350" text-anchor="middle" font-size="12">100k</text>
+  <polyline points="580,300 580,320" fill="none" stroke="#2e7d32" stroke-width="3"/>
+  <polyline points="580,370 580,400 600,400" fill="none" stroke="#000" stroke-width="3"/>
+  <!-- punto centrale -> GPIO4 -->
+  <polyline points="580,300 620,300 620,197 640,197" fill="none" stroke="#2e7d32" stroke-width="3"/>
+  <!-- condensatore -->
+  <polyline points="620,300 620,320" fill="none" stroke="#2e7d32" stroke-width="2"/>
+  <line x1="608" y1="320" x2="632" y2="320" stroke="#333" stroke-width="3"/>
+  <line x1="608" y1="328" x2="632" y2="328" stroke="#333" stroke-width="3"/>
+  <polyline points="620,328 620,345" fill="none" stroke="#000" stroke-width="2"/>
+  <text x="636" y="326" font-size="12">100 nF</text>
+  <text x="620" y="360" text-anchor="middle" font-size="11">GND</text>
+  <text x="604" y="404" font-size="11">GND</text>
+  <text x="520" y="290" text-anchor="end" font-size="11" fill="#2e7d32">partitore batteria</text>
+
+  <!-- TCRT5000 -->
+  <rect x="20" y="260" width="200" height="130" rx="6" fill="#fde8e8" stroke="#333" stroke-width="2"/>
+  <text x="120" y="285" text-anchor="middle" font-weight="bold">Modulo TCRT5000 / LM393</text>
+  <text x="30" y="320" font-size="13">VCC</text>
+  <text x="30" y="345" font-size="13">GND</text>
+  <text x="30" y="370" font-size="13">AO</text>
+  <text x="210" y="320" text-anchor="end" font-size="11" fill="#777">DO: libero</text>
+
+  <!-- VCC -> 3V3 -->
+  <polyline points="70,315 70,430 430,430 430,227 640,227" fill="none" stroke="#c00" stroke-width="3" stroke-dasharray="0"/>
+  <!-- GND sensore -> GND -->
+  <polyline points="70,340 90,340 90,450 600,450 600,400" fill="none" stroke="#000" stroke-width="3"/>
+  <!-- AO -> GPIO3 -->
+  <polyline points="70,365 110,365 110,420 460,420 460,160 640,160" fill="none" stroke="#1565c0" stroke-width="3"/>
+  <text x="300" y="414" text-anchor="middle" font-size="11" fill="#1565c0">AO verso GPIO3</text>
+  <text x="300" y="444" text-anchor="middle" font-size="11" fill="#c00">VCC a 3V3</text>
+  <text x="300" y="464" text-anchor="middle" font-size="11" fill="#000">GND comune</text>
+
+  <!-- OLED -->
+  <rect x="640" y="430" width="240" height="100" rx="6" fill="#f3e8fd" stroke="#333" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="760" y="455" text-anchor="middle" font-weight="bold">OLED SSD1306 128x32 (opzionale)</text>
+  <text x="650" y="480" font-size="12">VCC a 3V3, GND a GND</text>
+  <text x="650" y="500" font-size="12">SDA a GPIO6, SCL a GPIO7</text>
+  <polyline points="760,430 760,330 872,330" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="5 3"/>
+  <polyline points="780,430 780,300 872,300" fill="none" stroke="#ef6c00" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="20" y="540" font-size="12" fill="#555">Il condensatore da 100 nF sul punto centrale del partitore e' necessario: l'ADC campiona di continuo.</text>
+  <text x="20" y="556" font-size="12" fill="#555">Il TCRT5000 sta vicino all'albero del launcher; i cavi del sensore possono essere lunghi poche decine di mm.</text>
+</svg>

@@ -1,19 +1,47 @@
 # SpinLite
 
 Conta giri da pochi euro per launcher **Beyblade X**: ESP32-C3 SuperMini + sensore TCRT5000 + piccola LiPo.
-I risultati vanno al telefono via Bluetooth con lo stesso profilo del Bey Battle Pass, oppure su un display OLED opzionale.
+I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Battle Pass, quindi funzionano le app esistenti (BeyGear, Spin Meter, Beyblader Helper, 321GoShoot). Display OLED 128x32 opzionale.
 
-> **Lavori in corso.** Il rilevatore dei giri e i test con segnali simulati sono già nel repo; firmware completo, guida di montaggio e pagina web arrivano nei prossimi commit.
+![Schema di cablaggio](docs/img/cablaggio.svg)
+
+**Costo indicativo: circa 8-11 €** (10-13 € con OLED), prezzi AliExpress di ottobre 2026.
+
+## Link
+
+- [Guida completa](docs/guida.md): distinta base, cablaggio, montaggio, taratura, limiti
+- [Dashboard web](https://mirkio90.github.io/spinlite/)
+- [Web flasher](https://mirkio90.github.io/spinlite/flasher/)
+- [Scatolina stampabile](hardware/README.md)
+
+## Limiti da sapere subito
+
+SpinLite misura l'**albero del launcher**, non la trottola. Con i launcher a corda anche il Battle Pass originale sovrastima gli RPM. Dettagli nella guida.
 
 ## Stato
 
 | Parte | Stato |
 | --- | --- |
-| Rilevatore RPM (`firmware/spinlite/rpm_detector.*`) | fatto: 21 casi simulati, errore tipico sotto lo 0,1% |
-| Test su PC (`test/`) | `make -C test` (rilevatore, protocollo, OLED) |
-| Pacchetti Battle Pass (`bbp_protocol.*`) | fatto: verificati anche con un parser indipendente |
-| Schermate OLED 128x32 (`oled_ui.*`) | disegno fatto e testato; driver I2C da provare su hardware |
-| Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | da fare: progetto in `CLAUDE.md` |
-| Guida, cablaggio, dashboard web | da fare |
+| Rilevatore RPM (`rpm_detector.*`) | fatto: 21 casi simulati, errore tipico sotto lo 0,1% |
+| Pacchetti Battle Pass (`bbp_protocol.*`) | fatto, verificato con un parser indipendente |
+| Schermate OLED (`oled_ui.*`) | disegno testato; driver I2C da provare |
+| Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | scritto completo, **NON ancora provato su hardware** |
+| Guida e scatolina | scritte, scatolina non ancora stampata |
+| Dashboard web e flasher | vedi i link sopra |
 
-Licenza MIT. Progetto non affiliato con Takara Tomy o Hasbro.
+Finché non è provato sul campo, aspettati bug e soglie da tarare.
+
+## Sviluppo
+
+```
+make -C test                  # test su PC (rilevatore, protocollo, OLED)
+pio run                       # compila il firmware
+pio run -e spinlite_oled      # con display OLED
+pio run -t upload             # carica sulla scheda
+```
+
+Il piano di lavoro e le note tecniche sono in `CLAUDE.md`.
+
+## Licenza
+
+MIT. Progetto non affiliato a Takara Tomy né a Hasbro. Crediti e licenze di terzi (LaunchLab, BRD, MarkChan0225, Migbello) nella guida.
