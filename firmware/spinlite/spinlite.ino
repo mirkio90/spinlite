@@ -231,7 +231,7 @@ void setup() {
   Serial.println(oledOk ? "OLED ok" : "OLED non risponde");
 #endif
 
-  Serial.printf("SpinLite %s\n", SPINLITE_VERSION);
+  Serial.printf("SpinLite %s, sensore %s\n", SPINLITE_VERSION, SPINLITE_SENSOR_NAME);
   if (!sampler::begin(config)) Serial.println("ERRORE: ADC non avviato");
 
   ble::Provider provider;

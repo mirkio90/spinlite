@@ -1,4 +1,7 @@
 // Test del rilevatore con segnali simulati: g++ -std=c++17, nessuna dipendenza.
+// I default del profilo QRE1113 vengono da config.h compilato con il sensore QRE.
+#define SPINLITE_SENSOR_QRE 1
+#include "../firmware/spinlite/config.h"
 #include "../firmware/spinlite/rpm_detector.h"
 #include "signal_sim.h"
 
@@ -250,6 +253,59 @@ static void sensorFault() {
   CHECK(d.signalFault(), "guasto non rilevato");
 }
 
+// Configurazione con i default del profilo QRE1113 (config.h).
+static DetectorConfig qreConfig() {
+  DetectorConfig c = baseConfig();
+  c.minMark = DEFAULT_MIN_MARK;
+  c.minLaunchRpm = DEFAULT_MIN_LAUNCH_RPM;
+  c.maxRpm = DEFAULT_MAX_RPM;
+  c.marksPerRev = DEFAULT_MARKS_PER_REV;
+  return c;
+}
+
+// QRE1113 con pull-up da 10k: nero = uscita alta e satura a 4095, bianco =
+// uscita bassa. Anello meta' bianco e meta' nero (duty 50%), un segno per giro.
+static sim::Optics qreOptics(double depth) {
+  sim::Optics o;
+  o.baseline = 4095;
+  o.depth = depth; // il bianco porta AO a 4095 - depth
+  o.duty = 0.5;
+  o.noise = 8;
+  o.wander = 20;
+  return o;
+}
+
+static void qreLaunches() {
+  CHECK(DEFAULT_MIN_MARK == 80, "profilo QRE: soglia %d", DEFAULT_MIN_MARK);
+  for (double rpm : {3000.0, 15000.0}) {
+    // ampiezza tipica nella base LaunchLab: circa 1000 conteggi (LaunchLab: 900-1100)
+    sim::Signal s(qreOptics(1000), sim::pullProfile(0.5, rpm), uint32_t(rpm) + 3);
+    char name[64];
+    std::snprintf(name, sizeof name, "QRE ampiezza 1000, %.0f RPM", rpm);
+    expectOne(name, run(s, 3, qreConfig()));
+  }
+  // contrasto forte: il bianco arriva vicino al fondo scala
+  sim::Signal s(qreOptics(3500), sim::pullProfile(0.5, 15000), 41);
+  expectOne("QRE ampiezza 3500, 15000 RPM", run(s, 3, qreConfig()));
+  // segno debole, appena sopra la soglia di 80
+  sim::Signal w(qreOptics(200), sim::pullProfile(0.5, 3000), 43);
+  expectOne("QRE ampiezza 200, 3000 RPM", run(w, 3, qreConfig()), 0.8, 2.0);
+}
+
+static void qreIdleNoLaunch() {
+  // nero davanti al sensore (saturo a 4095) con deriva e disturbi
+  sim::Optics o = qreOptics(1000);
+  o.noise = 12;
+  sim::Signal s(o, [](double) { return 0.0; }, 45);
+  s.distort = [](double t, double v) {
+    const double phase = std::fmod(t, 0.9);
+    return phase < 0.004 ? v - 60 : v;
+  };
+  auto r = run(s, 30, qreConfig());
+  report("QRE fermo 30 s con disturbi", r);
+  CHECK(r.results.empty(), "nessun lancio atteso, trovati %zu", r.results.size());
+}
+
 int main() {
   std::printf("Rilevatore - segnali simulati\n");
   cleanLaunch();
@@ -268,6 +324,8 @@ int main() {
   saturatedBaseline();
   dataLossDuringLaunch();
   sensorFault();
+  qreLaunches();
+  qreIdleNoLaunch();
   std::printf(failures ? "\n%d controlli FALLITI\n" : "\nTutti i controlli superati\n", failures);
   return failures ? 1 : 0;
 }

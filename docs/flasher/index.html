@@ -16,14 +16,24 @@
 <p class="note">Serve Chrome o Edge su computer (Web Serial). Collega la ESP32-C3 SuperMini con un cavo USB che trasmette dati.</p>
 
 <div class="card">
-  <h2>Versione base</h2>
-  <p>Senza display.</p>
-  <esp-web-install-button manifest="manifest.json"><button slot="activate" class="primary">Installa versione base</button></esp-web-install-button>
+  <h2>QRE1113, senza display (consigliata)</h2>
+  <p>Sensore QRE1113 analogico nella base LaunchLab.</p>
+  <esp-web-install-button manifest="manifest-qre.json"><button slot="activate" class="primary">Installa QRE1113</button></esp-web-install-button>
 </div>
 <div class="card">
-  <h2>Versione con OLED</h2>
-  <p>Per il display SSD1306 128x32 su GPIO6 (SDA) e GPIO7 (SCL).</p>
-  <esp-web-install-button manifest="manifest-oled.json"><button slot="activate" class="primary">Installa versione OLED</button></esp-web-install-button>
+  <h2>QRE1113 con OLED</h2>
+  <p>Come sopra, con il display SSD1306 128x32 su GPIO6 (SDA) e GPIO7 (SCL).</p>
+  <esp-web-install-button manifest="manifest-qre-oled.json"><button slot="activate" class="primary">Installa QRE1113 + OLED</button></esp-web-install-button>
+</div>
+<div class="card">
+  <h2>TCRT5000, versione base</h2>
+  <p>Modulo TCRT5000/LM393 (uscita AO), senza display.</p>
+  <esp-web-install-button manifest="manifest.json"><button slot="activate" class="primary">Installa TCRT5000</button></esp-web-install-button>
+</div>
+<div class="card">
+  <h2>TCRT5000 con OLED</h2>
+  <p>Modulo TCRT5000/LM393, con il display SSD1306 128x32 su GPIO6 (SDA) e GPIO7 (SCL).</p>
+  <esp-web-install-button manifest="manifest-oled.json"><button slot="activate" class="primary">Installa TCRT5000 + OLED</button></esp-web-install-button>
 </div>
 
 <div class="card">

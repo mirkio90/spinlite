@@ -13,7 +13,14 @@ namespace spinlite {
 namespace settings {
 namespace {
 
+// L'ultimo byte dipende dal sensore: passando da un firmware TCRT5000 a uno
+// QRE1113 (o viceversa) le soglie salvate per l'altro sensore vengono
+// ignorate e si riparte dai default giusti.
+#if SPINLITE_SENSOR_QRE
+const uint8_t MAGIC[4] = {'S', 'P', 'L', 'Q'};
+#else
 const uint8_t MAGIC[4] = {'S', 'P', 'L', 'C'};
+#endif
 constexpr uint8_t CONFIG_VERSION = 1;
 
 struct Param {

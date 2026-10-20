@@ -44,6 +44,7 @@ void printConfig() {
 
 void status() {
   const LiveStatus s = sampler::status();
+  Serial.printf("Sensore: %s\n", SPINLITE_SENSOR_NAME);
   Serial.printf("Fase: %s%s\n", phaseName(s.phase), s.fault ? " (GUASTO sensore)" : "");
   Serial.printf("Segnale: livello=%u rumore=%u ampiezza=%u isteresi=%u rpm=%u\n", s.level, s.noise, s.swing,
                 s.hysteresis, s.liveRpm);

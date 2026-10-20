@@ -37,6 +37,8 @@ jobs:
           mkdir -p docs/flasher/firmware
           cp dist/spinlite-merged.bin docs/flasher/firmware/spinlite-merged.bin
           cp dist/spinlite-oled-merged.bin docs/flasher/firmware/spinlite-oled-merged.bin
+          cp dist/spinlite-qre-merged.bin docs/flasher/firmware/spinlite-qre-merged.bin
+          cp dist/spinlite-qre-oled-merged.bin docs/flasher/firmware/spinlite-qre-oled-merged.bin
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

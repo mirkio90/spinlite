@@ -1,0 +1,11 @@
+{
+  "name": "SpinLite",
+  "version": "0.1.0",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [{ "path": "firmware/spinlite-qre-merged.bin", "offset": 0 }]
+    }
+  ]
+}

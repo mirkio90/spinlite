@@ -28,14 +28,14 @@ jobs:
         run: pip install platformio
 
       - name: Compila
-        run: pio run -e spinlite -e spinlite_oled
+        run: pio run -e spinlite -e spinlite_oled -e spinlite_qre -e spinlite_qre_oled
 
       # pioarduino crea gia' firmware.factory.bin: bootloader, partizioni,
       # boot_app0 e app in un'unica immagine da scrivere all'offset 0.
       - name: Raccogli le immagini
         run: |
           mkdir -p dist
-          for pair in "spinlite:spinlite" "spinlite_oled:spinlite-oled"; do
+          for pair in "spinlite:spinlite" "spinlite_oled:spinlite-oled" "spinlite_qre:spinlite-qre" "spinlite_qre_oled:spinlite-qre-oled"; do
             env=${pair%%:*}; name=${pair##*:}
             d=.pio/build/$env
             cp $d/firmware.factory.bin dist/$name-merged.bin
