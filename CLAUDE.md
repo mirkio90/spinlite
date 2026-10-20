@@ -88,6 +88,23 @@ Note di verifica della scatola (per rifarle dopo una modifica): gli STL di Launc
 
 Note di review aperte (minori): `salva` da console scrive in flash anche durante una misura; `notifyLaunch` + un 0x74 dell'app possono mandare il dump due volte; le action GitHub sono fissate per versione maggiore, non per hash.
 
+## Backlog (dopo la versione base: NON iniziare finché Mirko non lo chiede)
+
+Decisione del 21/10/2026: prima si completa e si prova la versione basilare; queste idee restano qui.
+
+1. **Inclinazione con IMU** (come le versioni su ESP32-S3; LaunchLab ha la funzione "level and tilt" ancora in sviluppo sull'M5StickS3).
+   - Modulo I2C da ~1-3 € sullo stesso bus dell'OLED (GPIO6/7): meglio LSM6DS3 o BMI160 del MPU-6050 (fuori produzione, molti cloni).
+   - Fusione accelerometro + giroscopio (Madgwick o filtro complementare) a 100-200 Hz in un task a bassa priorità: ~2-3% CPU anche in virgola mobile software. Il percorso a 10 kHz resta in interi.
+   - Dati: inclinazione e rollio all'istante dello strappo, stabilità prima del lancio, "bolla" sull'OLED.
+   - Rischi: il protocollo Battle Pass non ha un campo per l'inclinazione (le app non lo vedono: solo dashboard, console, OLED); il traffico I2C durante MISURA potrebbe sporcare il segnale analogico (provare con `raw`; in alternativa buffer continuo e valore preso all'inizio del lancio); l'IMU va fissata rigida e allineata (serve una sede nella scatola, ~16x21 mm per un GY-521).
+   - Tappe: (a) IMU letta + prova di disturbo con `raw`; (b) inclinazione al lancio in CSV e OLED; (c) caratteristica BLE estesa + dashboard; (d) sede nella scatola.
+2. **Caratteristica BLE estesa** per la nostra dashboard (curva completa, statistiche, inclinazione), senza toccare il profilo Battle Pass.
+3. **WiFi** del C3: aggiornamento OTA e pagina servita dal dispositivo.
+4. **Buzzer** su un GPIO (~0,3 €): bip a PRONTO e al risultato.
+5. **Spegnimento automatico** per inattività.
+
+Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazioni pesanti.
+
 ## Progetto del firmware (implementato: riferimento delle scelte)
 
 ### Acquisizione (task FreeRTOS ad alta priorità)
