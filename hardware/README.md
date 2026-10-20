@@ -26,6 +26,14 @@ Perché così:
 
 Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
 
+![SpinLite montato sulla base LaunchLab](img/montato.png)
+
+| Interno | Sezione: percorso dei fili | Esploso |
+| --- | --- | --- |
+| ![interno](img/interno.png) | ![sezione](img/sezione_3d.png) | ![esploso](img/esploso.png) |
+
+Altre viste e didascalie in [img/](img/README.md). Le immagini si rigenerano con `enclosure/spinlite_views.scad`.
+
 ## Base sensore LaunchLab
 
 **Versione: QRE1113 v102 ("compact base").** I link puntano a un commit preciso del repo LaunchLab, così i file non cambiano sotto i piedi:

@@ -345,6 +345,8 @@ if (part == "box") {
     components();
 } else if (part == "check_tp" || part == "check_lipo" || part == "check_sm" || part == "check_sw") {
     components(which = part == "check_tp" ? "tp" : part == "check_lipo" ? "lipo" : part == "check_sm" ? "sm" : "sw", shr = 0.1);
+} else if (part == "none") {
+    // niente: il file e' incluso da spinlite_views.scad
 } else if (part == "lid_mounted") {
     lid();
 } else {

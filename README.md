@@ -3,6 +3,8 @@
 Conta giri da pochi euro per launcher **Beyblade X**: ESP32-C3 SuperMini + sensore ottico QRE1113 + piccola LiPo, agganciato alla porta del Battle Pass del launcher.
 I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Battle Pass, quindi funzionano le app esistenti (BeyGear, Spin Meter, Beyblader Helper, 321GoShoot). Display OLED 128x32 opzionale.
 
+![SpinLite montato sulla base sensore di LaunchLab](hardware/img/montato.png)
+
 ![Schema di cablaggio](docs/img/cablaggio.svg)
 
 **Costo indicativo: circa 15-18 €** (17-20 € con OLED), prezzi di ottobre 2026: vedi la [distinta base](hardware/BOM.md).

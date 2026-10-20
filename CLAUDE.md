@@ -60,6 +60,7 @@ docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node do
 hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
                     enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: quella di riferimento),
                     enclosure/spinlite_box.scad (scatola laterale, alternativa per TCRT o altri montaggi)
+                    enclosure/spinlite_views.scad (viste con tutti i componenti e i fili), img/ (render + README con licenze)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
