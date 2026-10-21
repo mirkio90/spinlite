@@ -12,12 +12,20 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `sezione.png`, `sezione_3d.png` | Sezione a metà: il sensore QRE1113 nella base guarda in basso nella finestrella; la spina Dupont sta sotto la scatola; i fili salgono dall'apertura nel fondo, passano sopra la LiPo e oltre la traversa fino alla SuperMini |
 | `esploso.png` | Ordine di montaggio dal basso: base con sensore, 4 viti M2×6, scatola, TP4056 (spostato indietro perché entra scorrendo sotto la traversa), LiPo con partitore, interruttore, SuperMini, coperchio e viti |
 | `stampa.png` | Scatola e coperchio come vanno sul piatto di stampa |
+| `render_qre.png`, `render_qre_lato.png` | Render Blender della configurazione di riferimento: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
+| `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
+
+Nei render il **launcher e la trottola sono modelli stilizzati**, fatti a mano sulle foto del launcher a corda BX-28 (forma e proporzioni, non quote misurate).
 
 Colori dei fili: rosso +, nero GND, giallo uscita del sensore (GPIO3), azzurro batteria (GPIO4), verde e viola SDA/SCL dell'OLED.
 
 ## Rigenerarle
 
-Serve la cartella `preview/` del pacchetto [top-dock-v098 di LaunchLab](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip): contiene la base già in coordinate di montaggio. Senza quella cartella, al posto della base compare un segnaposto grigio.
+Render Blender: `python hardware/third_party/fetch_launchlab.py`, poi `python hardware/render/render.py`.
+
+Viste OpenSCAD:
+
+Serve la cartella `preview/` del pacchetto [top-dock-v098 di LaunchLab](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip). Dopo lo script di download si trova in `hardware/third_party/launchlab/LaunchLab_v0.98_top-dock/preview` e contiene la base già in coordinate di montaggio. Senza quella cartella, al posto della base compare un segnaposto grigio.
 
 ```
 openscad -o montato.png  -D 'view="montato"'  -D 'launchlab_preview="<cartella preview>"' --camera=0,2,10,62,0,35,150 --imgsize=1400,900 --colorscheme=Tomorrow spinlite_views.scad

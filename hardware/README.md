@@ -26,6 +26,22 @@ Perché così:
 
 Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
 
+| Configurazione di riferimento: QRE1113, scatola sopra | Alternativa: TCRT5000 laterale, scatola sul fianco |
+| --- | --- |
+| ![render QRE](img/render_qre.png) | ![render TCRT](img/render_tcrt.png) |
+
+Render con Blender. Il launcher e la trottola sono **modellati a mano sulle foto del launcher a corda BX-28**: forma e proporzioni sono quelle, le quote no. I pezzi LaunchLab e SpinLite sono invece i modelli veri. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
+
+## File di LaunchLab in locale
+
+```
+python hardware/third_party/fetch_launchlab.py
+```
+
+Scarica in `hardware/third_party/launchlab/` (cartella **ignorata da git**) i pacchetti di LaunchLab usati qui, tutti dallo stesso commit: base QRE v102 (STL, STEP e 3MF da stampare), dock v098 (anteprima in coordinate di montaggio), supporto TCRT v102 e i modelli 3D del loro sito. Se c'è Node, decomprime anche i modelli per Blender. Restano fuori dal repo perché sono CC BY-SA. Il file `PROVENIENZA.txt` elenca commit e hash.
+
+Render: `python hardware/render/render.py` (servono OpenSCAD e Blender). Scrive le immagini in `img/render_*.png`.
+
 ![SpinLite montato sulla base LaunchLab](img/montato.png)
 
 | Interno | Sezione: percorso dei fili | Esploso |
