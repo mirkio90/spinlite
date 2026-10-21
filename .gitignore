@@ -5,3 +5,7 @@ build/
 test/bin/
 __pycache__/
 docs/flasher/firmware/
+
+# file di LaunchLab (CC BY-SA): scaricati da hardware/third_party/fetch_launchlab.py
+hardware/third_party/launchlab/
+hardware/render/build/
