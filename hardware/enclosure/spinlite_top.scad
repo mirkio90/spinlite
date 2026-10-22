@@ -27,7 +27,8 @@
 //   2. TP4056 appoggiato al centro e fatto scorrere verso +Y sotto la
 //      traversa, finche' la USB-C entra nel suo foro;
 //   3. LiPo nel vano verso -Y (un velo di biadesivo o gommapiuma sotto);
-//   4. fili del sensore su dall'apertura nel fondo, interruttore nella culla;
+//   4. fili del sensore su dall'apertura nel fondo; interruttore: SS12F15
+//      avvitato da fuori alla parete +X (2 x M2 + dado), SS12D00 nella culla;
 //   5. SuperMini: USB-C nel foro, poi si abbassa la coda sulla traversa;
 //   6. coperchio con 4 x M2x6: una nervatura sulla USB-C e un limitatore
 //      sulla coda tengono ferma la SuperMini.
@@ -96,6 +97,19 @@ lipo_h    = 5;
 sw_body   = [3.7, 8.7, 3.6]; // x, y, z
 sw_slot   = [5.0, 2.4];      // feritoia per la leva: lunghezza (y), altezza (z)
 sw_y      = -12;             // centro dell'interruttore lungo Y
+
+// Tipo di interruttore: "SS12F15" (flangia con 2 fori, avvitato alla parete +X
+// sopra la LiPo) oppure "SS12D00" (piccolo, nella culla sul fondo; sw_* sopra)
+switch_type = "SS12F15";
+// SS12F15: misure dal disegno del venditore; corsa e fori stimati, da misurare
+sf_plate  = [19.5, 6.1];      // flangia: lunghezza (y), altezza (z)
+sf_body   = [10.5, 6.1, 5.3]; // corpo: y, z, profondita' dalla parete (x)
+sf_pins   = 1.5;              // piedini accorciati a questa lunghezza
+sf_lever  = [3.0, 2.5, 4.0];  // leva: y, z, sporgenza dalla flangia
+sf_travel = 3.5;              // corsa della leva (stima)
+sf_hole_pitch = 15;           // distanza tra i fori della flangia (stima)
+sf_hole_d = 2.3;              // foro passante per vite M2
+sf_y      = -9;               // centro lungo Y
 // Fori USB-C: ricettacolo + incavo esterno per la spina
 usb_hole_w = 9.8;
 usb_hole_h = 3.9;
@@ -144,8 +158,12 @@ z_tp_usb  = z_floor + tp_pcb + tp_usb_h / 2;
 z_sm_usb  = z_shelf + sm_pcb + sm_usb_h / 2;
 // colonnine del coperchio (angoli interni)
 lid_post  = [in_x - 2.6, in_y1 - 2.6, in_y0 + 2.6];
+// SS12F15: flangia appena sopra la LiPo (0,3 mm d'aria)
+sf_z      = z_floor + 0.5 + lipo_h + 0.3 + sf_plate[1] / 2;
+sf_slot   = [sf_lever[0] + sf_travel + 0.6, sf_lever[1] + 0.6]; // feritoia: y, z
 
 assert(lipo_y0 > in_y0 + 3, "LiPo troppo lunga: non resta spazio per i fili del sensore");
+assert(switch_type != "SS12F15" || sf_z + sf_plate[1] / 2 < z_in_top - 0.3, "SS12F15 non sta tra LiPo e coperchio");
 assert(z_tp_usb + usb_hole_h / 2 + 1.2 < z_sm_usb - usb_hole_h / 2 + 0.01, "fori USB-C sovrapposti");
 
 // ---------------------------------------------------------------------------
@@ -209,7 +227,8 @@ module supports() {
     // colonnine per le viti del coperchio
     for (sx = [-1, 1], y = [lid_post[1], lid_post[2]])
         translate([sx * lid_post[0], y, z_floor - eps]) cylinder(d = 5, h = z_in_top - z_floor + eps);
-    // culla dell'interruttore contro la parete +X
+    // culla dell'interruttore SS12D00 contro la parete +X
+    if (switch_type == "SS12D00")
     translate([in_x - sw_body[0] - 1.2, sw_y - sw_body[1] / 2 - 1.2, z_floor - eps])
         difference() {
             cube([sw_body[0] + 1.2 + eps, sw_body[1] + 2.4, 2.5]);
@@ -227,8 +246,15 @@ module cutouts() {
     translate([-usb_pocket[0] / 2, y_max - usb_pocket[1], z_tp_usb - usb_hole_h / 2 - 1.2])
         cube([usb_pocket[0], usb_pocket[1] + 1, z_sm_usb - z_tp_usb + usb_hole_h + 2.4]);
     // feritoia della leva dell'interruttore, parete +X
-    translate([in_x - 1, sw_y - sw_slot[0] / 2, z_floor + sw_body[2] / 2 - sw_slot[1] / 2])
-        cube([wall + 2, sw_slot[0], sw_slot[1]]);
+    if (switch_type == "SS12D00") {
+        translate([in_x - 1, sw_y - sw_slot[0] / 2, z_floor + sw_body[2] / 2 - sw_slot[1] / 2])
+            cube([wall + 2, sw_slot[0], sw_slot[1]]);
+    } else {
+        translate([in_x - 1, sf_y - sf_slot[0] / 2, sf_z - sf_slot[1] / 2]) cube([wall + 2, sf_slot[0], sf_slot[1]]);
+        // fori delle due viti M2 (da fuori, dado dentro)
+        for (s = [-1, 1]) translate([in_x - 1, sf_y + s * sf_hole_pitch / 2, sf_z]) rotate([0, 90, 0])
+            cylinder(d = sf_hole_d, h = wall + 2);
+    }
     // fori pilota del coperchio
     for (sx = [-1, 1], y = [lid_post[1], lid_post[2]])
         translate([sx * lid_post[0], y, z_in_top - 7]) cylinder(d = m2_pilot, h = 8);
@@ -262,6 +288,10 @@ module lid() {
                 // intaglio sopra la USB-C della SuperMini, vicino alla parete +Y
                 translate([-usb_hole_w / 2, in_y1 - lip_t - 2, z_in_top - lip_h - 1])
                     cube([usb_hole_w, lip_t + 3, lip_h + 1]);
+                // intaglio sopra l'interruttore SS12F15 (la flangia arriva vicino al coperchio)
+                if (switch_type == "SS12F15")
+                    translate([in_x - lip_t - 2, sf_y - sf_plate[0] / 2 - 1, z_in_top - lip_h - 1])
+                        cube([lip_t + 3, sf_plate[0] + 2, lip_h + 1]);
                 // il bordo non tocca le colonnine
                 for (sx = [-1, 1], y = [lid_post[1], lid_post[2]])
                     translate([sx * lid_post[0], y, z_in_top - lip_h - 1]) cylinder(d = 6, h = lip_h + 2);
@@ -327,8 +357,15 @@ module components(which = "all", shr = 0) {
         blk([-sm_w / 2 + 1.5, sm_y0 + 2, z_shelf + sm_pcb], [sm_w - 3, sm_l - 10, 1.2], shr);
     }
     // interruttore
-    if (which == "all" || which == "sw")
+    if ((which == "all" || which == "sw") && switch_type == "SS12D00")
         color("green") blk([in_x - sw_body[0], sw_y - sw_body[1] / 2, z_floor], sw_body, shr);
+    if ((which == "all" || which == "sw") && switch_type == "SS12F15") color("green") {
+        blk([in_x - 0.5, sf_y - sf_plate[0] / 2, sf_z - sf_plate[1] / 2], [0.5, sf_plate[0], sf_plate[1]], shr);
+        blk([in_x - sf_body[2], sf_y - sf_body[0] / 2, sf_z - sf_body[1] / 2], [sf_body[2], sf_body[0], sf_body[1]], shr);
+        blk([in_x - sf_body[2] - sf_pins, sf_y - 3.5, sf_z - 0.6], [sf_pins, 7, 1.2], shr);
+        for (s = [-1, 1]) // dadi M2 dentro
+            blk([in_x - 0.5 - 1.6, sf_y + s * sf_hole_pitch / 2 - 2.2, sf_z - 2.2], [1.6, 4.4, 4.4], shr);
+    }
 }
 
 if (part == "box") {

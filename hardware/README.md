@@ -116,7 +116,7 @@ File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base
 2. Avvita la **scatola vuota** alla base con **4 viti M2×6**. Le teste stanno nelle sedi del fondo e il cacciavite scende dritto lungo i canali.
 3. **TP4056**: appoggialo sul fondo davanti alla traversa e fallo scorrere verso le pareti USB-C, sotto la traversa, finché la USB-C entra nel suo foro.
 4. **LiPo** nel vano tra le guide, su un velo di gommapiuma o biadesivo.
-5. Fai salire i fili del sensore dall'apertura nel fondo. Metti l'interruttore nella culla, con la leva nella feritoia.
+5. Fai salire i fili del sensore dall'apertura nel fondo. **Interruttore SS12F15:** leva nella feritoia del fianco, flangia contro la parete interna, 2 viti M2×6 da fuori con il dado dentro (piedini accorciati a ~1,5 mm). Con l'SS12D00 (`switch_type = "SS12D00"`) va invece nella culla sul fondo.
 6. Salda i collegamenti (vedi la guida). Lascia i fili abbastanza lunghi da poter alzare la SuperMini.
 7. **SuperMini**: inserisci prima la USB-C nel foro superiore, poi abbassa la coda sulla traversa, dentro la battuta.
 8. Chiudi il coperchio con **4 viti M2×6**. Una nervatura preme sulla USB-C e un limitatore resta sopra la coda.
@@ -129,7 +129,9 @@ Il pulsante BOOT, che cambia pagina sull'OLED, si preme dal foro nel coperchio c
 | --- | --- |
 | `sm_*`, `tp_*` | misure di SuperMini e TP4056, sporgenza della USB-C oltre il PCB (`*_usb_out`) |
 | `lipo_l/w/h` | misure della LiPo (default 502030). Se è troppo lunga, un `assert` lo segnala |
-| `sw_*` | interruttore SS12D00: corpo, feritoia, posizione |
+| `switch_type` | `"SS12F15"` (default: flangia avvitata al fianco, sopra la LiPo) o `"SS12D00"` (culla sul fondo) |
+| `sf_*` | SS12F15: flangia, corpo, leva, corsa e **passo dei fori (stimato 15 mm: misuralo)** |
+| `sw_*` | SS12D00: corpo, feritoia, posizione |
 | `sm_boot` | posizione del pulsante BOOT, per il foro nel coperchio |
 | `oled` | `true` aggiunge 4 mm di altezza, la finestra nel coperchio e la cornice per il modulo |
 | `fit`, `clearance` | giochi di schede e coperchio |

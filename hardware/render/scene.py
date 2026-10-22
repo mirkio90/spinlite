@@ -167,6 +167,7 @@ if OPT == "A":
         "Mesh_3": M["pcb_red"], "Mesh_4": M["black"], "Mesh_5": M["black"], "Mesh_6": M["black"],
         "Mesh_7": M["black"], "Mesh_9": M["screw"], "Mesh_10": M["screw"]})
     stl("a_box.stl", M["pla"]); stl("a_lid.stl", M["pla"]); stl("a_screws.stl", M["screw"])
+    stl("a_switch.stl", M["black"])  # interruttore: leva e viti si vedono dal fianco
     for k, w in enumerate(["w_red", "w_black", "w_yellow"]): stl("a_wire%d.stl" % k, M[w])
     target = Vector((0, -2, 2)) * MM
 else:

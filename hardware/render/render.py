@@ -28,6 +28,7 @@ PARTS = {
     "a_box": "box();",
     "a_lid": "lid();",
     "a_screws": "base_screws(); lid_screws();",
+    "a_switch": "switch_ss12();",
 }
 # tratto esterno dei 3 fili del sensore: dalla spina su per l'apertura del fondo
 WIRE = ("x0 = -1.2 + 1.2 * {k}; xl = -12.6 + 0.9 * {k}; zl = z_floor + 0.5 + lipo_h + 0.7;"

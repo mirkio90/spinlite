@@ -105,15 +105,34 @@ module lipo() {
     color("khaki") bx([-lipo_w / 2, lipo_y0 + fit / 2, z_floor], [lipo_w, lipo_l, 0.5]); // gommapiuma
 }
 
-sw_pin = function(i) [in_x - sw_body[0] - 0.4, sw_y + (i - 1) * 2.5, z_floor + sw_body[2] / 2];
+sw_pin = function(i) switch_type == "SS12F15"
+    ? [in_x - sf_body[2] - sf_pins + 0.3, sf_y + (i - 1) * 2.5, sf_z]
+    : [in_x - sw_body[0] - 0.4, sw_y + (i - 1) * 2.5, z_floor + sw_body[2] / 2];
+sw_xw = switch_type == "SS12F15" ? 7.0 : 11.4; // colonna dei fili verso l'interruttore
 module switch_ss12() {
-    color("#202020") bx([in_x - sw_body[0], sw_y - sw_body[1] / 2, z_floor], sw_body);
-    color("white") bx([in_x - 0.1, sw_y - 0.75, z_floor + sw_body[2] / 2 - 0.75], [wall + 1.4, 1.5, 1.5]); // leva
-    color("silver") for (i = [0 : 2]) translate(sw_pin(i)) rotate([0, 90, 0]) cylinder(d = 0.6, h = 0.8);
+    if (switch_type == "SS12D00") {
+        color("#202020") bx([in_x - sw_body[0], sw_y - sw_body[1] / 2, z_floor], sw_body);
+        color("white") bx([in_x - 0.1, sw_y - 0.75, z_floor + sw_body[2] / 2 - 0.75], [wall + 1.4, 1.5, 1.5]); // leva
+        color("silver") for (i = [0 : 2]) translate(sw_pin(i)) rotate([0, 90, 0]) cylinder(d = 0.6, h = 0.8);
+    } else {
+        // SS12F15: flangia contro la parete, corpo verso l'interno, leva fuori
+        color("#202020") {
+            bx([in_x - 0.5, sf_y - sf_plate[0] / 2, sf_z - sf_plate[1] / 2], [0.5, sf_plate[0], sf_plate[1]]);
+            bx([in_x - sf_body[2] + 1.2, sf_y - sf_body[0] / 2, sf_z - sf_body[1] / 2], [sf_body[2] - 1.7, sf_body[0], sf_body[1]]);
+            bx([in_x - 0.5, sf_y - 2.5, sf_z - sf_lever[1] / 2], [sf_lever[2] + 0.5, sf_lever[0], sf_lever[1]]); // leva
+        }
+        color("sienna") bx([in_x - sf_body[2], sf_y - sf_body[0] / 2, sf_z - sf_body[1] / 2], [1.2, sf_body[0], sf_body[1]]);
+        color("silver") for (i = [0 : 2]) translate(sw_pin(i) - [0.3, 0.75, 0.5]) cube([sf_pins, 1.5, 1]);
+        color("dimgray") for (s = [-1, 1]) translate([in_x + wall, sf_y + s * sf_hole_pitch / 2, sf_z]) {
+            rotate([0, 90, 0]) cylinder(d = 3.8, h = 1.3);                 // testa fuori
+            rotate([0, -90, 0]) cylinder(d = 2, h = wall + 0.5 + 2);       // gambo
+            translate([-wall - 0.5 - 1.6, 0, 0]) rotate([0, 90, 0]) cylinder(d = 4.6, h = 1.6, $fn = 6); // dado
+        }
+    }
 }
 
 // partitore 100k/100k + 100 nF, saldati in linea sotto guaina termorestringente
-div_p = [6, -14, z_floor + 0.5 + lipo_h + 0.8];
+div_p = [4, -20, z_floor + 0.5 + lipo_h + 0.8];
 module divider() {
     color("tan") for (dy = [-1.2, 1.2]) translate(div_p + [-2, dy, 0]) rotate([0, 90, 0]) cylinder(d = 1.6, h = 3.2);
     color("orange") translate(div_p + [2.2, 0, 0]) cube([1.5, 1.2, 1.5], center = true);
@@ -145,10 +164,10 @@ module wiring() {
     color("red") wire([[-2, lipo_y1, z_floor + 3], [-3, lipo_y1 + 0.4, z_tp_top + 1.5], tp_pad(-3.5)]);
     color("black") wire([[2, lipo_y1, z_floor + 3], [3, lipo_y1 + 0.4, z_tp_top + 1.5], tp_pad(3.5)]);
     // OUT+ -> interruttore
-    color("red") wire([tp_pad(-7), [-7, tp_y0 - 1, zl], [9, -2, zl], [11.4, sw_pin(0)[1], zl], sw_pin(0)]);
+    color("red") wire([tp_pad(-7), [-7, tp_y0 - 1, zl], [sw_xw - 2, -2, zl], [sw_xw, sw_pin(0)[1], zl], [sw_xw, sw_pin(0)[1], sw_pin(0)[2]], sw_pin(0)]);
     // interruttore -> 5V della SuperMini, passando sopra la scheda
     p5 = sm_pad(0);
-    color("red") wire([sw_pin(1), [11.4, sw_pin(1)[1], zl + 0.3], [11.4, bar_y0 - 1, zl + 0.3], [11.4, bar_y0, zh + 1.2],
+    color("red") wire([sw_pin(1), [sw_xw, sw_pin(1)[1], sw_pin(1)[2]], [sw_xw, sw_pin(1)[1], zl + 0.3], [sw_xw, bar_y0 - 1, zl + 0.3], [sw_xw, bar_y0, zh + 1.2],
         [0, p5[1] - 9, zh + 1.2], [p5[0] - 0.8, p5[1], zh], p5]);
     // OUT- -> GND della SuperMini
     pg = sm_pad(1);
@@ -156,7 +175,7 @@ module wiring() {
         [pg[0] - 0.8, pg[1] - 0.5, zh + 1.2], pg]);
     // partitore: dal + dopo l'interruttore, a GND, a GPIO4
     p4 = sm_pad(3);
-    color("red") wire([[11.4, sw_pin(1)[1] - 0.5, zl + 0.3], [10, -14, div_p[2]], div_p + [3.4, 0, 0]]);
+    color("red") wire([[sw_xw, sw_pin(1)[1] - 0.5, zl + 0.3], [sw_xw, div_p[1], div_p[2]], div_p + [3.4, 0, 0]]);
     color("black") wire([div_p + [-2.6, -1.8, 0], [-13.5, -14, zl + 0.3], [-13.5, tp_y0 - 1.5, zl + 0.3]]);
     color("deepskyblue") wire([div_p + [-2.6, 1.2, 0], [-11.5, -10, zl + 0.6], [-11.5, bar_y0 - 1.5, zl + 0.6],
         [-11.5, bar_y0 - 0.5, zh + 0.8], [p4[0] - 0.8, p4[1], zh + 0.8], p4]);
@@ -189,7 +208,7 @@ module cut_half() intersection() { children(); translate([-60, -60, -20]) cube([
 if (view == "montato") {
     if (show_launcher) launcher();
     launchlab_base(); qre_sensor();
-    color("orange") box(); base_screws();
+    color("orange") box(); base_screws(); switch_ss12();
     color("lightblue") lid(); lid_screws();
 } else if (view == "interno") {
     if (show_launcher) launcher();
