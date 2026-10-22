@@ -79,7 +79,7 @@ Fatto e verificato:
 
 ## Prossimi passi, in ordine
 
-1. **Flashare e provare con il segnale vero** (`pio run -t upload`, poi `pio device monitor`). Controllare all'avvio la riga "ADC: frequenza misurata" (atteso ~10.000 Hz), poi `raw` girando l'albero a mano, regolare vite del TCRT e `minmark`, poi `fronti`.
+1. **Prova senza sensore** (la SuperMini c'e' gia'): `docs/prova-senza-sensore.md`, comando `test`, poi handle BLE con nRF Connect. Poi **flashare e provare con il segnale vero** (`pio run -t upload`, poi `pio device monitor`). Controllare all'avvio la riga "ADC: frequenza misurata" (atteso ~10.000 Hz), poi `raw` girando l'albero a mano, regolare vite del TCRT e `minmark`, poi `fronti`.
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
@@ -148,6 +148,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 - `fronti` — stampa ogni fronte (tempo, periodo, ampiezza, valido o no)
 - `storico`, `cancella`
 - `set <parametro> <valore>`, `salva`, `default`
+- `test [rpm] [s]`, `test stop` — lancio finto: onda quadra su GPIO10 (GPTimer a 1 MHz, interrupt che inverte il pin), da collegare con un filo a GPIO3 senza sensore. Guida: `docs/prova-senza-sensore.md`
 - Ogni lancio stampa una riga CSV: `LANCIO,rpm,rpm3giri,giro_singolo,giri,durata_ms,segno_min,fine`.
 
 ### Interfaccia

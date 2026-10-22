@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "adc_sampler.h"
+#include "autotest.h"
 #include "battery.h"
 #include "ble_bbp.h"
 #include "config.h"
@@ -34,6 +35,8 @@ void help() {
   Serial.println("  set <param> <valore>       marks minmark minrpm maxrpm endpct endgap quiet single");
   Serial.println("  salva                      salva le soglie in memoria");
   Serial.println("  default                    ripristina le soglie di fabbrica");
+  Serial.println("  test [rpm] [s]             lancio finto su GPIO10 (filo GPIO10 -> GPIO3, sensore staccato)");
+  Serial.println("  test stop                  ferma il test e libera GPIO10");
 }
 
 void printConfig() {
@@ -123,6 +126,33 @@ void edgeTick() {
   }
 }
 
+// "test [rpm] [secondi]" e "test stop": lancio finto con velocita' nota.
+void startTest(int n, char **tok) {
+  if (n > 1 && !strcmp(tok[1], "stop")) {
+    autotest::stop();
+    Serial.println("TEST fermato, GPIO10 libero");
+    return;
+  }
+  long rpm = 3000, sec = 1;
+  char *end = nullptr;
+  if (n > 1) rpm = strtol(tok[1], &end, 10);
+  if (n > 1 && (end == tok[1] || *end)) rpm = -1;
+  if (n > 2) sec = strtol(tok[2], &end, 10);
+  if (n > 2 && (end == tok[2] || *end)) sec = -1;
+  uint32_t half = 0;
+  const uint8_t marks = hooks.config ? hooks.config->marksPerRev : 1;
+  if (rpm < 300 || rpm > 40000 || sec < 1 || sec > 10 ||
+      !autotest::start(uint32_t(rpm), uint32_t(sec) * 1000u, marks, &half)) {
+    Serial.println("Uso: test [rpm 300..40000] [secondi 1..10]   oppure: test stop");
+    return;
+  }
+  // velocita' effettiva con il mezzo periodo intero, in decimi di RPM
+  const uint32_t rpm10 = uint32_t(300000000ull / (uint64_t(half) * marks));
+  Serial.printf("TEST: GPIO10 -> GPIO3, %ld RPM per %ld s (mezzo periodo %lu us, attesi %lu.%lu RPM), poi rallenta\n",
+                rpm, sec, (unsigned long)half, (unsigned long)(rpm10 / 10), (unsigned long)(rpm10 % 10));
+  Serial.println("TEST: 1,5 s di riposo, poi parte. Il risultato arriva come riga LANCIO.");
+}
+
 void execute(char *cmd) {
   char *tok[4];
   int n = 0;
@@ -163,6 +193,8 @@ void execute(char *cmd) {
     Serial.println("Applicato (non salvato: usa 'salva')");
   } else if (!strcmp(c, "salva")) {
     Serial.println(settings::saveConfig(*hooks.config) ? "Soglie salvate" : "Salvataggio fallito");
+  } else if (!strcmp(c, "test")) {
+    startTest(n, tok);
   } else if (!strcmp(c, "default")) {
     settings::defaults(*hooks.config);
     settings::eraseConfig();
@@ -208,6 +240,7 @@ void loop() {
   }
   if (rawOn) rawTick();
   if (edgeOn) edgeTick();
+  if (autotest::loop()) Serial.println("TEST: segnale fermo, GPIO10 resta alto (riposo). 'test stop' per liberarlo");
 }
 
 } // namespace console

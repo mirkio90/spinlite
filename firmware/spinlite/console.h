@@ -1,7 +1,7 @@
 // SpinLite - console seriale (USB CDC, 115200), non bloccante.
 //
 // Comandi: aiuto, stato, raw [s], fronti, storico, cancella,
-// set <parametro> <valore>, salva, default. Solo per Arduino.
+// set <parametro> <valore>, salva, default, test [rpm] [s]. Solo per Arduino.
 #pragma once
 #include <stdint.h>
 

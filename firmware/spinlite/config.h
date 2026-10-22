@@ -34,6 +34,9 @@
 #define LED_ACTIVE_LOW 1
 // Pulsante BOOT della scheda, usabile come tasto dopo l'avvio.
 #define PIN_BUTTON 9
+// Uscita dell'autotest (comando "test"): onda quadra da collegare con un filo
+// a PIN_SENSOR, con il sensore scollegato. -1 per disattivarlo.
+#define PIN_TEST_OUT 10
 
 // ---------------------------------------------------------------------------
 // Display OLED opzionale (SSD1306 128x32, I2C)

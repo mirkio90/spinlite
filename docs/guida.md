@@ -71,6 +71,8 @@ pio device monitor                 # console seriale, 115200
 
 Se la scheda non viene riconosciuta, tieni premuto BOOT mentre colleghi il cavo USB.
 
+Per provare scheda, firmware e app **prima di avere il sensore**: [prova senza sensore](prova-senza-sensore.md), con il comando `test` e un solo filo.
+
 ## 5. Taratura con la console seriale
 
 Collegati a 115200 baud (`pio device monitor`, o un qualsiasi terminale seriale).
