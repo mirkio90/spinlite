@@ -144,6 +144,10 @@ Le quote d'interfaccia (`pilot_*`, `seat_z`, `hinge_*`, `plug_*`) sono misurate 
 
 Con `part = "assembly"` vedi scatola, coperchio e componenti al loro posto. Con `base_stl` puoi aggiungere la base. Usa il file `preview/01_QRE_open_holder_body.stl` del pacchetto [top-dock-v098](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip), che è già nelle coordinate di montaggio.
 
+## Scatola piatta (in prova)
+
+`enclosure/spinlite_flat.scad` è un corpo unico che si aggancia direttamente al launcher, senza la base LaunchLab: sensore e tasto di presenza sono nel fondo. Verificata solo a CAD. Dettagli, stampa e montaggio in [scatola piatta](../docs/scatola-piatta.md).
+
 ## Scatola laterale (alternativa)
 
 `enclosure/spinlite_box.scad` è la prima versione: una scatola da fissare a fianco con una fascetta. Resta nel repo per chi usa il TCRT5000 con il supporto laterale di LaunchLab, oppure monta SpinLite in un altro modo. Non è pensata per la base QRE.

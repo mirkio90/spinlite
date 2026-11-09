@@ -61,6 +61,7 @@ docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node do
 hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
                     enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: quella di riferimento),
                     enclosure/spinlite_box.scad (scatola laterale, alternativa per TCRT o altri montaggi)
+                    enclosure/spinlite_flat.scad (corpo unico piatto sul launcher, in prova: docs/scatola-piatta.md)
                     enclosure/spinlite_views.scad (viste con tutti i componenti e i fili), img/ (render + README con licenze)
                     third_party/fetch_launchlab.py -> third_party/launchlab/ (file LaunchLab CC BY-SA, NEL .gitignore)
                     render/render.py + scene.py (render Blender; launcher BX-28 stilizzato dalle foto, non quotato)
