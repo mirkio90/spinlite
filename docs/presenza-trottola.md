@@ -123,10 +123,11 @@ Parti dal più basso (5 tacche). Con `presenza` in console controlla il contatto
 
 Verificato a CAD, con controprova: nessuna collisione di perni, tasto e dima con base, barretta accorciata, PCB, clip e scatola. **Nulla è stato stampato né provato.**
 
+Il pistoncino c'è, nella stessa posizione, sia sul launcher a manovella sia su quello a corda (controllato a mano).
+
 Da controllare sul launcher vero:
 
 1. **Forza:** Dragoon preme un tasto normale direttamente, ma OpenRip raccomanda una leva sotto 0,5 N per non contrastare l'aggancio. Se la trottola si aggancia a fatica, serve un tasto a bassa forza (circa 100 gf).
-2. **Quanto sale il pistoncino:** OpenRip dice circa 1 mm, ma la tasca sotto la base è profonda 0,4-0,5 mm. I 5 perni coprono da 0,3 a 1,1 mm.
+2. **Quanto sale il pistoncino:** circa 1 mm anche a occhio sul launcher vero, come dice OpenRip. Non è chiaro se sia la corsa totale o solo la parte sopra il filo: la tasca sotto la base è profonda 0,4-0,5 mm, e i 5 perni coprono da 0,3 a 1,1 mm sopra il filo.
 3. **Diametro del pistoncino:** il perno, decentrato di 1 mm, deve appoggiarci sopra. Dragoon usa un foro da Ø4,2.
 4. **PCB del QRE:** se il tuo breakout è più lungo di 14 mm verso +Y, tocca il perno.
-5. **Launcher a corda:** OpenRip conferma il pistoncino solo su quello a manovella.
