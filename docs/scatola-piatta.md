@@ -6,7 +6,7 @@ La versione attuale del dispositivo: un corpo basso che si aggancia direttamente
 
 ![Vista d'assieme senza coperchio](../hardware/img/piatta_assieme.png)
 
-**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** La versione con la base LaunchLab resta documentata in [hardware/README.md](../hardware/README.md) come alternativa. Cosa cambia nei pezzi da comprare: [distinta base](../hardware/BOM.md#scatola-piatta-cosa-cambia).
+**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** La versione con la base LaunchLab resta documentata in [hardware/README.md](../hardware/README.md) come alternativa. Cosa comprare: [distinta base](../hardware/BOM.md).
 
 ## Cosa cambia
 
