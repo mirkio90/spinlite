@@ -107,12 +107,13 @@ def cyl(c, r, h, m, axis="Z", v=96, bev=0.0):
 # Cime dei fianchi bianchi a Z 0 (la base LaunchLab appoggia li'), fascia nera
 # centrale incassata, corda verso +Y, innesti a gradini verso -Y.
 Y0, Y1 = -46.0, 40.0
+FLANKS = {}
 BEY = (0.0, -4.0)
 
 def launcher():
     L = Y1 - Y0; yc = (Y0 + Y1) / 2
     for sx in (-1, 1):                                            # fianchi bianchi arrotondati
-        box((sx * 19.5, yc, -15), (13, L, 30), M["white"], bev=5.5)
+        FLANKS[sx] = box((sx * 19.5, yc, -15), (13, L, 30), M["white"], bev=5.5)
     box((0, yc, -16.5), (27, L - 2, 28), M["band"], bev=1.5)       # fascia nera incassata
     # testata lato corda e uscita della corda
     box((0, Y1 + 2.5, -15), (40, 7, 24), M["white"], bev=3)
@@ -128,7 +129,8 @@ def launcher():
     box((0, Y0 - 9, -12), (20, 5, 10), M["white"], bev=1.2)
     for sx in (-1, 1): box((sx * 11, Y0 - 3.5, -24.5), (6, 8, 5), M["white"], bev=1)
     # feritoie sui fianchi per le clip (coperte dalle clip quando montate)
-    for sx in (-1, 1): box((sx * 26.2, -14, -6), (1.0, 8, 3.5), M["black"])
+    if OPT != "C":
+        for sx in (-1, 1): box((sx * 26.2, -14, -6), (1.0, 8, 3.5), M["black"])
     # trottola agganciata sotto
     bx, by = BEY; top = -30.6
     cyl((bx, by, top - 3), 21, 6, M["bey_metal"], bev=0.8)
@@ -177,7 +179,15 @@ elif OPT == "C":
     for f, m in (("c_body", "pla"), ("c_lid", "pla"), ("c_tray", "petg"), ("c_clip_r", "petg"), ("c_clip_l", "petg"),
                  ("c_elec", "metal"), ("c_switch", "black"), ("c_screws", "screw")):
         stl(f + ".stl", M[m], place)
-    target = Vector((0, 8, 0)) * MM
+    # Sede delle clip nel fianco: due feritoie per i bracci e un bordo centrale sotto
+    # cui entra il dente. Forma dedotta dalle clip, non misurata sul launcher.
+    for sx in (-1, 1):
+        for c, s in (((21.6, 5.15, -4), (10.8, 2.6, 10)), ((21.6, -5.15, -4), (10.8, 2.6, 10)),
+                     ((18.9, 0, -6.6), (5.4, 7.9, 4.8)), ((24.15, 0, -4), (5.7, 12.8, 10))):
+            cut = box((sx * c[0], c[1], c[2]), s, M["black"])
+            cut.hide_render = True; cut.hide_viewport = True
+            b = FLANKS[sx].modifiers.new("sede", "BOOLEAN"); b.object = cut; b.operation = "DIFFERENCE"
+    target = Vector((21, -2, -2) if VIEW == "c_clip" else (0, 8, 0)) * MM
 else:
     # supporto TCRT5000: dal sistema del modello del sito al nostro (+42; +4,33; -3,46 mm)
     glb("side-tcrt-raw.glb", {
@@ -220,6 +230,7 @@ views = {  # posizione della camera (m) e focale
     "c_tre_quarti": ((0.185, -0.235, 0.165), 60),
     "c_lato": ((0.360, 0.010, 0.095), 60),
     "c_fronte": ((-0.190, 0.265, 0.170), 60),
+    "c_clip": ((0.120, -0.085, 0.040), 100),
 }
 pos, lens = views[VIEW]
 cam = bpy.data.cameras.new("cam"); cam.lens = lens

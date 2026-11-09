@@ -57,6 +57,7 @@ SHOTS = [  # opzione, vista, file
     ("C", "c_tre_quarti", "render_piatta.png"),
     ("C", "c_lato", "render_piatta_lato.png"),
     ("C", "c_fronte", "render_piatta_fronte.png"),
+    ("C", "c_clip", "render_piatta_clip.png"),
 ]
 
 

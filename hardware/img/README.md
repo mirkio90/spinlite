@@ -14,7 +14,7 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `stampa.png` | Scatola e coperchio come vanno sul piatto di stampa |
 | `piatta_assieme.png` | Scatola piatta (`spinlite_flat.scad`) con il coperchio trasparente, i componenti e le clip: MIT, senza parti LaunchLab |
 | `render_qre.png`, `render_qre_lato.png` | Render Blender della configurazione di riferimento: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
-| `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. Le clip entrano nel fianco del launcher, che è stilizzato e senza le loro sedi |
+| `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png`, `render_piatta_clip.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. La sede delle clip nel fianco del launcher è dedotta dalla forma delle clip, non misurata |
 | `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
 
 Nei render il **launcher e la trottola sono modelli stilizzati**, fatti a mano sulle foto del launcher a corda BX-28 (forma e proporzioni, non quote misurate).

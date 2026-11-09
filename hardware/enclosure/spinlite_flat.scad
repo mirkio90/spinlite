@@ -39,7 +39,7 @@ hinge_top = 10.3;
 clip_y    = 13.14;  // centro delle clip lungo Y
 clip_gap  = 8.0;    // distanza interna tra i bracci della clip
 clip_arm  = 2.0;    // spessore dei bracci
-pivot     = [18.75, 11.7]; // asse delle clip: x, z
+pivot     = [17.7, 11.7]; // asse delle clip: x, z
 
 // ---- Pareti e viti ----
 wall      = 1.6;
@@ -280,7 +280,7 @@ module clip_arm_profile() {
 
 // Profilo del dente tra i bracci: si aggancia sotto il bordo del launcher
 module clip_catch_profile() {
-    polygon([[17.7, -0.3], [29.9, -0.3], [29.9, 0.7], [21.2, 0.7], [20.6, 1.7], [19.5, 2.0], [18.5, 1.6], [17.7, 0.7]]);
+    polygon([[17.7, -0.3], [29.9, -0.3], [29.9, 0.7], [20.9, 0.7], [20.1, 1.6], [19.2, 2.0], [18.5, 2.0], [18.0, 1.5], [17.7, 0.7]]);
 }
 
 module extrude_y(y0, y1) translate([0, y1, 0]) rotate([90, 0, 0]) linear_extrude(y1 - y0) children();

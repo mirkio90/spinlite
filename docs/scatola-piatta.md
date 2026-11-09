@@ -27,7 +27,7 @@ Quote riprese:
 - posizione del perno delle clip e dei loro denti;
 - ingombro massimo: il corpo sta dentro la sagoma di Dragoon, così non tocca il launcher più del suo.
 
-Nel suo modello le due clip non sono simmetriche di circa 0,7 mm: ho usato la destra, specchiata. Coincide con la posizione delle clip di LaunchLab.
+Nel suo modello le due clip non sono simmetriche di circa 0,7 mm: ho usato la destra, specchiata. Perno e dente coincidono con quelli delle clip di LaunchLab, un secondo progetto indipendente.
 
 ## Disposizione
 
