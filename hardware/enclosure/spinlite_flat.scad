@@ -1,8 +1,8 @@
 // SpinLite - corpo unico piatto che si aggancia direttamente al launcher.
 // OpenSCAD, millimetri. Licenza MIT.
 //
-// Non serve la base LaunchLab: sensore e tasto di presenza stanno nel fondo, le
-// clip sono due pezzi stampati a parte. La geometria e' disegnata qui da zero.
+// Non serve la base LaunchLab: sensore e tasto di presenza stanno in un vassoio
+// che entra nel fondo da sotto, le clip sono due pezzi stampati a parte. La geometria e' disegnata qui da zero.
 // Dal progetto Beyblade-Dragoon-RPM di Luciandraw (modelli CC BY-NC-SA, non
 // inclusi e non copiati) vengono solo idee e quote funzionali, cioe' la
 // posizione reciproca di clip, sensore e pistoncino del launcher.
@@ -15,7 +15,7 @@
 //   davanti TP4056 di traverso (USB-C sul fianco +X), poi LiPo
 // Montaggio: docs/scatola-piatta.md
 
-// ---- Cosa generare: "body", "lid", "clips", "plate" (tutti), "assembly" ----
+// ---- Cosa generare: "body", "lid", "tray", "clips", "plate" (tutti), "assembly" ----
 // ("mounted_lid", "mounted_clip" e "check_*" servono solo per i controlli)
 part = "plate";
 clip_angle = 0;     // per "mounted_clip": rotazione attorno al perno, in gradi
@@ -25,6 +25,8 @@ body_z    = 6.65;   // faccia inferiore del corpo
 band_z    = 5.65;   // fascia centrale, entra nell'incavo del launcher
 band_x    = 8.9;    // mezza larghezza della fascia
 band_y    = [-1, 19];
+tray_x    = 8.2;    // mezza larghezza della parte del vassoio dentro il corpo
+tray_top  = 8.6;
 sensor_y  = 5.44;   // centro del QRE1113
 sensor_face_z = 5.19; // faccia del QRE1113
 sensor_win = [4.6, 3.6]; // finestra nel fondo: x, y
@@ -87,6 +89,8 @@ $fn = 40;
 z_floor   = body_z + floor_t;          // piano interno
 z_plate   = band_z + 0.95;             // cima del fondo nella zona del sensore
 z_lid     = 14.4;                      // appoggio del coperchio
+tray_y0   = band_y[0] + 0.7;
+tray_y1   = band_y[1] - 0.7;
 z_top     = z_lid + lid_t;
 tact_cap_l = tact_h - tact_body[2];
 z_tact    = button_tip_z + tact_cap_l; // base del corpo del tasto
@@ -155,7 +159,7 @@ module supports() {
 
 // Sponde che tengono in posizione PCB del sensore e tasto
 module sensor_ribs() {
-    h = 8.6;
+    h = tray_top;
     px = qre_pcb[0] / 2 + fit / 2;
     py = qre_pcb[1] / 2 + fit / 2;
     translate([0, sensor_y, 0]) {
@@ -163,9 +167,9 @@ module sensor_ribs() {
         for (s = [-1, 1]) translate([s * (px - 1.5) - 1.5, -py + 0.5, z_plate - eps])
             cube([3, 2 * py - 1, z_qre_pcb - z_plate + eps]);
         // battute alle estremita' del lato lungo; quella su -X lascia uscire i fili
-        translate([px, -3, z_plate - eps]) cube([1.2, 6, h - z_plate]);
-        translate([-px - 1.2, 2, z_plate - eps]) cube([1.2, 2.5, h - z_plate]);
-        translate([-px - 1.2, -4.5, z_plate - eps]) cube([1.2, 2.5, h - z_plate]);
+        translate([px, -3, z_plate - eps]) cube([0.8, 6, h - z_plate]);
+        translate([-px - 0.8, 2, z_plate - eps]) cube([0.8, 2.5, h - z_plate]);
+        translate([-px - 0.8, -4.5, z_plate - eps]) cube([0.8, 2.5, h - z_plate]);
         // sponda sul lato verso il retro
         translate([-5, -py - 1.2, z_plate - eps]) cube([10, 1.2, h - z_plate]);
     }
@@ -179,14 +183,8 @@ module sensor_ribs() {
 }
 
 module cutouts() {
-    // zona del sensore: fondo piu' sottile
-    translate([-band_x + 0.6, band_y[0] + 1.2, z_plate]) cube([2 * band_x - 1.2, band_y[1] - band_y[0] - 2.4, 3]);
-    translate([-sensor_win[0] / 2, sensor_y - sensor_win[1] / 2, band_z - 1]) cube([sensor_win[0], sensor_win[1], 3]);
-    translate([0, button_y, band_z - 1]) cylinder(d = button_hole, h = 3);
-    // sede del tasto se il cappuccio e' corto
-    if (z_tact < z_plate)
-        translate([-tact_body[0] / 2 - 0.15, button_y - tact_body[1] / 2 - 0.15, z_tact])
-            cube([tact_body[0] + 0.3, tact_body[1] + 0.3, 2]);
+    // apertura per il vassoio del sensore
+    translate([-tray_x - 0.1, tray_y0 - 0.1, body_z - 1]) cube([2 * tray_x + 0.2, tray_y1 - tray_y0 + 0.2, floor_t + 2]);
     // USB-C SuperMini, parete posteriore
     translate([-usb_hole[0] / 2, -34, z_sm_usb - usb_hole[1] / 2]) cube([usb_hole[0], wall + 2, usb_hole[1]]);
     translate([-usb_pocket[0] / 2, -34, z_sm_usb - usb_hole[1] / 2 - 1.2]) cube([usb_pocket[0], usb_pocket[1] + 1, usb_hole[1] + 2.4]);
@@ -207,13 +205,36 @@ module body() {
                 prism(body_z, z_lid) outline();
                 prism(z_floor, z_lid + 1) offset(delta = -wall) outline();
             }
-            // fascia centrale sotto il fondo
-            translate([-band_x, band_y[0], band_z]) cube([2 * band_x, band_y[1] - band_y[0], body_z - band_z + eps]);
             hinge_blocks();
             supports();
-            sensor_ribs();
         }
         cutouts();
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Vassoio del sensore: entra da sotto, la fascia resta fuori e sporge di 1 mm.
+// A parte perche' il corpo si stampa sul fondo, che deve essere piano. La
+// spinta del pistoncino lo preme contro il corpo.
+// ---------------------------------------------------------------------------
+module tray() {
+    difference() {
+        union() {
+            difference() {
+                union() {
+                    translate([-band_x, band_y[0], band_z]) cube([2 * band_x, band_y[1] - band_y[0], body_z - band_z]);
+                    translate([-tray_x, tray_y0, body_z - eps]) cube([2 * tray_x, tray_y1 - tray_y0, tray_top - body_z + eps]);
+                }
+                translate([-tray_x + 0.6, tray_y0 + 0.6, z_plate]) cube([2 * tray_x - 1.2, tray_y1 - tray_y0 - 1.2, 5]);
+            }
+            sensor_ribs();
+        }
+        translate([-sensor_win[0] / 2, sensor_y - sensor_win[1] / 2, band_z - 1]) cube([sensor_win[0], sensor_win[1], 3]);
+        translate([0, button_y, band_z - 1]) cylinder(d = button_hole, h = 3);
+        // sede del tasto se il cappuccio e' corto
+        if (z_tact < z_plate)
+            translate([-tact_body[0] / 2 - 0.15, button_y - tact_body[1] / 2 - 0.15, z_tact])
+                cube([tact_body[0] + 0.3, tact_body[1] + 0.3, 2]);
     }
 }
 
@@ -327,16 +348,21 @@ module components(shr = 0) { qre(shr); tact(shr); supermini(shr); tp4056(shr); l
 // ---------------------------------------------------------------------------
 // Uscita
 // ---------------------------------------------------------------------------
-if (part == "body") body();
+if (part == "body") translate([0, 0, -body_z]) body();
+else if (part == "mounted_body") body();
+else if (part == "tray") translate([0, 0, -band_z]) tray();
+else if (part == "mounted_tray") tray();
 else if (part == "lid") translate([0, 0, z_top]) rotate([180, 0, 0]) lid();
 else if (part == "clips") { clip_for_print(); translate([0, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
 else if (part == "plate") {
-    translate([0, 0, -band_z]) body();
+    translate([0, 0, -body_z]) body();
     translate([45, 0, z_top]) rotate([180, 0, 0]) lid();
-    translate([70, 0, 0]) { clip_for_print(); translate([0, 20, 0]) clip_for_print(); }
+    translate([70, 0, 0]) { clip_for_print(); translate([16, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
+    translate([80, -40, -band_z]) tray();
 }
 else if (part == "assembly") {
     color("orange") body();
+    color("gold") tray();
     components();
     mounted_clip(0, false);
     mounted_clip(0, true);

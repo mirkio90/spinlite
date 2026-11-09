@@ -10,9 +10,9 @@ Variante in un pezzo solo, in alternativa alla scatola avvitata sulla base Launc
 
 | | Scatola su base LaunchLab | Scatola piatta |
 | --- | --- | --- |
-| Pezzi | base LaunchLab + barretta + scatola + coperchio + perno | corpo + coperchio + 2 clip |
+| Pezzi | base LaunchLab + barretta + scatola + coperchio + perno | corpo + vassoio del sensore + coperchio + 2 clip |
 | Tasto di presenza | perno, foro da fare, barretta da tagliare | direttamente sul pistoncino |
-| Altezza sul launcher | circa 25 mm | circa 10 mm |
+| Altezza sul launcher | circa 28 mm | circa 10 mm |
 | Lunghezza | circa 70 mm | circa 113 mm |
 | Licenze | base CC BY-SA a parte | tutto MIT |
 
@@ -40,23 +40,24 @@ Da dietro in avanti:
 
 ## Stampa
 
-`part = "plate"` mette tutti i pezzi sul piatto, oppure singolarmente `"body"`, `"lid"` e `"clips"`.
+`part = "plate"` mette tutti i pezzi sul piatto, oppure singolarmente `"body"`, `"lid"`, `"tray"` e `"clips"`. In tutto servono circa 21 g di filamento.
 
 - PETG, layer 0,2 mm.
-- Corpo e coperchio senza supporti: il corpo appoggia sulla fascia centrale, la cui faccia è la più bassa, e il coperchio è capovolto.
+- Corpo, vassoio e coperchio senza supporti: ognuno appoggia su una faccia piana. Il vassoio è un pezzo a parte proprio per questo: la sua fascia sporge 1 mm sotto il fondo, e se fosse unita al corpo il resto del fondo resterebbe sospeso.
 - Le clip si stampano coricate su un braccio, così gli strati seguono il verso in cui lavorano.
 - Se la tua stampante è piccola, stampa i pezzi uno alla volta: il corpo è lungo 113 mm.
 
 ## Montaggio
 
-1. **QRE1113**: salda i tre fili direttamente al breakout, senza pettine. Sensore verso il basso nella finestra, PCB sugli appoggi tra le sponde, una goccia di colla a caldo sui bordi.
-2. **Tasto SMD 6×6**: cappuccio nel foro verso il basso, tra le sponde. Salda due fili su due piedini che si collegano solo a tasto premuto (trovali col tester). Una goccia di colla.
-3. **SuperMini**: USB-C nel foro della parete posteriore, scheda sui binari.
-4. **Interruttore**: leva nella feritoia, 2 viti M2×6 da fuori e dado dentro.
-5. **TP4056** tra le guide, con la USB-C nel foro del fianco. **LiPo** nel vano, su un velo di gommapiuma.
-6. Salda i collegamenti come nella [guida](guida.md); il tasto va tra GPIO5 e GND.
-7. **Clip**: infila ognuna sul blocco della cerniera, con il dente verso il launcher.
-8. **Coperchio** con **10 viti M2×6**. Le sue alette tengono il perno delle clip nella sede.
+1. **QRE1113**, nel vassoio: salda i tre fili direttamente al breakout, senza pettine. Sensore verso il basso nella finestra, PCB sugli appoggi tra le sponde, una goccia di colla a caldo sui bordi.
+2. **Tasto SMD 6×6**, nel vassoio: cappuccio nel foro verso il basso, tra le sponde. Salda due fili su due piedini che si collegano solo a tasto premuto (trovali col tester). Una goccia di colla.
+3. **Vassoio nel corpo**, da sotto: la fascia resta fuori e appoggia al fondo. Fissalo con qualche goccia di colla lungo il bordo; la spinta del pistoncino lo tiene comunque premuto contro il corpo.
+4. **SuperMini**: USB-C nel foro della parete posteriore, scheda sui binari.
+5. **Interruttore**: leva nella feritoia, 2 viti M2×6 da fuori e dado dentro.
+6. **TP4056** tra le guide, con la USB-C nel foro del fianco. **LiPo** nel vano, su un velo di gommapiuma.
+7. Salda i collegamenti come nella [guida](guida.md); il tasto va tra GPIO5 e GND.
+8. **Clip**: infila ognuna sul blocco della cerniera, con il dente verso il launcher.
+9. **Coperchio** con **10 viti M2×6**. Le sue alette tengono il perno delle clip nella sede.
 
 ## Da controllare al primo pezzo stampato
 
@@ -69,7 +70,7 @@ Da dietro in avanti:
 
 ## Verifiche fatte a CAD
 
-- Corpo, coperchio e clip sono ognuno un solido unico.
-- Nessuna collisione tra QRE, tasto, SuperMini, TP4056, LiPo, interruttore, corpo e coperchio.
+- Corpo, vassoio, coperchio e clip sono ognuno un solido unico.
+- Nessuna collisione tra QRE, tasto, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio.
 - La clip ruota di 15° verso l'esterno senza toccare corpo e coperchio.
 - La pianta del corpo sta dentro quella di Dragoon, con al massimo 0,3 mm di sporgenza locale.

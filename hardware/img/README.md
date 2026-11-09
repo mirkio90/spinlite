@@ -12,7 +12,7 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `sezione.png`, `sezione_3d.png` | Sezione a metà: il sensore QRE1113 nella base guarda in basso nella finestrella; la spina Dupont sta sotto la scatola; i fili salgono dall'apertura nel fondo, passano sopra la LiPo e oltre la traversa fino alla SuperMini |
 | `esploso.png` | Ordine di montaggio dal basso: base con sensore, 4 viti M2×6, scatola, TP4056 (spostato indietro perché entra scorrendo sotto la traversa), LiPo con partitore, interruttore, SuperMini, coperchio e viti |
 | `stampa.png` | Scatola e coperchio come vanno sul piatto di stampa |
-| `piatta_assieme.png` | Scatola piatta (`spinlite_flat.scad`) senza coperchio, con i componenti e una clip: MIT, senza parti LaunchLab |
+| `piatta_assieme.png` | Scatola piatta (`spinlite_flat.scad`) con il coperchio trasparente, i componenti e le clip: MIT, senza parti LaunchLab |
 | `render_qre.png`, `render_qre_lato.png` | Render Blender della configurazione di riferimento: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
 | `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
 
