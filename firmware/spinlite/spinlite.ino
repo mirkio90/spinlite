@@ -18,6 +18,7 @@
 #include "config.h"
 #include "console.h"
 #include "oled_ui.h"
+#include "presence.h"
 #include "rpm_detector.h"
 #include "settings.h"
 
@@ -58,6 +59,8 @@ Phase lastOledPhase = Phase::Settling;
 #endif
 UiState ui;
 
+PresenceGate presence;
+
 // ---------------------------------------------------------------------------
 // Batteria
 // ---------------------------------------------------------------------------
@@ -65,11 +68,20 @@ UiState ui;
 int batteryNow() { return batteryPercent(sampler::batteryMv()); }
 
 // ---------------------------------------------------------------------------
+// Presenza della trottola
+// ---------------------------------------------------------------------------
+bool presenceRaw() { return digitalRead(PIN_PRESENCE) == LOW; }
+
+// Il bit "trottola inserita" del Battle Pass: quello vero se c'e' il
+// microswitch, altrimenti lo sostituisce il rilevatore pronto.
+bool loadedFlag(Phase phase) { return presence.enabled() ? presence.present() : phase == Phase::Ready; }
+
+// ---------------------------------------------------------------------------
 // Provider BLE
 // ---------------------------------------------------------------------------
 void provideStatus(uint8_t out[bbp::PACKET]) {
   uint8_t flags = 0;
-  if (sampler::status().phase == Phase::Ready) flags |= bbp::FLAG_READY;
+  if (loadedFlag(sampler::status().phase)) flags |= bbp::FLAG_READY;
   const int pc = batteryNow();
   uint8_t battery = 250; // USB: pieno, nessuna segnalazione
   if (pc >= 0) {
@@ -111,7 +123,7 @@ void ledUpdate(uint32_t now, const LiveStatus &s) {
     on = t < 80 || (t >= 160 && t < 240);
   } else if (s.fault) {
     on = (now % 200) < 100;
-  } else if (s.phase == Phase::Ready) {
+  } else if (s.phase == Phase::Ready && (!presence.enabled() || presence.armed())) {
     on = (now % 2000) < 60;
   }
   ledWrite(on);
@@ -148,7 +160,7 @@ void buttonUpdate(uint32_t now) {
 const char *statusText(const LiveStatus &s) {
   if (s.fault) return "GUASTO";
   switch (s.phase) {
-  case Phase::Ready: return "PRONTO";
+  case Phase::Ready: return presence.enabled() && !presence.armed() ? "ATTESA" : "PRONTO";
   case Phase::Measuring: return "MISURA";
   case Phase::Rearm: return "RIARMO";
   default: return "ATTESA";
@@ -192,6 +204,10 @@ void saveUpdate(uint32_t now, Phase phase) {
 }
 
 void handleResult(const LaunchResult &r, uint32_t now) {
+  if (!presence.consumeLaunch()) {
+    Serial.printf("SCARTATO,%u,trottola non inserita\n", r.rpm);
+    return;
+  }
   bbp::add(history, r.rpm, r.curveUs, r.curveCount);
   historyDirty = true;
   Serial.printf("LANCIO,%u,%u,%u,%u,%lu,%u,%s\n", r.rpm, r.sustainedRpm, r.singleRpm, r.revolutions,
@@ -215,6 +231,9 @@ void setup() {
   ledWrite(false);
 #endif
   pinMode(PIN_BUTTON, INPUT_PULLUP);
+  pinMode(PIN_PRESENCE, INPUT_PULLUP);
+  delay(2); // il pull-up deve caricare il filo prima della prima lettura
+  presence.reset(presenceRaw(), millis());
 
   settings::begin();
   settings::defaults(config);
@@ -222,6 +241,7 @@ void setup() {
     settings::defaults(config); // blob assente o non valido: restano i default
   }
   settings::loadHistory(history);
+  presence.setEnabled(settings::loadPresence());
 
   const uint64_t mac = ESP.getEfuseMac();
   for (int i = 0; i < 6; ++i) uid[i] = uint8_t(mac >> (8 * i));
@@ -244,6 +264,7 @@ void setup() {
   hooks.history = &history;
   hooks.config = &config;
   hooks.clearHistory = clearHistory;
+  hooks.presence = &presence;
   console::begin(hooks);
   Serial.println("Scrivi 'aiuto' per i comandi");
 }
@@ -254,9 +275,10 @@ void loop() {
 
   LaunchResult r;
   while (sampler::popResult(r, 0)) handleResult(r, now);
+  presence.update(presenceRaw(), now, s.phase == Phase::Measuring);
 
   ble::setQuiet(s.phase == Phase::Measuring);
-  const bool ready = s.phase == Phase::Ready;
+  const bool ready = loadedFlag(s.phase);
   if (ready != lastReady && s.phase != Phase::Measuring) {
     lastReady = ready;
     ble::notifyStatus();

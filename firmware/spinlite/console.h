@@ -1,11 +1,13 @@
 // SpinLite - console seriale (USB CDC, 115200), non bloccante.
 //
 // Comandi: aiuto, stato, raw [s], fronti, storico, cancella,
-// set <parametro> <valore>, salva, default, test [rpm] [s]. Solo per Arduino.
+// set <parametro> <valore>, salva, default, test [rpm] [s], presenza [on|off].
+// Solo per Arduino.
 #pragma once
 #include <stdint.h>
 
 #include "bbp_protocol.h"
+#include "presence.h"
 #include "rpm_detector.h"
 
 namespace spinlite {
@@ -16,6 +18,7 @@ struct Hooks {
   const bbp::History *history = nullptr; // storico (sola lettura)
   DetectorConfig *config = nullptr;      // soglie correnti: "set" le modifica
   void (*clearHistory)() = nullptr;      // comando "cancella"
+  PresenceGate *presence = nullptr;      // comandi "presenza" e "test"
 };
 
 void begin(const Hooks &hooks);
