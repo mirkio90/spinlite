@@ -53,11 +53,45 @@ Per provarlo senza launcher: `presenza on`, poi tocca GPIO5 con un filo collegat
 
 ## Cosa manca: il supporto meccanico
 
-Non si può disegnare alla cieca. Con il launcher in mano va controllato:
+### Dov'è il pistoncino
 
-1. **Dov'è il pistoncino** rispetto alla finestrella (distanza e direzione), e quanto sale. OpenRip misura circa 1 mm, sul launcher a manovella.
-2. **Se c'è anche sul launcher a corda**: OpenRip l'ha verificato solo sul modello a manovella.
-3. **Se la base LaunchLab lo copre.** Non ho verificato la posizione del pistoncino rispetto alla base. Se la copre serve un foro: la base modificata resterebbe un derivato CC BY-SA, da tenere separata dalla scatola MIT.
+Coordinate della base LaunchLab (origine al centro delle cerniere, sensore verso -Y). Tre fonti indipendenti concordano:
+
+| Fonte | Dato | Pistoncino risultante |
+| --- | --- | --- |
+| Modello 3D di Dragoon (`LauncherV2.glb`) | pulsante centrato tra le clip, a **7,6 mm** dal QRE; foro da Ø4,2 nel supporto | (0; ~-0,3) |
+| Base LaunchLab, sede del QRE | centro del QRE a (0,14; -7,87) | coerente con i 7,6 mm |
+| Base LaunchLab, faccia inferiore | **tasca circolare da circa Ø5, profonda 0,4-0,5 mm**, centrata su (0; 0) | è lo sfogo per il pistoncino |
+
+La tasca è misurata su una griglia da 0,5-1 mm, quindi il centro vale ±0,5 mm. I dati della base vengono dalle parti v098, in coordinate di montaggio; la v102 ha cambiato solo le cerniere.
+
+### Cosa c'è sopra il pistoncino nella base
+
+La base **lo copre**. Salendo da (0; 0):
+
+| Quota Z | Cosa c'è |
+| --- | --- |
+| 2,7-3,2 | tasca, vuota |
+| 3,2-3,5 | velo di plastica da 0,3 mm |
+| 3,5-5,4 | vuoto (a Y > 0,5 è tutto pieno fino a 6,9) |
+| 5,4-7,1 | fine del PCB del QRE, a Y = -0,22 |
+| 5,4-7,4 | blocco della base |
+| 7,8-8,7 | barretta premi-sensore, fino a Y = 1,23 |
+| 11,2 | piano d'appoggio della scatola |
+| 13,4-15,2 | fondo della scatola |
+
+### Idea da verificare: astina di trasmissione
+
+Un'astina stampata che sale dal pistoncino al microswitch, in un foro **fatto col trapano nella base già stampata**, partendo dalla tasca, che fa da centratore. Così il file della base resta intatto e non serve ridistribuire un derivato CC BY-SA.
+
+- L'astina non può stare a Y = 0, perché lì finisce il PCB del QRE: va spostata verso +Y, per esempio Ø2 centrata a Y = +1.
+- Anche la barretta va forata o accorciata, e il microswitch va ricavato nella scatola, dove oggi non c'è spazio previsto.
+
+### Da controllare sul launcher
+
+1. **Quanto sale il pistoncino.** OpenRip dice circa 1 mm sopra il filo, ma la tasca è profonda solo 0,4-0,5 mm: se sale di più, spinge contro il velo da 0,3 mm.
+2. **Diametro del pistoncino**, per sapere se un'astina a Y = +1 ci appoggia ancora sopra. Dragoon usa un foro da Ø4,2 e un tasto con cappuccio 3 × 3 mm.
+3. **Se c'è anche sul launcher a corda**: OpenRip l'ha verificato solo sul modello a manovella.
 
 Indicazioni di OpenRip per il supporto:
 
