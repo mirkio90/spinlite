@@ -31,7 +31,7 @@ SpinLite misura l'**albero del launcher**, non la trottola. Con i launcher a cor
 | Schermate OLED (`oled_ui.*`) | disegno testato; driver I2C da provare |
 | Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | scritto completo, **NON ancora provato su hardware** |
 | Guida e BOM | scritte |
-| Montaggio | [scatola piatta](docs/scatola-piatta.md) agganciata al launcher, verificata solo a CAD e non ancora stampata; versione con schermo in futuro. Alternativa: scatola sulla base LaunchLab |
+| Montaggio | [scatola piatta](docs/scatola-piatta.md) agganciata al launcher, con OLED e tasto esterno, verificata solo a CAD e non ancora stampata. Alternativa: scatola sulla base LaunchLab |
 | Dashboard web e flasher | vedi i link sopra |
 
 Finché non è provato sul campo, aspettati bug e soglie da tarare.

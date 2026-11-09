@@ -51,8 +51,9 @@ Versione attuale, descritta in [scatola piatta](../docs/scatola-piatta.md). Non 
 | 10, 11 | Base LaunchLab e scatola | Sostituite da corpo, vassoio del sensore, coperchio e 2 clip (`enclosure/spinlite_flat.scad`) |
 | 12 | Viti M2×4 | Non servono |
 | 13 | Viti M2×6 | 12: 10 per il coperchio, 2 per l'interruttore |
-| 14 | Filamento PETG | Circa 21 g |
-| 15 | OLED | Non ancora previsto: la versione della scatola con schermo arriverà in futuro |
+| 14 | Filamento PETG | Circa 20 g, consigliati vassoio nero e coperchio chiaro |
+| 15 | OLED | Consigliato: finestra e cornice sono già nel coperchio. Senza pettine: 4 fili saldati direttamente alle piazzole |
+| 17 | Tasto SMD 6×6, altezza 3,4 mm | 2: uno per la presenza, uno per il tasto esterno in parallelo al BOOT |
 
 ## Totale indicativo
 

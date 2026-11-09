@@ -22,6 +22,7 @@ In breve, configurazione di riferimento: ESP32-C3 SuperMini, sensore **QRE1113 a
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
+| Tasto esterno (opzionale, scatola piatta) | GPIO9 e GND, in parallelo al BOOT |
 
 Note:
 
@@ -34,7 +35,7 @@ Note:
 
 Serve un launcher con la **porta del Battle Pass**: i Takara Tomy a corda e con ingranaggi interni ce l'hanno, gli starter Hasbro europei no.
 
-**Versione attuale: la [scatola piatta](scatola-piatta.md)**, un corpo basso che si aggancia alla porta con due clip e contiene sensore, tasto ed elettronica. Non è ancora stata stampata e non ha ancora la sede per l'OLED.
+**Versione attuale: la [scatola piatta](scatola-piatta.md)**, un corpo basso che si aggancia alla porta con due clip e contiene sensore, tasto ed elettronica. Ha la sede per l'OLED e un tasto esterno. Non è ancora stata stampata.
 
 In alternativa, il sensore va in una **base stampata di LaunchLab** che si aggancia alla porta con due clip. La scatola SpinLite si avvita sopra con 4 viti M2. Link ai file, istruzioni di stampa e montaggio, adattamenti e licenza (CC BY-SA, derivata dal lavoro di Migbello): **[hardware/README.md](../hardware/README.md)**.
 
@@ -142,7 +143,7 @@ LED blu della scheda (GPIO8):
 - doppio lampeggio: è arrivato un risultato;
 - lampeggio rapido: guasto del sensore.
 
-Pulsante **BOOT** (GPIO9), dopo l'avvio: ogni pressione cambia pagina dell'OLED (ultimo → massimo → info).
+Pulsante **BOOT** (GPIO9) o tasto esterno, dopo l'avvio: ogni pressione cambia pagina dell'OLED (ultimo → massimo → info). Tenuto premuto all'accensione, mette la scheda in modalità di programmazione.
 
 Durante la misura OLED, Bluetooth e memoria restano fermi, per non disturbare il segnale analogico. Tutto avviene dopo il risultato.
 

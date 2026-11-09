@@ -70,7 +70,7 @@ hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base
 
 ## Stato (09/11/2026)
 
-Decisione: la **scatola piatta** (`spinlite_flat.scad`) è la versione attuale, verificata solo a CAD e mai stampata. Quote e idee da Dragoon (CC BY-NC-SA: niente geometria copiata, modelli non nel repo). Non ha la sede dell'OLED: la versione con schermo arriverà in futuro (backlog). Verso di montaggio, dalle foto di Mirko: la finestrella del disco è più vicina alla corda del pistoncino, quindi USB-C verso la corda e parte lunga verso il fondo.
+Decisione: la **scatola piatta** (`spinlite_flat.scad`) è la versione attuale, verificata solo a CAD e mai stampata. Quote e idee da Dragoon (CC BY-NC-SA: niente geometria copiata, modelli non nel repo). Con `oled = true` (default) l'OLED sta sotto il coperchio, sopra il vassoio, senza alzare il corpo; il tasto esterno e' in parallelo al BOOT (GPIO9), quindi il firmware non cambia. `part = "prova"` stampa solo la zona centrale. Verso di montaggio, dalle foto di Mirko: la finestrella del disco è più vicina alla corda del pistoncino, quindi USB-C verso la corda e parte lunga verso il fondo.
 
 Fatto e verificato:
 - firmware completo, compila senza warning in locale e in CI (RAM ~9%, flash ~49%);
@@ -87,7 +87,7 @@ Fatto e verificato:
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
-5. **Stampa di prova** della scatola piatta, `hardware/enclosure/spinlite_flat.scad`, partendo da corpo e clip: aggancio al launcher, tasto sul pistoncino, maniglia a T libera, poi misure dei componenti veri (lista in `docs/scatola-piatta.md`). Verificata solo a CAD. La stessa prova vale per `spinlite_top.scad` se si usa la base LaunchLab (metodo in "Note di verifica").
+5. **Stampa di prova** della scatola piatta, `hardware/enclosure/spinlite_flat.scad`, partendo dallo spezzone (`part = "prova"`): aggancio al launcher, tasto sul pistoncino, maniglia a T libera, poi misure dei componenti veri (lista in `docs/scatola-piatta.md`). Verificata solo a CAD. La stessa prova vale per `spinlite_top.scad` se si usa la base LaunchLab (metodo in "Note di verifica").
 6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
 
 Note di verifica della scatola (per rifarle dopo una modifica): gli STL di LaunchLab in coordinate di montaggio sono nella cartella `preview/` del pacchetto top-dock-v098 (base, clip chiuse, spine, barretta, viti). Si esportano `part="box"`, `"lid_mounted"` e `"check_tp|lipo|sm|sw"` (componenti ristretti di 0,1 mm) e si controlla con uno script Python che nessun punto campionato su una superficie cada dentro l'altro solido (raggio verticale, parita' degli attraversamenti). Controprova: contro `04_M5_dock_with_cable_shroud.stl` deve trovare migliaia di punti. OpenSCAD locale e' 2021.01 (niente backend manifold; CGAL rifiuta le mesh LaunchLab).
@@ -108,7 +108,6 @@ Decisione del 21/10/2026: prima si completa e si prova la versione basilare; que
 3. **WiFi** del C3: aggiornamento OTA e pagina servita dal dispositivo.
 4. **Buzzer** su un GPIO (~0,3 €): bip a PRONTO e al risultato.
 5. **Spegnimento automatico** per inattività.
-6. **Scatola piatta con schermo**: parametro `oled` in `spinlite_flat.scad`, con finestra nel coperchio e cornice per il modulo 38x12 (come in `spinlite_top.scad`, dove servono 4 mm di altezza in più).
 
 Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazioni pesanti.
 
@@ -179,6 +178,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
 | Tasto presenza (opzionale) | GPIO5 e GND |
+| Tasto esterno (opzionale, scatola piatta) | GPIO9 e GND, in parallelo al BOOT |
 
 Il condensatore sul partitore serve perché l'ADC campiona di continuo: senza, la sorgente da 50 kΩ falsa le letture.
 

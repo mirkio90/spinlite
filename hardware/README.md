@@ -2,7 +2,49 @@
 
 SpinLite si monta sulla **porta del Battle Pass** del launcher Beyblade X. Quella porta c'è sui launcher Takara Tomy, a corda e con ingranaggi interni. **Non** c'è sugli starter Hasbro europei.
 
-**Versione attuale: [scatola piatta](#scatola-piatta-versione-attuale)**, un corpo basso che si aggancia al launcher senza la base LaunchLab. Non è ancora stata stampata. Il resto di questa pagina, fino a quella sezione, descrive l'alternativa con la base LaunchLab.
+Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
+
+## Scatola piatta (versione attuale)
+
+File: **`enclosure/spinlite_flat.scad`** (OpenSCAD, MIT). Un corpo basso che si aggancia direttamente al launcher con due clip, senza la base LaunchLab. Sensore, tasto di presenza, elettronica e OLED stanno tutti dentro.
+
+> Stato: verificata solo a CAD, **non ancora stampata né provata sul launcher**.
+
+![Scatola piatta con il coperchio trasparente](img/piatta_assieme.png)
+
+Guida completa, con verso di montaggio, montaggio passo per passo e controlli: **[scatola piatta](../docs/scatola-piatta.md)**.
+
+| Pezzo | `part` | Filamento |
+| --- | --- | --- |
+| Corpo | `"body"` | circa 10 g |
+| Coperchio | `"lid"` | circa 8 g |
+| Vassoio del sensore | `"tray"` | meno di 1 g |
+| 2 clip | `"clips"` | circa 1 g |
+| Cappuccio del tasto | `"button"` | meno di 1 g |
+| Tutti sul piatto | `"plate"` | circa 20 g |
+| **Spezzone di prova**: solo la zona centrale, con vassoio, clip e cappuccio | `"prova"` | circa 7 g |
+
+Ingombro: circa 113 × 38 mm senza le clip, alta circa 10 mm sopra il launcher, con o senza OLED.
+
+| Parametro | Cosa |
+| --- | --- |
+| `oled` | `true` (default): finestra nel coperchio e cornice per il modulo. Non cambia l'altezza |
+| `oled_pcb`, `oled_glass`, `oled_win`, `oled_win_dy` | misure del tuo OLED e posizione dell'area visibile |
+| `btn`, `btn_x`, `btn_y` | tasto esterno in parallelo al BOOT |
+| `led_zones`, `led_t` | zone sottili del coperchio sopra i LED di SuperMini e TP4056 |
+| `tray_gap` | gioco per lato tra vassoio e apertura nel corpo |
+| `qre_pcb`, `qre_h` | misure del breakout QRE1113 |
+| `tact_h`, `tact_body` | misure del tasto, usato per presenza e tasto esterno |
+| `sm_*`, `tp_*`, `lipo`, `sf_*` | misure di SuperMini, TP4056, LiPo e interruttore |
+| `coupon_y` | zona tenuta dallo spezzone di prova |
+
+Le quote nel blocco "Interfaccia con il launcher" non vanno cambiate senza provare il pezzo.
+
+## Altri montaggi
+
+Restano nel repo come alternative. Tutto quello che segue riguarda la scatola su base LaunchLab e la scatola laterale, **non** la scatola piatta.
+
+### Con la base LaunchLab
 
 Il montaggio con la base LaunchLab è fatto di due pezzi stampati, uniti da 4 viti:
 
@@ -26,15 +68,13 @@ Perché così:
 - la scatola sta sopra il launcher, come il Battle Pass vero, quindi non ingombra la presa per il lancio;
 - la base non viene copiata né modificata: SpinLite resta MIT, la base resta di LaunchLab con la sua licenza.
 
-Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
-
 | Configurazione di riferimento: QRE1113, scatola sopra | Alternativa: TCRT5000 laterale, scatola sul fianco |
 | --- | --- |
 | ![render QRE](img/render_qre.png) | ![render TCRT](img/render_tcrt.png) |
 
 Render con Blender. Il launcher e la trottola sono **modellati a mano sulle foto del launcher a corda BX-28**: forma e proporzioni sono quelle, le quote no. I pezzi LaunchLab e SpinLite sono invece i modelli veri. Nel launcher stilizzato la corda è dalla parte sbagliata rispetto a quello vero. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
 
-## File di LaunchLab in locale
+### File di LaunchLab in locale
 
 ```
 python hardware/third_party/fetch_launchlab.py
@@ -52,7 +92,7 @@ Render: `python hardware/render/render.py` (servono OpenSCAD e Blender). Scrive 
 
 Altre viste e didascalie in [img/](img/README.md). Le immagini si rigenerano con `enclosure/spinlite_views.scad`.
 
-## Base sensore LaunchLab
+### Base sensore LaunchLab
 
 **Versione: QRE1113 v102 ("compact base").** I link puntano a un commit preciso del repo LaunchLab, così i file non cambiano sotto i piedi:
 
@@ -60,7 +100,7 @@ Altre viste e didascalie in [img/](img/README.md). Le immagini si rigenerano con
 - [ZIP con STL, STEP, README e licenza](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/compact-base-v102.zip);
 - elenco delle versioni: [HARDWARE_VERSIONS.md](https://github.com/shadohead/launchlab/blob/87bb60d619c2127c9efd679d7505a144e52a30d8/docs/HARDWARE_VERSIONS.md); versioni più recenti su <https://launchlab.beywatch.gg/downloads>.
 
-### Stampa
+#### Stampa
 
 Le istruzioni sono riassunte dal README di LaunchLab: in caso di dubbio vale il loro.
 
@@ -70,37 +110,37 @@ Le istruzioni sono riassunte dal README di LaunchLab: in caso di dubbio vale il 
 4. Impostazioni di riferimento: ugello 0,4 mm, layer 0,2 mm, 4 perimetri, riempimento 25%, supporti ad albero solo dal piatto. Circa 10,5 g e 53 minuti.
 5. Le clip si stampano aperte e già agganciate (print-in-place). Togli i supporti esterni a pezzo freddo, poi ruota le clip con delicatezza fino a chiuderle.
 
-### Montaggio del sensore
+#### Montaggio del sensore
 
 1. Salda sul QRE1113 l'header a 90° (VCC, OUT, GND).
 2. Metti la scheda nella sede della base, con il sensore verso la finestrella.
 3. Fissala con la barretta (pressure bar) e **2 viti M2×4**.
 4. Aggancia la base alla porta del Battle Pass e controlla che non abbia gioco.
 
-### Adattamenti
+#### Adattamenti
 
 - **Clone del QRE1113 con misure diverse.** La sede è fatta per la SparkFun ROB-09453. Se la tua scheda non entra, o il sensore non cade sulla finestrella, nello ZIP ci sono i file **STEP** da modificare in un CAD (FreeCAD, Fusion). Una base modificata resta **CC BY-SA**: va distribuita con la stessa licenza e citando Migbello e LaunchLab, e non va messa in questo repo MIT.
 - **Gioco o ritenzione delle clip.** LaunchLab dichiara che incastro, ritenzione e fatica delle clip non sono provati fisicamente. Se la base balla, prova prima il PETG, poi segnalalo a LaunchLab.
 - **Versioni più nuove della base.** Prima di usarle controlla nel loro README che ci siano ancora i **4 fori pilota M2 su 29 × 24 mm**: la scatola SpinLite si avvita lì.
 - **TCRT5000 al posto del QRE1113.** Usa il [supporto TCRT5000 v102](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/standard-sensor-v102.zip). Il sensore è troppo alto per stare sotto la scatola: la scatola va montata a fianco, con un cavo. Configurazione non ancora studiata.
 
-### Licenza della base
+#### Licenza della base
 
 La base è **CC BY-SA** (versione non indicata dalla fonte), derivata dal *BP Gear Port Connector* di **Migbello** ([Thingiverse 6856080](https://www.thingiverse.com/thing:6856080)), con modifiche di LaunchLab. Per questo non è copiata qui: si linka. Se ridistribuisci la base o una sua modifica, cita Migbello e LaunchLab e mantieni la stessa licenza.
 
-## Scatola SpinLite
+### Scatola SpinLite
 
 File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base ai 4 fori pilota M2 (29 × 24 mm).
 
 > Stato: verificata a CAD, **non ancora stampata**. Scatola e coperchio sono pezzi unici (anche con `oled = true`). Un controllo automatico (punti campionati sulle superfici) non trova sovrapposizioni con la base, le clip chiuse, le spine del sensore, la barretta e le viti di LaunchLab, né tra i componenti (rappresentati come blocchi) e scatola/coperchio. Lo stesso controllo, contro il dock M5 di LaunchLab, trova migliaia di collisioni: quindi funziona. Le misure dei componenti sono tipiche, non misurate: controllale col calibro.
 
-### Ingombro e interfaccia
+#### Ingombro e interfaccia
 
 - 34,6 × 69,5 mm in pianta, alta circa 30 mm dal piano della base (con il coperchio).
 - Resta nell'ingombro del dock M5 di LaunchLab (X ±17,3 mm), che loro hanno verificato a CAD contro il movimento delle clip. Esce solo di 4,5 mm verso il lato del connettore, perché i fili del sensore devono curvare verso l'alto. In quella zona le clip non arrivano.
 - Il fondo sta 0,3 mm sopra i blocchi delle cerniere (Z 13,28). Quattro colonnine scendono sui rilievi dei fori (Z 11,2).
 
-### Disposizione interna
+#### Disposizione interna
 
 ```
   lato connettore sensore (-Y)                                  (+Y) pareti USB-C
@@ -112,7 +152,7 @@ File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base
   └──────────┴────────────────────────────┴───────────────────────────────┘
 ```
 
-### Montaggio
+#### Montaggio
 
 1. Stampa scatola (`part = "box"`, aperta in alto) e coperchio (`part = "lid"`, già capovolto). PETG o PLA, layer 0,2 mm. Niente supporti: la traversa è un ponte e le mensole sono a 45°.
 2. Avvita la **scatola vuota** alla base con **4 viti M2×6**. Le teste stanno nelle sedi del fondo e il cacciavite scende dritto lungo i canali.
@@ -127,7 +167,7 @@ File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base
 
 Il pulsante BOOT, che cambia pagina sull'OLED, si preme dal foro nel coperchio con uno stuzzicadenti. Il LED della SuperMini resta dentro: con un filamento chiaro probabilmente si vede in trasparenza (non verificato).
 
-### Parametri da controllare
+#### Parametri da controllare
 
 | Parametro | Cosa |
 | --- | --- |
@@ -146,12 +186,6 @@ Le quote d'interfaccia (`pilot_*`, `seat_z`, `hinge_*`, `plug_*`) sono misurate 
 
 Con `part = "assembly"` vedi scatola, coperchio e componenti al loro posto. Con `base_stl` puoi aggiungere la base. Usa il file `preview/01_QRE_open_holder_body.stl` del pacchetto [top-dock-v098](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip), che è già nelle coordinate di montaggio.
 
-## Scatola piatta (versione attuale)
-
-`enclosure/spinlite_flat.scad` è un corpo basso che si aggancia direttamente al launcher, senza la base LaunchLab: sensore e tasto di presenza sono nel fondo. Si monta con la USB-C verso la corda. Verificata solo a CAD. Dettagli, verso di montaggio, stampa e montaggio in [scatola piatta](../docs/scatola-piatta.md).
-
-Non ha ancora la sede per l'OLED: la versione con schermo arriverà in futuro.
-
-## Scatola laterale (alternativa)
+### Scatola laterale (alternativa)
 
 `enclosure/spinlite_box.scad` è la prima versione: una scatola da fissare a fianco con una fascetta. Resta nel repo per chi usa il TCRT5000 con il supporto laterale di LaunchLab, oppure monta SpinLite in un altro modo. Non è pensata per la base QRE.
