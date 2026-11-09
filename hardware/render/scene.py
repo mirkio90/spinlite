@@ -4,6 +4,7 @@
 #
 # A = scatola SpinLite sopra la base QRE1113 di LaunchLab (configurazione di riferimento)
 # B = supporto laterale TCRT5000 di LaunchLab + scatola laterale fissata con fascette
+# C = scatola piatta in un pezzo solo (spinlite_flat.scad), senza parti LaunchLab
 #
 # Il launcher e la trottola sono modellati a mano sulle foto del launcher a corda
 # BX-28 (forma e proporzioni, non quote misurate). I pezzi LaunchLab sono CC BY-SA
@@ -170,6 +171,13 @@ if OPT == "A":
     stl("a_switch.stl", M["black"])  # interruttore: leva e viti si vedono dal fianco
     for k, w in enumerate(["w_red", "w_black", "w_yellow"]): stl("a_wire%d.stl" % k, M[w])
     target = Vector((0, -2, 2)) * MM
+elif OPT == "C":
+    # scatola piatta: il pistoncino (Y 13,05 del suo sistema) cade sull'origine del launcher
+    place = Matrix.Translation((0, -13.05 * MM, -6.35 * MM))
+    for f, m in (("c_body", "pla"), ("c_lid", "pla"), ("c_tray", "petg"), ("c_clip_r", "petg"), ("c_clip_l", "petg"),
+                 ("c_elec", "metal"), ("c_switch", "black"), ("c_screws", "screw")):
+        stl(f + ".stl", M[m], place)
+    target = Vector((0, 8, 0)) * MM
 else:
     # supporto TCRT5000: dal sistema del modello del sito al nostro (+42; +4,33; -3,46 mm)
     glb("side-tcrt-raw.glb", {
@@ -209,6 +217,9 @@ views = {  # posizione della camera (m) e focale
     "tre_quarti_dx": ((0.175, -0.165, 0.130), 60),
     "lato": ((0.300, -0.065, 0.120), 60),
     "alto": ((-0.06, -0.10, 0.23), 60),
+    "c_tre_quarti": ((0.185, -0.235, 0.165), 60),
+    "c_lato": ((0.360, 0.010, 0.095), 60),
+    "c_fronte": ((-0.190, 0.265, 0.170), 60),
 }
 pos, lens = views[VIEW]
 cam = bpy.data.cameras.new("cam"); cam.lens = lens
