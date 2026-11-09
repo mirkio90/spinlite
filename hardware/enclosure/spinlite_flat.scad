@@ -171,7 +171,7 @@ module sensor_ribs() {
         translate([-px - 0.8, 2, z_plate - eps]) cube([0.8, 2.5, h - z_plate]);
         translate([-px - 0.8, -4.5, z_plate - eps]) cube([0.8, 2.5, h - z_plate]);
         // sponda sul lato verso il retro
-        translate([-5, -py - 1.2, z_plate - eps]) cube([10, 1.2, h - z_plate]);
+        translate([-5, -py - 0.8, z_plate - eps]) cube([10, 0.8, h - z_plate]);
     }
     translate([0, button_y, 0]) {
         tx = tact_body[0] / 2 + 0.15;
