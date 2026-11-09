@@ -37,32 +37,13 @@ void help() {
   Serial.println("  default                    ripristina le soglie di fabbrica");
   Serial.println("  test [rpm] [s]             lancio finto su GPIO10 (filo GPIO10 -> GPIO3, sensore staccato)");
   Serial.println("  test stop                  ferma il test e libera GPIO10");
-  Serial.println("  presenza [on|off]          tasto della trottola su GPIO5: stato, attiva, disattiva");
+  Serial.println("  presenza                   tasto della trottola su GPIO5: contatto e armamento");
 }
 
 void printPresence() {
   const PresenceGate *p = hooks.presence;
   if (!p) return;
-  Serial.printf("Presenza trottola: %s, contatto %s, armato %s\n", p->enabled() ? "attiva" : "disattivata",
-                p->present() ? "premuto" : "libero", p->armed() ? "si" : "no");
-}
-
-// "presenza [on|off]": la scelta si salva subito, ma mai durante una misura.
-void presenceCommand(int n, char **tok) {
-  if (n > 1) {
-    const bool on = !strcmp(tok[1], "on");
-    if (!on && strcmp(tok[1], "off")) {
-      Serial.println("Uso: presenza [on|off]");
-      return;
-    }
-    if (sampler::status().phase == Phase::Measuring) {
-      Serial.println("Misura in corso, riprova tra poco");
-      return;
-    }
-    hooks.presence->setEnabled(on);
-    if (!settings::savePresence(on)) Serial.println("Salvataggio fallito");
-  }
-  printPresence();
+  Serial.printf("Presenza trottola: contatto %s, armato %s\n", p->present() ? "premuto" : "libero", p->armed() ? "si" : "no");
 }
 
 void printConfig() {
@@ -224,7 +205,7 @@ void execute(char *cmd) {
   } else if (!strcmp(c, "test")) {
     startTest(n, tok);
   } else if (!strcmp(c, "presenza")) {
-    presenceCommand(n, tok);
+    printPresence();
   } else if (!strcmp(c, "default")) {
     settings::defaults(*hooks.config);
     settings::eraseConfig();

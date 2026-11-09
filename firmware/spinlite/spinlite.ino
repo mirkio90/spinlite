@@ -72,16 +72,12 @@ int batteryNow() { return batteryPercent(sampler::batteryMv()); }
 // ---------------------------------------------------------------------------
 bool presenceRaw() { return digitalRead(PIN_PRESENCE) == LOW; }
 
-// Il bit "trottola inserita" del Battle Pass: quello vero se c'e' il
-// tasto, altrimenti lo sostituisce il rilevatore pronto.
-bool loadedFlag(Phase phase) { return presence.enabled() ? presence.present() : phase == Phase::Ready; }
-
 // ---------------------------------------------------------------------------
 // Provider BLE
 // ---------------------------------------------------------------------------
 void provideStatus(uint8_t out[bbp::PACKET]) {
   uint8_t flags = 0;
-  if (loadedFlag(sampler::status().phase)) flags |= bbp::FLAG_READY;
+  if (presence.present()) flags |= bbp::FLAG_READY; // nel Battle Pass vero: trottola inserita
   const int pc = batteryNow();
   uint8_t battery = 250; // USB: pieno, nessuna segnalazione
   if (pc >= 0) {
@@ -123,7 +119,7 @@ void ledUpdate(uint32_t now, const LiveStatus &s) {
     on = t < 80 || (t >= 160 && t < 240);
   } else if (s.fault) {
     on = (now % 200) < 100;
-  } else if (s.phase == Phase::Ready && (!presence.enabled() || presence.armed())) {
+  } else if (s.phase == Phase::Ready && presence.armed()) {
     on = (now % 2000) < 60;
   }
   ledWrite(on);
@@ -160,7 +156,7 @@ void buttonUpdate(uint32_t now) {
 const char *statusText(const LiveStatus &s) {
   if (s.fault) return "GUASTO";
   switch (s.phase) {
-  case Phase::Ready: return presence.enabled() && !presence.armed() ? "ATTESA" : "PRONTO";
+  case Phase::Ready: return presence.armed() ? "PRONTO" : "ATTESA";
   case Phase::Measuring: return "MISURA";
   case Phase::Rearm: return "RIARMO";
   default: return "ATTESA";
@@ -241,7 +237,6 @@ void setup() {
     settings::defaults(config); // blob assente o non valido: restano i default
   }
   settings::loadHistory(history);
-  presence.setEnabled(settings::loadPresence());
 
   const uint64_t mac = ESP.getEfuseMac();
   for (int i = 0; i < 6; ++i) uid[i] = uint8_t(mac >> (8 * i));
@@ -278,7 +273,7 @@ void loop() {
   presence.update(presenceRaw(), now, s.phase == Phase::Measuring);
 
   ble::setQuiet(s.phase == Phase::Measuring);
-  const bool ready = loadedFlag(s.phase);
+  const bool ready = presence.present();
   if (ready != lastReady && s.phase != Phase::Measuring) {
     lastReady = ready;
     ble::notifyStatus();

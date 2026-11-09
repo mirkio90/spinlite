@@ -28,15 +28,10 @@ public:
   // Arma senza contatto (autotest).
   void arm() { armed_ = true; }
 
-  // Da spenta consumeLaunch accetta tutto: serve quando il tasto non c'e'.
-  void setEnabled(bool on) { enabled_ = on; }
-  bool enabled() const { return enabled_; }
-
   bool present() const { return stable_; }
   bool armed() const { return armed_; }
 
 private:
-  bool enabled_ = false;
   bool stable_ = false;
   bool raw_ = false;
   bool armed_ = false;

@@ -38,7 +38,7 @@
 // a PIN_SENSOR, con il sensore scollegato. -1 per disattivarlo.
 #define PIN_TEST_OUT 10
 // Tasto premuto dal pistoncino del launcher, tra questo pin e GND (contatto
-// chiuso = trottola inserita). Facoltativo: si attiva con "presenza on".
+// chiuso = trottola inserita). Obbligatorio: senza, i lanci vengono scartati.
 #define PIN_PRESENCE 5
 
 // ---------------------------------------------------------------------------

@@ -21,27 +21,19 @@ static uint32_t settle(PresenceGate &g, bool pressed, uint32_t t, bool measuring
   return t + PresenceGate::DEBOUNCE_MS + 1;
 }
 
-static PresenceGate enabledGate() {
+static PresenceGate emptyGate() {
   PresenceGate g;
   g.reset(false, 0);
-  g.setEnabled(true);
   return g;
 }
 
-static void disabledAcceptsEverything() {
-  PresenceGate g;
-  g.reset(false, 0);
-  CHECK(g.consumeLaunch());
-  CHECK(g.consumeLaunch());
-}
-
 static void dryPullIsRejected() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   CHECK(!g.consumeLaunch());
 }
 
 static void normalLaunch() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   uint32_t t = settle(g, true, 100);
   CHECK(g.present() && g.armed());
   t = settle(g, false, t, true); // la trottola parte durante la misura
@@ -52,7 +44,7 @@ static void normalLaunch() {
 }
 
 static void resultBeforeRelease() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   uint32_t t = settle(g, true, 100);
   CHECK(g.consumeLaunch());
   // contatto ancora premuto: niente nuovo armamento finche' non si libera
@@ -65,7 +57,7 @@ static void resultBeforeRelease() {
 }
 
 static void removedByHandDisarms() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   uint32_t t = settle(g, true, 100);
   settle(g, false, t, false);
   CHECK(!g.armed());
@@ -73,7 +65,7 @@ static void removedByHandDisarms() {
 }
 
 static void bounceIsIgnored() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   CHECK(!g.update(true, 100, false));
   CHECK(!g.update(false, 110, false));
   CHECK(!g.update(true, 120, false));
@@ -90,13 +82,12 @@ static void bounceIsIgnored() {
 static void insertedAtBoot() {
   PresenceGate g;
   g.reset(true, 0);
-  g.setEnabled(true);
   CHECK(g.present() && g.armed());
   CHECK(g.consumeLaunch());
 }
 
 static void autotestArms() {
-  PresenceGate g = enabledGate();
+  PresenceGate g = emptyGate();
   g.arm();
   uint32_t t = settle(g, false, 100);
   (void)t;
@@ -107,14 +98,12 @@ static void autotestArms() {
 static void millisWrap() {
   PresenceGate g;
   g.reset(false, 0xFFFFFFF0u);
-  g.setEnabled(true);
   CHECK(!g.update(true, 0xFFFFFFF8u, false));
   CHECK(g.update(true, 0xFFFFFFF8u + PresenceGate::DEBOUNCE_MS, false));
   CHECK(g.armed());
 }
 
 int main(int argc, char **) {
-  disabledAcceptsEverything();
   dryPullIsRejected();
   normalLaunch();
   resultBeforeRelease();

@@ -36,8 +36,6 @@ void begin();
 bool loadConfig(DetectorConfig &cfg);
 bool saveConfig(const DetectorConfig &cfg);
 void eraseConfig();
-bool loadPresence();
-bool savePresence(bool enabled);
 bool loadHistory(bbp::History &h);
 bool saveHistory(const bbp::History &h);
 #endif

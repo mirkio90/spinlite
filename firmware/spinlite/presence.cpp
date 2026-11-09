@@ -22,7 +22,7 @@ bool PresenceGate::update(bool pressed, uint32_t nowMs, bool measuring) {
 }
 
 bool PresenceGate::consumeLaunch() {
-  const bool valid = !enabled_ || armed_;
+  const bool valid = armed_;
   armed_ = false;
   return valid;
 }

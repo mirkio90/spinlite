@@ -193,22 +193,6 @@ void eraseConfig() {
   pr.end();
 }
 
-bool loadPresence() {
-  Preferences pr;
-  if (!pr.begin(NS, true)) return false;
-  const bool on = pr.getBool("pres", false);
-  pr.end();
-  return on;
-}
-
-bool savePresence(bool enabled) {
-  Preferences pr;
-  if (!pr.begin(NS, false)) return false;
-  const bool ok = pr.putBool("pres", enabled) > 0;
-  pr.end();
-  return ok;
-}
-
 bool loadHistory(bbp::History &h) {
   Preferences pr;
   if (!pr.begin(NS, true)) return false;
