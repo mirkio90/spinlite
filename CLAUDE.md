@@ -52,6 +52,7 @@ firmware/spinlite/
   ble_bbp.*         servizio BLE Battle Pass (NimBLE), coda comandi, notifiche distanziate
   settings.*        soglie (blob con CRC) e storico in NVS   (parte portabile testata)
   battery.*         percentuale LiPo stimata                 (testato)
+  presence.*        presenza trottola (microswitch, GPIO5)   (testato su PC)
   console.*         comandi seriali
   spinlite.ino      collegamento dei moduli, LED, pulsante, OLED, salvataggi
 test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings
@@ -149,6 +150,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 - `storico`, `cancella`
 - `set <parametro> <valore>`, `salva`, `default`
 - `test [rpm] [s]`, `test stop` — lancio finto: onda quadra su GPIO10 (GPTimer a 1 MHz, interrupt che inverte il pin), da collegare con un filo a GPIO3 senza sensore. Guida: `docs/prova-senza-sensore.md`
+- `presenza [on|off]` — microswitch opzionale sul pistoncino del launcher: scarta gli strappi a vuoto e rende vero il bit 0x04 di A0. Default spento. Firmware pronto, supporto meccanico da progettare: `docs/presenza-trottola.md`
 - Ogni lancio stampa una riga CSV: `LANCIO,rpm,rpm3giri,giro_singolo,giri,durata_ms,segno_min,fine`.
 
 ### Interfaccia
@@ -172,6 +174,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
+| Microswitch presenza COM / NO (opzionale) | GPIO5 / GND |
 
 Il condensatore sul partitore serve perché l'ADC campiona di continuo: senza, la sorgente da 50 kΩ falsa le letture.
 
