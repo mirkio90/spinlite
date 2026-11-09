@@ -37,7 +37,7 @@ void help() {
   Serial.println("  default                    ripristina le soglie di fabbrica");
   Serial.println("  test [rpm] [s]             lancio finto su GPIO10 (filo GPIO10 -> GPIO3, sensore staccato)");
   Serial.println("  test stop                  ferma il test e libera GPIO10");
-  Serial.println("  presenza [on|off]          microswitch della trottola su GPIO5: stato, attiva, disattiva");
+  Serial.println("  presenza [on|off]          tasto della trottola su GPIO5: stato, attiva, disattiva");
 }
 
 void printPresence() {

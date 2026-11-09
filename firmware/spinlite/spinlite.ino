@@ -73,7 +73,7 @@ int batteryNow() { return batteryPercent(sampler::batteryMv()); }
 bool presenceRaw() { return digitalRead(PIN_PRESENCE) == LOW; }
 
 // Il bit "trottola inserita" del Battle Pass: quello vero se c'e' il
-// microswitch, altrimenti lo sostituisce il rilevatore pronto.
+// tasto, altrimenti lo sostituisce il rilevatore pronto.
 bool loadedFlag(Phase phase) { return presence.enabled() ? presence.present() : phase == Phase::Ready; }
 
 // ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-// SpinLite - presenza della trottola (microswitch sul pistoncino del launcher).
+// SpinLite - presenza della trottola (tasto premuto dal pistoncino del launcher).
 //
 // Regola: un lancio vale solo se la trottola e' stata inserita prima.
 //   - l'inserimento (fronte libero -> premuto) arma;
@@ -28,7 +28,7 @@ public:
   // Arma senza contatto (autotest).
   void arm() { armed_ = true; }
 
-  // Da spenta consumeLaunch accetta tutto: serve quando il microswitch non c'e'.
+  // Da spenta consumeLaunch accetta tutto: serve quando il tasto non c'e'.
   void setEnabled(bool on) { enabled_ = on; }
   bool enabled() const { return enabled_; }
 

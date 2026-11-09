@@ -37,7 +37,7 @@
 // Uscita dell'autotest (comando "test"): onda quadra da collegare con un filo
 // a PIN_SENSOR, con il sensore scollegato. -1 per disattivarlo.
 #define PIN_TEST_OUT 10
-// Microswitch sul pistoncino del launcher, tra questo pin e GND (contatto
+// Tasto premuto dal pistoncino del launcher, tra questo pin e GND (contatto
 // chiuso = trottola inserita). Facoltativo: si attiva con "presenza on".
 #define PIN_PRESENCE 5
 

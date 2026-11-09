@@ -88,7 +88,7 @@ Collegati a 115200 baud (`pio device monitor`, o un qualsiasi terminale seriale)
 | `default` | torna ai valori di fabbrica e cancella quelli salvati |
 | `storico` | stampa lo storico dei lanci |
 | `cancella` | azzera lo storico |
-| `presenza [on\|off]` | microswitch opzionale della trottola: vedi [presenza della trottola](presenza-trottola.md) |
+| `presenza [on\|off]` | tasto opzionale della trottola: vedi [presenza della trottola](presenza-trottola.md) |
 
 ### Parametri di `set`
 

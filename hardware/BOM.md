@@ -39,7 +39,7 @@ Viti: un kit assortito M2 (circa 3-5 €) basta per molti dispositivi. Il costo 
 | --- | --- | --- | --- | --- | --- |
 | 15 | OLED SSD1306 128x32 I2C | 1 | Firmware `spinlite_oled`. 4 pin: GND, VCC, SCL, SDA. | da scegliere | 1,5-2 € |
 | 16 | Modulo TCRT5000 + LM393 (alternativa al QRE1113) | 1 | Più economico (0,5-1 €), ma alto circa 19 mm: non sta sotto la scatola e va usato con il supporto laterale [TCRT5000 v102 di LaunchLab](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/standard-sensor-v102.zip). Usa l'uscita **AO**. | da scegliere | 0,5-1 € |
-| 17 | Microswitch a leva a bassa forza (classe Omron SS-01GL, sotto 0,5 N) | 1 | Presenza della trottola: firmware pronto, supporto meccanico ancora da progettare. Vedi [presenza della trottola](../docs/presenza-trottola.md). | da scegliere | ~1-2 € |
+| 17 | Tasto **SMD 6×6, altezza 3,4 mm** | 1 | Presenza della trottola, sotto il fondo della scatola, premuto da un perno stampato. Servono anche 2 fili sottili e una punta Ø2. Vedi [presenza della trottola](../docs/presenza-trottola.md). | da scegliere | ~0,5-1 € |
 
 ## Totale indicativo
 

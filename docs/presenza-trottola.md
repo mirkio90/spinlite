@@ -1,13 +1,13 @@
 # Presenza della trottola (opzionale)
 
-Il launcher ha un **pistoncino a molla** accanto alla finestrella del sensore: resta sotto il filo quando è vuoto, sale di circa 1 mm con la trottola agganciata e ricade al lancio. Un microswitch appoggiato sopra dice al firmware se la trottola c'è.
+Il launcher ha un **pistoncino a molla** accanto alla finestrella del sensore: resta sotto il filo quando è vuoto, sale di circa 1 mm con la trottola agganciata e ricade al lancio. Un tasto premuto dal pistoncino dice al firmware se la trottola c'è.
 
 Serve a due cose:
 
 - **scartare gli strappi a vuoto**, che altrimenti finiscono nello storico come lanci;
-- **dare alle app il bit vero** "trottola inserita" (0x04 nel pacchetto A0), che senza microswitch è solo simulato.
+- **dare alle app il bit vero** "trottola inserita" (0x04 nel pacchetto A0), che senza tasto è solo simulato.
 
-Stato: **firmware pronto e testato su PC, mai provato su hardware. Supporto meccanico ancora da progettare** (vedi sotto).
+Stato: **firmware testato su PC e supporto meccanico verificato a CAD. Nulla è stato ancora stampato o provato su hardware.**
 
 ## Come lo fanno gli altri
 
@@ -20,7 +20,7 @@ Stato: **firmware pronto e testato su PC, mai provato su hardware. Supporto mecc
 
 Dai progetti GPL viene solo il comportamento, nessuna riga di codice.
 
-**Perché il microswitch e non un secondo sensore ottico:** il secondo fotoriflettore non ha parti che toccano il launcher, ma occupa un altro canale ADC nel pattern da cui dipendono i 40.000 campioni al secondo. In bx-tacho la sua luce disturba il sensore dei giri, tanto che il firmware deve accenderne il LED solo in momenti precisi. Il microswitch occupa solo un GPIO digitale.
+**Perché un contatto meccanico e non un secondo sensore ottico:** il secondo fotoriflettore non ha parti che toccano il launcher, ma occupa un altro canale ADC nel pattern da cui dipendono i 40.000 campioni al secondo. In bx-tacho la sua luce disturba il sensore dei giri, tanto che il firmware deve accenderne il LED solo in momenti precisi. Il contatto occupa solo un GPIO digitale.
 
 ## Come funziona
 
@@ -36,22 +36,22 @@ Con la presenza attiva il LED fa il lampeggio breve di "pronto" solo da armato, 
 
 ## Collegamento e attivazione
 
-| Microswitch | SuperMini |
+| Tasto | SuperMini |
 | --- | --- |
-| COM | GPIO5 |
-| NO (normalmente aperto) | GND |
+| un contatto | GPIO5 |
+| l'altro contatto | GND |
 
-Serve solo un filo per contatto: il pull-up è quello interno. Poi, da console:
+Il pull-up è quello interno, non servono resistenze. Poi, da console:
 
 ```
 presenza on      attiva e salva
 presenza         mostra lo stato: contatto premuto/libero, armato si/no
-presenza off     torna al funzionamento senza microswitch (default)
+presenza off     torna al funzionamento senza tasto (default)
 ```
 
 Per provarlo senza launcher: `presenza on`, poi tocca GPIO5 con un filo collegato a GND e controlla con `presenza` che il contatto risulti premuto. Il comando `test` si arma da solo, quindi funziona anche con la presenza attiva.
 
-## Cosa manca: il supporto meccanico
+## Il supporto meccanico
 
 ### Dov'è il pistoncino
 
@@ -80,20 +80,53 @@ La base **lo copre**. Salendo da (0; 0):
 | 11,2 | piano d'appoggio della scatola |
 | 13,4-15,2 | fondo della scatola |
 
-### Idea da verificare: astina di trasmissione
+### La soluzione: tasto nella scatola e perno
 
-Un'astina stampata che sale dal pistoncino al microswitch, in un foro **fatto col trapano nella base già stampata**, partendo dalla tasca, che fa da centratore. Così il file della base resta intatto e non serve ridistribuire un derivato CC BY-SA.
+![Sezione del perno e del tasto](img/presenza.svg)
 
-- L'astina non può stare a Y = 0, perché lì finisce il PCB del QRE: va spostata verso +Y, per esempio Ø2 centrata a Y = +1.
-- Anche la barretta va forata o accorciata, e il microswitch va ricavato nella scatola, dove oggi non c'è spazio previsto.
+L'idea viene da Dragoon, che tiene un tasto 6×6 direttamente sopra il pistoncino. Da noi in mezzo c'è la base, quindi un **perno** porta il movimento fino al tasto, che sta nei 4,9 mm liberi tra la base e il fondo della scatola. La geometria è nostra (MIT): da Dragoon, che è CC BY-NC-SA, vengono solo idea e quote.
 
-### Da controllare sul launcher
+File in `hardware/enclosure/spinlite_top.scad`:
 
-1. **Quanto sale il pistoncino.** OpenRip dice circa 1 mm sopra il filo, ma la tasca è profonda solo 0,4-0,5 mm: se sale di più, spinge contro il velo da 0,3 mm.
-2. **Diametro del pistoncino**, per sapere se un'astina a Y = +1 ci appoggia ancora sopra. Dragoon usa un foro da Ø4,2 e un tasto con cappuccio 3 × 3 mm.
-3. **Se c'è anche sul launcher a corda**: OpenRip l'ha verificato solo sul modello a manovella.
+| `part` | Cosa | Note |
+| --- | --- | --- |
+| `"box"` | scatola, con la sede del tasto sotto il fondo | `presence = false` la toglie |
+| `"pins"` | 5 perni di altezza diversa | testa sul piatto, niente supporti |
+| `"jig"` | dima di foratura | si stampa e si butta |
 
-Indicazioni di OpenRip per il supporto:
+Il perno è a Y = +1 e non sopra il centro del pistoncino, perché a Y = -0,22 finisce il PCB del QRE.
 
-- microswitch a leva **a bassa forza** (sotto 0,5 N, classe Omron SS-01GL): la leva non deve impedire alla trottola di agganciarsi;
-- montaggio su **slitta regolabile** (asola + vite M2), perché 1 mm di corsa è dentro le tolleranze di stampa. Si regola una volta sola: con la trottola inserita il contatto deve scattare, senza deve rilasciarsi.
+### Montaggio
+
+1. **Fora la base** prima di montare il sensore: avvita la dima ai due rilievi lato +Y con 2 viti M2×6 e fora con una punta **Ø2** fino a uscire nella tasca sotto la base.
+2. **Taglia la punta della barretta** a filo del bordo del PCB del QRE, con un tronchesino. Le viti della barretta sono lontane e il sensore resta premuto.
+3. Monta il QRE e la barretta come da istruzioni LaunchLab.
+4. **Tasto SMD 6×6, altezza 3,4 mm:** salda due fili su due piedini che si collegano **solo a tasto premuto**: trovali col tester, perché i piedini sono collegati a coppie. Mettilo nella sede sotto il fondo con il cappuccio verso il basso, con una goccia di colla.
+5. Fai passare i due fili nello spazio sotto il fondo e su dall'apertura dei fili del sensore. Vanno a GPIO5 e GND.
+6. Infila il perno nel foro e avvita la scatola: il perno resta chiuso tra base e tasto.
+
+### Scegliere il perno
+
+Le tacche sulla testa dicono quale perno è: una tacca è il più alto, cinque il più basso.
+
+| Tacche | Il pistoncino deve salire di |
+| --- | --- |
+| 1 | 0,3 mm |
+| 2 | 0,5 mm |
+| 3 | 0,7 mm |
+| 4 | 0,9 mm |
+| 5 | 1,1 mm |
+
+Parti dal più basso (5 tacche). Con `presenza` in console controlla il contatto, inserendo e togliendo la trottola, e passa al perno successivo finché **con la trottola inserita il contatto risulta premuto**. Tieni il **più basso che funziona**: il tasto ha solo 0,25 mm di corsa e un perno troppo alto impedirebbe alla trottola di agganciarsi.
+
+### Verifiche e dubbi
+
+Verificato a CAD, con controprova: nessuna collisione di perni, tasto e dima con base, barretta accorciata, PCB, clip e scatola. **Nulla è stato stampato né provato.**
+
+Da controllare sul launcher vero:
+
+1. **Forza:** Dragoon preme un tasto normale direttamente, ma OpenRip raccomanda una leva sotto 0,5 N per non contrastare l'aggancio. Se la trottola si aggancia a fatica, serve un tasto a bassa forza (circa 100 gf).
+2. **Quanto sale il pistoncino:** OpenRip dice circa 1 mm, ma la tasca sotto la base è profonda 0,4-0,5 mm. I 5 perni coprono da 0,3 a 1,1 mm.
+3. **Diametro del pistoncino:** il perno, decentrato di 1 mm, deve appoggiarci sopra. Dragoon usa un foro da Ø4,2.
+4. **PCB del QRE:** se il tuo breakout è più lungo di 14 mm verso +Y, tocca il perno.
+5. **Launcher a corda:** OpenRip conferma il pistoncino solo su quello a manovella.
