@@ -445,7 +445,7 @@ else if (part == "plate") {
     translate([45, 0, z_top]) rotate([180, 0, 0]) lid();
     translate([70, 0, 0]) { clip_for_print(); translate([16, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
     translate([80, -40, -band_z]) tray();
-    if (btn) translate([55, -40, 0]) translate([-btn_x, -btn_y, -z_btn]) button();
+    if (btn) translate([80, -50, 0]) translate([-btn_x, -btn_y, -z_btn]) button();  // fuori dall'ingombro del coperchio
 }
 else if (part == "assembly") {
     color("orange") body();
