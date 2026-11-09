@@ -72,7 +72,7 @@ Perché così:
 | --- | --- |
 | ![render QRE](img/render_qre.png) | ![render TCRT](img/render_tcrt.png) |
 
-Render con Blender. Il launcher e la trottola sono **modellati a mano sulle foto del launcher a corda BX-28**: forma e proporzioni sono quelle, le quote no. I pezzi LaunchLab e SpinLite sono invece i modelli veri. Nel launcher stilizzato la corda è dalla parte sbagliata rispetto a quello vero. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
+Render con Blender. Il launcher è **modellato a mano sulle foto di un launcher a corda vero**: forma, proporzioni e lato della corda sono quelli delle foto, le misure hanno un errore di qualche mm. La trottola è generica. I pezzi LaunchLab e SpinLite sono invece i modelli veri. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
 
 ### File di LaunchLab in locale
 

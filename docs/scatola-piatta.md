@@ -59,7 +59,9 @@ Sul launcher la finestrella del disco è più vicina alla corda, il foro del pis
 
 Le misure del launcher sono ricavate da una foto, usando come scala i 7,6 mm tra finestrella e pistoncino: l'errore è di qualche mm. La corda esce circa 20 mm sotto la faccia superiore, quindi la sporgenza dovrebbe passare sopra la maniglia a T.
 
-**Attenzione ai render:** nel launcher stilizzato la corda è dalla parte sbagliata, cioè vicino al pistoncino e dal lato della parte lunga. Il pezzo da stampare è corretto, l'immagine del launcher no.
+![Launcher visto dal lato della corda, con finestrella e pistoncino nella fascia nera](../hardware/img/render_launcher.png)
+
+Nei render il launcher è ridisegnato dalle foto di uno vero, con la corda dal lato giusto. Forma e proporzioni sono quelle delle foto, ma le misure hanno un errore di qualche mm: non usarlo come riferimento per modificare il corpo.
 
 ## Prima prova: lo spezzone
 

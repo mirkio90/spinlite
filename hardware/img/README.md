@@ -16,8 +16,9 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `render_qre.png`, `render_qre_lato.png` | Render Blender della configurazione di riferimento: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
 | `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png`, `render_piatta_clip.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. La sede delle clip nel fianco del launcher è dedotta dalla forma delle clip, non misurata |
 | `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
+| `render_launcher.png` | Render Blender del solo launcher: fascia nera con la finestrella del disco, più vicina alla corda, e il pistoncino |
 
-Nei render il **launcher e la trottola sono modelli stilizzati**, fatti a mano sulle foto del launcher a corda BX-28 (forma e proporzioni, non quote misurate). Nel launcher stilizzato la corda è dalla parte sbagliata: sul launcher vero la finestrella del disco è più vicina alla corda del pistoncino. Il verso giusto è in [scatola piatta](../../docs/scatola-piatta.md#verso-di-montaggio).
+Nei render il **launcher** è un modello fatto a mano sulle foto di un launcher a corda vero, in scala dai 7,6 mm tra finestrella e pistoncino: forma e proporzioni sono quelle delle foto, le misure hanno un errore di qualche mm. La corda è dal lato giusto, vicino alla finestrella. La **trottola** è generica. Il verso di montaggio è in [scatola piatta](../../docs/scatola-piatta.md#verso-di-montaggio).
 
 Colori dei fili: rosso +, nero GND, giallo uscita del sensore (GPIO3), azzurro batteria (GPIO4), verde e viola SDA/SCL dell'OLED.
 

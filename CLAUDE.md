@@ -64,7 +64,7 @@ hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base
                     enclosure/spinlite_flat.scad (corpo basso agganciato al launcher: VERSIONE ATTUALE, docs/scatola-piatta.md)
                     enclosure/spinlite_views.scad (viste con tutti i componenti e i fili), img/ (render + README con licenze)
                     third_party/fetch_launchlab.py -> third_party/launchlab/ (file LaunchLab CC BY-SA, NEL .gitignore)
-                    render/render.py + scene.py (render Blender; launcher BX-28 stilizzato, non quotato, con la corda dalla parte sbagliata)
+                    render/render.py + scene.py (render Blender; launcher ridisegnato dalle foto, corda verso -Y, misure con errore di qualche mm)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
