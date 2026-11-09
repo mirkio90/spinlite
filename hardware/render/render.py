@@ -58,6 +58,7 @@ SHOTS = [  # opzione, vista, file
     ("C", "c_lato", "render_piatta_lato.png"),
     ("C", "c_fronte", "render_piatta_fronte.png"),
     ("C", "c_clip", "render_piatta_clip.png"),
+    ("L", "l_tre", "render_launcher.png"),
 ]
 
 
@@ -69,7 +70,7 @@ def scad(name: str, body: str, source: str = "spinlite_views.scad", setup: str =
 
 def main() -> int:
     samples = sys.argv[1] if len(sys.argv) > 1 else "160"
-    options = sys.argv[2] if len(sys.argv) > 2 else "ABC"  # quali configurazioni: A, B, C
+    options = sys.argv[2] if len(sys.argv) > 2 else "ABCL"  # quali configurazioni: A, B, C, L (solo launcher)
     if set(options) & set("AB") and not (LL / "top-qre-raw.glb").exists():
         print("mancano i file LaunchLab: python hardware/third_party/fetch_launchlab.py")
         return 1
