@@ -1,10 +1,12 @@
 # Scatola piatta (corpo unico sul launcher)
 
-Variante in un pezzo solo, in alternativa alla scatola avvitata sulla base LaunchLab. File: `hardware/enclosure/spinlite_flat.scad`.
+La versione attuale del dispositivo: un corpo basso che si aggancia direttamente al launcher, senza la base LaunchLab. Corpo, vassoio del sensore, coperchio e 2 clip si stampano a parte. File: `hardware/enclosure/spinlite_flat.scad`.
+
+**Schermo:** questa versione non ha ancora la sede per l'OLED. Il firmware `spinlite_oled` è pronto, la versione della scatola con schermo arriverà in futuro. Oggi la finestra per l'OLED c'è solo nelle altre due scatole.
 
 ![Vista d'assieme senza coperchio](../hardware/img/piatta_assieme.png)
 
-**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** La distinta di riferimento resta quella con la base LaunchLab finché questa non è stata provata.
+**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** La versione con la base LaunchLab resta documentata in [hardware/README.md](../hardware/README.md) come alternativa. Cosa cambia nei pezzi da comprare: [distinta base](../hardware/BOM.md#scatola-piatta-cosa-cambia).
 
 ## Cosa cambia
 
@@ -38,6 +40,19 @@ Da dietro in avanti:
 3. **TP4056** di traverso, con la USB-C sul fianco +X.
 4. **LiPo 502030**.
 
+## Verso di montaggio
+
+Sul launcher la finestrella del disco è più vicina alla corda, il foro del pistoncino più lontano. Il corpo si monta quindi con la **parte corta e la USB-C della SuperMini verso la corda** e la **parte lunga con la LiPo verso il fondo** del launcher.
+
+| Dal pistoncino verso | Launcher (stima dalle foto) | Corpo | Sporgenza |
+| --- | --- | --- | --- |
+| Corda | circa 36 mm | 46 mm | circa 10 mm |
+| Fondo | circa 62 mm | 67,5 mm | circa 5 mm |
+
+Le misure del launcher sono ricavate da una foto, usando come scala i 7,6 mm tra finestrella e pistoncino: l'errore è di qualche mm. La corda esce circa 20 mm sotto la faccia superiore, quindi la sporgenza dovrebbe passare sopra la maniglia a T.
+
+**Attenzione ai render:** nel launcher stilizzato la corda è dalla parte sbagliata, cioè vicino al pistoncino e dal lato della parte lunga. Il pezzo da stampare è corretto, l'immagine del launcher no.
+
 ## Stampa
 
 `part = "plate"` mette tutti i pezzi sul piatto, oppure singolarmente `"body"`, `"lid"`, `"tray"` e `"clips"`. In tutto servono circa 21 g di filamento.
@@ -61,12 +76,13 @@ Da dietro in avanti:
 
 ## Da controllare al primo pezzo stampato
 
-1. **Clip sul launcher.** È il punto più delicato: si devono agganciare e sganciare senza gioco. Sono due parti senza molla, come in Dragoon. Se ballano, si corregge `pivot` o il profilo del dente.
+1. **Clip sul launcher.** È il punto più delicato: si devono agganciare e sganciare senza gioco. Sono due parti senza molla, come in Dragoon. Se ballano, si corregge `pivot` o il profilo del dente. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
 2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console). Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
 5. **Presa:** il corpo è lungo e piatto come quello di Dragoon, ma la comodità va provata in mano.
 6. **Interruttore:** passo dei fori e corsa della leva sono stimati, come nell'altra scatola (`sf_pitch`, `sf_travel`).
+7. **Maniglia a T:** a corda riavvolta non deve toccare la sporgenza con la USB-C.
 
 ## Verifiche fatte a CAD
 

@@ -59,16 +59,18 @@ test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, pro
 docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
                     flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
 hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
-                    enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: quella di riferimento),
+                    enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: alternativa),
                     enclosure/spinlite_box.scad (scatola laterale, alternativa per TCRT o altri montaggi)
-                    enclosure/spinlite_flat.scad (corpo unico piatto sul launcher, in prova: docs/scatola-piatta.md)
+                    enclosure/spinlite_flat.scad (corpo basso agganciato al launcher: VERSIONE ATTUALE, docs/scatola-piatta.md)
                     enclosure/spinlite_views.scad (viste con tutti i componenti e i fili), img/ (render + README con licenze)
                     third_party/fetch_launchlab.py -> third_party/launchlab/ (file LaunchLab CC BY-SA, NEL .gitignore)
-                    render/render.py + scene.py (render Blender; launcher BX-28 stilizzato dalle foto, non quotato)
+                    render/render.py + scene.py (render Blender; launcher BX-28 stilizzato, non quotato, con la corda dalla parte sbagliata)
 .github/workflows/  build.yml (test + firmware + release su tag v*), pages.yml, _firmware.yml (riutilizzabile)
 ```
 
-## Stato (20/10/2026, notte)
+## Stato (09/11/2026)
+
+Decisione: la **scatola piatta** (`spinlite_flat.scad`) è la versione attuale, verificata solo a CAD e mai stampata. Quote e idee da Dragoon (CC BY-NC-SA: niente geometria copiata, modelli non nel repo). Non ha la sede dell'OLED: la versione con schermo arriverà in futuro (backlog). Verso di montaggio, dalle foto di Mirko: la finestrella del disco è più vicina alla corda del pistoncino, quindi USB-C verso la corda e parte lunga verso il fondo.
 
 Fatto e verificato:
 - firmware completo, compila senza warning in locale e in CI (RAM ~9%, flash ~49%);
@@ -77,7 +79,7 @@ Fatto e verificato:
 - rilevatore sui segnali simulati: errore sotto lo 0,1% da 1.500 a 30.000 RPM, niente falsi lanci, riavvolgimento ignorato (dettagli nella storia git);
 - pacchetti letti correttamente anche dal parser indipendente di MarkChan0225.
 
-**Nulla è stato ancora provato su hardware vero.** Toolchain locale: PlatformIO in `%USERPROFILE%\.spinlite-pio\Scripts\pio.exe` (non nel PATH); g++, make e OpenSCAD assenti, i test C++ girano solo in CI.
+**Nulla è stato ancora provato su hardware vero.** Toolchain locale: PlatformIO in `%USERPROFILE%\.spinlite-pio\Scripts\pio.exe` (non nel PATH); g++ e make assenti, i test C++ girano solo in CI.
 
 ## Prossimi passi, in ordine
 
@@ -85,7 +87,7 @@ Fatto e verificato:
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
-5. **Stampa di prova** di `hardware/enclosure/spinlite_top.scad` sulla base QRE v102 di LaunchLab, con i componenti veri: misurare SuperMini, TP4056, LiPo e interruttore e correggere i parametri; verificare la presa delle viti M2x6 e che la presa sul launcher sia libera. Verificata solo a CAD (nessuna collisione con le parti LaunchLab di anteprima, metodo in "Note di verifica").
+5. **Stampa di prova** della scatola piatta, `hardware/enclosure/spinlite_flat.scad`, partendo da corpo e clip: aggancio al launcher, tasto sul pistoncino, maniglia a T libera, poi misure dei componenti veri (lista in `docs/scatola-piatta.md`). Verificata solo a CAD. La stessa prova vale per `spinlite_top.scad` se si usa la base LaunchLab (metodo in "Note di verifica").
 6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
 
 Note di verifica della scatola (per rifarle dopo una modifica): gli STL di LaunchLab in coordinate di montaggio sono nella cartella `preview/` del pacchetto top-dock-v098 (base, clip chiuse, spine, barretta, viti). Si esportano `part="box"`, `"lid_mounted"` e `"check_tp|lipo|sm|sw"` (componenti ristretti di 0,1 mm) e si controlla con uno script Python che nessun punto campionato su una superficie cada dentro l'altro solido (raggio verticale, parita' degli attraversamenti). Controprova: contro `04_M5_dock_with_cable_shroud.stl` deve trovare migliaia di punti. OpenSCAD locale e' 2021.01 (niente backend manifold; CGAL rifiuta le mesh LaunchLab).
@@ -106,6 +108,7 @@ Decisione del 21/10/2026: prima si completa e si prova la versione basilare; que
 3. **WiFi** del C3: aggiornamento OTA e pagina servita dal dispositivo.
 4. **Buzzer** su un GPIO (~0,3 €): bip a PRONTO e al risultato.
 5. **Spegnimento automatico** per inattività.
+6. **Scatola piatta con schermo**: parametro `oled` in `spinlite_flat.scad`, con finestra nel coperchio e cornice per il modulo 38x12 (come in `spinlite_top.scad`, dove servono 4 mm di altezza in più).
 
 Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazioni pesanti.
 
@@ -151,7 +154,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 - `storico`, `cancella`
 - `set <parametro> <valore>`, `salva`, `default`
 - `test [rpm] [s]`, `test stop` — lancio finto: onda quadra su GPIO10 (GPTimer a 1 MHz, interrupt che inverte il pin), da collegare con un filo a GPIO3 senza sensore. Guida: `docs/prova-senza-sensore.md`
-- `presenza [on|off]` — tasto opzionale premuto dal pistoncino del launcher tramite un perno: scarta gli strappi a vuoto e rende vero il bit 0x04 di A0. Default spento. Solo testato su PC e verificato a CAD: `docs/presenza-trottola.md`
+- `presenza [on|off]` — tasto opzionale premuto dal pistoncino del launcher (direttamente nella scatola piatta, tramite un perno nell'altra): scarta gli strappi a vuoto e rende vero il bit 0x04 di A0. Default spento. Solo testato su PC e verificato a CAD: `docs/presenza-trottola.md`
 - Ogni lancio stampa una riga CSV: `LANCIO,rpm,rpm3giri,giro_singolo,giri,durata_ms,segno_min,fine`.
 
 ### Interfaccia

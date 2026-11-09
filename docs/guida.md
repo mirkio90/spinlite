@@ -34,7 +34,9 @@ Note:
 
 Serve un launcher con la **porta del Battle Pass**: i Takara Tomy a corda e con ingranaggi interni ce l'hanno, gli starter Hasbro europei no.
 
-Il sensore va in una **base stampata di LaunchLab** che si aggancia alla porta con due clip. La scatola SpinLite si avvita sopra con 4 viti M2. Link ai file, istruzioni di stampa e montaggio, adattamenti e licenza (CC BY-SA, derivata dal lavoro di Migbello): **[hardware/README.md](../hardware/README.md)**.
+**Versione attuale: la [scatola piatta](scatola-piatta.md)**, un corpo basso che si aggancia alla porta con due clip e contiene sensore, tasto ed elettronica. Non è ancora stata stampata e non ha ancora la sede per l'OLED.
+
+In alternativa, il sensore va in una **base stampata di LaunchLab** che si aggancia alla porta con due clip. La scatola SpinLite si avvita sopra con 4 viti M2. Link ai file, istruzioni di stampa e montaggio, adattamenti e licenza (CC BY-SA, derivata dal lavoro di Migbello): **[hardware/README.md](../hardware/README.md)**.
 
 ### Cosa legge il sensore
 

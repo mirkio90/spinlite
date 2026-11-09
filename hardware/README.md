@@ -2,7 +2,9 @@
 
 SpinLite si monta sulla **porta del Battle Pass** del launcher Beyblade X. Quella porta c'è sui launcher Takara Tomy, a corda e con ingranaggi interni. **Non** c'è sugli starter Hasbro europei.
 
-Il montaggio è fatto di due pezzi stampati, uniti da 4 viti:
+**Versione attuale: [scatola piatta](#scatola-piatta-versione-attuale)**, un corpo basso che si aggancia al launcher senza la base LaunchLab. Non è ancora stata stampata. Il resto di questa pagina, fino a quella sezione, descrive l'alternativa con la base LaunchLab.
+
+Il montaggio con la base LaunchLab è fatto di due pezzi stampati, uniti da 4 viti:
 
 ```
         ┌──────────────────────────┐
@@ -30,7 +32,7 @@ Componenti e link per ordinarli: **[BOM.md](BOM.md)**.
 | --- | --- |
 | ![render QRE](img/render_qre.png) | ![render TCRT](img/render_tcrt.png) |
 
-Render con Blender. Il launcher e la trottola sono **modellati a mano sulle foto del launcher a corda BX-28**: forma e proporzioni sono quelle, le quote no. I pezzi LaunchLab e SpinLite sono invece i modelli veri. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
+Render con Blender. Il launcher e la trottola sono **modellati a mano sulle foto del launcher a corda BX-28**: forma e proporzioni sono quelle, le quote no. I pezzi LaunchLab e SpinLite sono invece i modelli veri. Nel launcher stilizzato la corda è dalla parte sbagliata rispetto a quello vero. L'alternativa laterale mostra il suo limite: la scatola e le fascette occupano il fianco, cioè dove si tiene il launcher.
 
 ## File di LaunchLab in locale
 
@@ -144,9 +146,11 @@ Le quote d'interfaccia (`pilot_*`, `seat_z`, `hinge_*`, `plug_*`) sono misurate 
 
 Con `part = "assembly"` vedi scatola, coperchio e componenti al loro posto. Con `base_stl` puoi aggiungere la base. Usa il file `preview/01_QRE_open_holder_body.stl` del pacchetto [top-dock-v098](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip), che è già nelle coordinate di montaggio.
 
-## Scatola piatta (in prova)
+## Scatola piatta (versione attuale)
 
-`enclosure/spinlite_flat.scad` è un corpo unico che si aggancia direttamente al launcher, senza la base LaunchLab: sensore e tasto di presenza sono nel fondo. Verificata solo a CAD. Dettagli, stampa e montaggio in [scatola piatta](../docs/scatola-piatta.md).
+`enclosure/spinlite_flat.scad` è un corpo basso che si aggancia direttamente al launcher, senza la base LaunchLab: sensore e tasto di presenza sono nel fondo. Si monta con la USB-C verso la corda. Verificata solo a CAD. Dettagli, verso di montaggio, stampa e montaggio in [scatola piatta](../docs/scatola-piatta.md).
+
+Non ha ancora la sede per l'OLED: la versione con schermo arriverà in futuro.
 
 ## Scatola laterale (alternativa)
 

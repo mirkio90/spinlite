@@ -4,7 +4,7 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 
 - Prezzi indicativi di **ottobre 2026**, IVA inclusa, spedizione esclusa. Variano col venditore: controllali prima di ordinare.
 - La colonna "Link" riporta un'offerta trovata e controllata. "da scegliere" significa che va bene qualsiasi venditore, purché rispetti la nota.
-- Configurazione di riferimento: **sensore QRE1113 analogico montato sopra il launcher**. Il sensore si aggancia con la base stampata di LaunchLab e la scatola SpinLite si avvita sopra.
+- Le tabelle descrivono la configurazione con **sensore QRE1113 analogico sopra il launcher**, con la base stampata di LaunchLab e la scatola SpinLite avvitata sopra. Per la versione attuale, la scatola piatta, vedi [cosa cambia](#scatola-piatta-cosa-cambia).
 
 ## Elettronica
 
@@ -39,7 +39,20 @@ Viti: un kit assortito M2 (circa 3-5 €) basta per molti dispositivi. Il costo 
 | --- | --- | --- | --- | --- | --- |
 | 15 | OLED SSD1306 128x32 I2C | 1 | Firmware `spinlite_oled`. 4 pin: GND, VCC, SCL, SDA. | da scegliere | 1,5-2 € |
 | 16 | Modulo TCRT5000 + LM393 (alternativa al QRE1113) | 1 | Più economico (0,5-1 €), ma alto circa 19 mm: non sta sotto la scatola e va usato con il supporto laterale [TCRT5000 v102 di LaunchLab](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/standard-sensor-v102.zip). Usa l'uscita **AO**. | da scegliere | 0,5-1 € |
-| 17 | Tasto **SMD 6×6, altezza 3,4 mm** | 1 | Presenza della trottola, sotto il fondo della scatola, premuto da un perno stampato. Servono anche 2 fili sottili e una punta Ø2. Vedi [presenza della trottola](../docs/presenza-trottola.md). | da scegliere | ~0,5-1 € |
+| 17 | Tasto **SMD 6×6, altezza 3,4 mm** | 1 | Presenza della trottola. Nella scatola piatta appoggia direttamente sul pistoncino. Con la base LaunchLab sta sotto il fondo della scatola, premuto da un perno stampato, e servono anche una punta Ø2 e 2 fili sottili. Vedi [presenza della trottola](../docs/presenza-trottola.md). | da scegliere | ~0,5-1 € |
+
+## Scatola piatta: cosa cambia
+
+Versione attuale, descritta in [scatola piatta](../docs/scatola-piatta.md). Non è ancora stata stampata. L'elettronica è la stessa, tranne questi punti:
+
+| # | Componente | Con la scatola piatta |
+| --- | --- | --- |
+| 8 | Header e cavetto Dupont | Non servono: i tre fili si saldano direttamente al breakout del QRE1113 |
+| 10, 11 | Base LaunchLab e scatola | Sostituite da corpo, vassoio del sensore, coperchio e 2 clip (`enclosure/spinlite_flat.scad`) |
+| 12 | Viti M2×4 | Non servono |
+| 13 | Viti M2×6 | 12: 10 per il coperchio, 2 per l'interruttore |
+| 14 | Filamento PETG | Circa 21 g |
+| 15 | OLED | Non ancora previsto: la versione della scatola con schermo arriverà in futuro |
 
 ## Totale indicativo
 

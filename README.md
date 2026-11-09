@@ -3,7 +3,7 @@
 Conta giri da pochi euro per launcher **Beyblade X**: ESP32-C3 SuperMini + sensore ottico QRE1113 + piccola LiPo, agganciato alla porta del Battle Pass del launcher.
 I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Battle Pass, quindi funzionano le app esistenti (BeyGear, Spin Meter, Beyblader Helper, 321GoShoot). Display OLED 128x32 opzionale.
 
-![SpinLite montato sulla base sensore di LaunchLab](hardware/img/montato.png)
+![Scatola piatta di SpinLite con il coperchio trasparente](hardware/img/piatta_assieme.png)
 
 ![Schema di cablaggio](docs/img/cablaggio.svg)
 
@@ -15,7 +15,8 @@ I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Bat
 - [Dashboard web](https://mirkio90.github.io/spinlite/)
 - [Web flasher](https://mirkio90.github.io/spinlite/flasher/)
 - [Distinta base (BOM)](hardware/BOM.md)
-- [Montaggio sul launcher e parti stampate](hardware/README.md)
+- [Scatola piatta: stampa e montaggio](docs/scatola-piatta.md)
+- [Altri montaggi e parti stampate](hardware/README.md)
 
 ## Limiti da sapere subito
 
@@ -30,7 +31,7 @@ SpinLite misura l'**albero del launcher**, non la trottola. Con i launcher a cor
 | Schermate OLED (`oled_ui.*`) | disegno testato; driver I2C da provare |
 | Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | scritto completo, **NON ancora provato su hardware** |
 | Guida e BOM | scritte |
-| Montaggio | base sensore di LaunchLab (linkata); scatola SpinLite da montare sopra in riprogettazione |
+| Montaggio | [scatola piatta](docs/scatola-piatta.md) agganciata al launcher, verificata solo a CAD e non ancora stampata; versione con schermo in futuro. Alternativa: scatola sulla base LaunchLab |
 | Dashboard web e flasher | vedi i link sopra |
 
 Finché non è provato sul campo, aspettati bug e soglie da tarare.

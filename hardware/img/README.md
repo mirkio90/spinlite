@@ -17,7 +17,7 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png`, `render_piatta_clip.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. La sede delle clip nel fianco del launcher è dedotta dalla forma delle clip, non misurata |
 | `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
 
-Nei render il **launcher e la trottola sono modelli stilizzati**, fatti a mano sulle foto del launcher a corda BX-28 (forma e proporzioni, non quote misurate).
+Nei render il **launcher e la trottola sono modelli stilizzati**, fatti a mano sulle foto del launcher a corda BX-28 (forma e proporzioni, non quote misurate). Nel launcher stilizzato la corda è dalla parte sbagliata: sul launcher vero la finestrella del disco è più vicina alla corda del pistoncino. Il verso giusto è in [scatola piatta](../../docs/scatola-piatta.md#verso-di-montaggio).
 
 Colori dei fili: rosso +, nero GND, giallo uscita del sensore (GPIO3), azzurro batteria (GPIO4), verde e viola SDA/SCL dell'OLED.
 

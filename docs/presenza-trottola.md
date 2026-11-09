@@ -9,6 +9,8 @@ Serve a due cose:
 
 Stato: **firmware testato su PC e supporto meccanico verificato a CAD. Nulla è stato ancora stampato o provato su hardware.**
 
+Nella [scatola piatta](scatola-piatta.md), la versione attuale, il tasto appoggia direttamente sul pistoncino: perno, dima e foro descritti più sotto servono solo con la scatola sulla base LaunchLab.
+
 ## Come lo fanno gli altri
 
 | Progetto | Rilevazione | Cosa abbiamo preso |
