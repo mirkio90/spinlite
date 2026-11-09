@@ -15,7 +15,8 @@
 //   davanti TP4056 di traverso (USB-C sul fianco +X), poi LiPo
 // Montaggio: docs/scatola-piatta.md
 
-// ---- Cosa generare: "body", "lid", "tray", "clips", "plate" (tutti), "assembly" ----
+// ---- Cosa generare: "body", "lid", "tray", "clips", "button", "plate" (tutti), "assembly",
+//      "prova" (solo la zona centrale, per provare aggancio, sensore e tasto con poco filamento) ----
 // ("mounted_lid", "mounted_clip" e "check_*" servono solo per i controlli)
 part = "plate";
 clip_angle = 0;     // per "mounted_clip": rotazione attorno al perno, in gradi
@@ -81,6 +82,31 @@ sf_y     = -17;
 usb_hole = [9.8, 3.9];
 usb_pocket = [13, 0.8];
 
+// OLED 128x32 da 0,91": sotto il coperchio, sopra il vassoio. Non alza il corpo.
+oled      = true;
+oled_pcb  = [12.2, 38.2, 1.2]; // x, y, spessore (misura il tuo)
+oled_glass = [11.5, 30, 1.4];  // vetro: x, y, spessore
+oled_win  = [6.5, 23];         // area visibile: x, y
+oled_win_dy = 0;               // scostamento dell'area visibile dal centro del PCB (misura il tuo)
+oled_y0   = -7.2;              // bordo del PCB dal lato dei pin, verso la SuperMini
+oled_fit  = 0.3;
+oled_ring = 2.4;               // altezza della cornice sotto il coperchio
+// Tasto esterno, in parallelo al BOOT (GPIO9): stesso tasto SMD della presenza + cappuccio stampato
+btn       = true;
+btn_x     = -11;
+btn_y     = 13;
+btn_d     = 4.0;   // gambo del cappuccio
+btn_hole  = 4.4;
+btn_flange = 6.5;  // flangia sotto il coperchio: il cappuccio non puo' uscire
+btn_out   = 1.0;   // quanto sporge dal coperchio
+// Zone sottili del coperchio: fanno passare la luce dei LED con filamento chiaro
+led_t     = 0.6;   // spessore residuo
+led_zones = [[-8, -3, -29.5, -12.5], [3, 8, -29.5, -12.5], [-3, 3, -24.8, -12.5], // LED della SuperMini
+             [-9, 10.5, 33, 45.5]];                                               // LED del TP4056
+// Giochi e spezzone di prova
+tray_gap  = 0.25;  // per lato, tra vassoio e apertura nel corpo
+coupon_y  = [-6.5, 24.5];
+
 $fn = 40;
 
 // ---------------------------------------------------------------------------
@@ -107,6 +133,16 @@ z_tp_usb = z_floor + tp_pcb + tp_usb[1] / 2;
 lipo_y0 = tp_y1 + 2.0; lipo_y1 = lipo_y0 + lipo[1];
 sf_z   = z_floor + 0.2 + sf_plate[1] / 2;
 sf_slot = [sf_lever[0] + sf_travel + 0.6, sf_lever[1] + 0.6];
+
+oled_y    = oled_y0 + oled_pcb[1] / 2;
+z_oled    = z_lid - oled_glass[2] - oled_pcb[2]; // faccia inferiore del PCB dell'OLED
+z_btn     = z_lid - 1.0;                         // faccia inferiore della flangia del cappuccio
+z_btn_tact = z_btn - tact_h;                     // base del tasto esterno
+
+assert(!oled || z_oled >= z_tact + tact_body[2] + 2.5, "manca lo spazio per i fili sotto l'OLED");
+assert(!oled || oled_y0 + oled_pcb[1] < tp_y0 + 3, "OLED troppo lungo: arriva sopra il chip del TP4056");
+assert(!btn || btn_x + btn_flange / 2 <= -oled_pcb[0] / 2 - oled_fit / 2 - 1.2 - 0.2, "cappuccio contro la cornice dell'OLED");
+assert(!btn || z_btn_tact > z_floor, "tasto esterno troppo alto");
 
 assert(z_tact >= z_plate - 0.45, "cappuccio del tasto troppo corto: il fondo resta troppo sottile");
 assert(z_tact <= z_plate + 0.01, "cappuccio del tasto troppo lungo: la punta supera la quota prevista");
@@ -155,6 +191,8 @@ module supports() {
         cube([1.2, lipo[1] - 8, 2]);
     // colonnine del coperchio
     post_positions() translate([0, 0, z_floor - eps]) cylinder(d = post_d, h = z_lid - z_floor + eps);
+    // torretta del tasto esterno: regge la spinta del dito, i piedini restano liberi lungo Y
+    if (btn) translate([-14.5, btn_y - 2.5, z_floor - eps]) cube([5.9, 5, z_btn_tact - z_floor + eps]);
 }
 
 // Sponde che tengono in posizione PCB del sensore e tasto
@@ -184,7 +222,7 @@ module sensor_ribs() {
 
 module cutouts() {
     // apertura per il vassoio del sensore
-    translate([-tray_x - 0.1, tray_y0 - 0.1, body_z - 1]) cube([2 * tray_x + 0.2, tray_y1 - tray_y0 + 0.2, floor_t + 2]);
+    translate([-tray_x - tray_gap, tray_y0 - tray_gap, body_z - 1]) cube([2 * tray_x + 2 * tray_gap, tray_y1 - tray_y0 + 2 * tray_gap, floor_t + 2]);
     // USB-C SuperMini, parete posteriore
     translate([-usb_hole[0] / 2, -34, z_sm_usb - usb_hole[1] / 2]) cube([usb_hole[0], wall + 2, usb_hole[1]]);
     translate([-usb_pocket[0] / 2, -34, z_sm_usb - usb_hole[1] / 2 - 1.2]) cube([usb_pocket[0], usb_pocket[1] + 1, usb_hole[1] + 2.4]);
@@ -247,11 +285,19 @@ module lid() {
             prism(z_lid, z_top) outline();
             // alette sopra il perno delle clip: lo tengono nella sede
             for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0], lid_t]);
+            // cornice che centra l'OLED sotto la finestra
+            if (oled) translate([0, oled_y, z_lid - oled_ring]) difference() {
+                w = oled_pcb[0] + oled_fit; l = oled_pcb[1] + oled_fit;
+                translate([-w / 2 - 1.2, -l / 2 - 1.2, 0]) cube([w + 2.4, l + 2.4, oled_ring + eps]);
+                translate([-w / 2, -l / 2, -1]) cube([w, l, oled_ring + 2]);
+            }
             // bordo di centraggio
             difference() {
                 prism(z_lid - lip_h, z_lid + eps) offset(delta = -wall - clearance) outline();
                 prism(z_lid - lip_h - 1, z_lid + 1) offset(delta = -wall - clearance - lip_t) outline();
                 post_positions() translate([0, 0, z_lid - lip_h - 1]) cylinder(d = post_d + 1, h = lip_h + 2);
+                // intaglio per la flangia del cappuccio
+                if (btn) translate([btn_x - btn_flange / 2 - 1.5, btn_y - btn_flange / 2 - 0.8, z_lid - lip_h - 1]) cube([btn_flange + 1.5, btn_flange + 1.6, lip_h + 1]);
                 // intagli sopra USB-C e interruttore
                 translate([-usb_pocket[0] / 2, -34, z_lid - lip_h - 1]) cube([usb_pocket[0], 5, lip_h + 1]);
                 translate([14, (tp_y0 + tp_y1) / 2 - usb_pocket[0] / 2, z_lid - lip_h - 1]) cube([6, usb_pocket[0], lip_h + 1]);
@@ -267,6 +313,10 @@ module lid() {
             translate([tp_x1 - 6, (tp_y0 + tp_y1) / 2 - 2.5, z_tpu]) cube([5, 5, z_lid - z_tpu + eps]);
         }
         post_positions() translate([0, 0, z_lid - 1]) cylinder(d = m2_clear, h = lid_t + 2);
+        if (oled) translate([-oled_win[0] / 2, oled_y + oled_win_dy - oled_win[1] / 2, z_lid - 1]) cube([oled_win[0], oled_win[1], lid_t + 2]);
+        if (btn) translate([btn_x, btn_y, z_lid - 1]) cylinder(d = btn_hole, h = lid_t + 2);
+        // zone sottili, scavate dall'interno
+        for (a = led_zones) translate([a[0], a[2], z_lid]) cube([a[1] - a[0], a[3] - a[2], lid_t - led_t]);
     }
 }
 
@@ -333,6 +383,24 @@ module tp4056(shr = 0) {
     color("#222") blk([tp_x0 + 8, tp_y0 + 6, z_floor + tp_pcb], [5, 5, 1.6], shr);
 }
 
+// Tasto esterno: stesso tasto della presenza, girato col cappuccio verso l'alto e i piedini lungo Y
+module btn_tact(shr = 0) translate([btn_x, btn_y, 0]) {
+    color("#202020") blk([-tact_body[0] / 2, -tact_body[1] / 2, z_btn_tact], tact_body, shr);
+    color("silver") blk([-1.5, -1.5, z_btn_tact + tact_body[2] - eps], [3, 3, tact_cap_l + eps], shr);
+    color("gold") for (s = [-1, 1]) blk([s * 2.25 - 0.35, -tact_legs / 2, z_btn_tact], [0.7, tact_legs, 0.4], shr);
+}
+
+// Cappuccio stampato: la flangia resta sotto il coperchio e appoggia sul tasto
+module button(shr = 0) translate([btn_x, btn_y, z_btn]) color("dimgray") {
+    cylinder(d = btn_flange - 2 * shr, h = 0.8);
+    cylinder(d = btn_d - 2 * shr, h = z_top + btn_out - z_btn);
+}
+
+module oled_module(shr = 0) translate([0, oled_y, 0]) {
+    color("navy") blk([-oled_pcb[0] / 2, -oled_pcb[1] / 2, z_oled], oled_pcb, shr);
+    color("black") blk([-oled_glass[0] / 2, -oled_glass[1] / 2, z_oled + oled_pcb[2] - eps], oled_glass, shr);
+}
+
 module lipo_pack(shr = 0) color("lightsteelblue") blk([-lipo[0] / 2, lipo_y0 + fit / 2, z_floor + lipo_foam], lipo, shr);
 
 module switch_sf(shr = 0) color("#303030") {
@@ -343,7 +411,17 @@ module switch_sf(shr = 0) color("#303030") {
     for (s = [-1, 1]) blk([ix - 2.1, sf_y + s * sf_pitch / 2 - 2.2, sf_z - 2.2], [1.6, 4.4, 4.4], shr);
 }
 
-module components(shr = 0) { qre(shr); tact(shr); supermini(shr); tp4056(shr); lipo_pack(shr); switch_sf(shr); }
+module components(shr = 0) {
+    qre(shr); tact(shr); supermini(shr); tp4056(shr); lipo_pack(shr); switch_sf(shr);
+    if (oled) oled_module(shr);
+    if (btn) { btn_tact(shr); button(shr); }
+}
+
+// Tiene solo la zona centrale, tra le colonnine del coperchio
+module coupon() intersection() {
+    children();
+    translate([-40, coupon_y[0], -5]) cube([80, coupon_y[1] - coupon_y[0], 40]);
+}
 
 // ---------------------------------------------------------------------------
 // Uscita
@@ -354,11 +432,20 @@ else if (part == "tray") translate([0, 0, -band_z]) tray();
 else if (part == "mounted_tray") tray();
 else if (part == "lid") translate([0, 0, z_top]) rotate([180, 0, 0]) lid();
 else if (part == "clips") { clip_for_print(); translate([0, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
+else if (part == "button") translate([-btn_x, -btn_y, -z_btn]) button();
+else if (part == "prova") {
+    translate([0, 0, -body_z]) coupon() body();
+    translate([45, 0, z_top]) rotate([180, 0, 0]) coupon() lid();
+    translate([70, 0, 0]) { clip_for_print(); translate([16, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
+    translate([80, -40, -band_z]) tray();
+    if (btn) translate([55, -40, 0]) translate([-btn_x, -btn_y, -z_btn]) button();
+}
 else if (part == "plate") {
     translate([0, 0, -body_z]) body();
     translate([45, 0, z_top]) rotate([180, 0, 0]) lid();
     translate([70, 0, 0]) { clip_for_print(); translate([16, 20, 0]) mirror([1, 0, 0]) clip_for_print(); }
     translate([80, -40, -band_z]) tray();
+    if (btn) translate([55, -40, 0]) translate([-btn_x, -btn_y, -z_btn]) button();
 }
 else if (part == "assembly") {
     color("orange") body();
@@ -376,3 +463,6 @@ else if (part == "check_sm") supermini(0.1);
 else if (part == "check_tp") tp4056(0.1);
 else if (part == "check_lipo") lipo_pack(0.1);
 else if (part == "check_sw") switch_sf(0.1);
+else if (part == "check_oled") oled_module(0.1);
+else if (part == "check_btn") btn_tact(0.1);
+else if (part == "check_cap") button(0.1);

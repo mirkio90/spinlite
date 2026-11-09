@@ -43,7 +43,7 @@ PARTS_C = {
     "c_lid": "lid();",
     "c_clip_r": "mounted_clip(0, false);",
     "c_clip_l": "mounted_clip(0, true);",
-    "c_elec": "supermini(); tp4056();",
+    "c_elec": "supermini(); tp4056(); oled_module(); btn_tact(); button();",
     "c_switch": ("switch_sf();\n"
                  "translate([19 - wall - 0.5, sf_y - 2.5, sf_z - sf_lever[1] / 2]) cube([wall + sf_lever[2] + 0.5, sf_lever[0], sf_lever[1]]);"),
     "c_screws": ("post_positions() translate([0, 0, z_top]) cylinder(d = 3.8, h = 1.3);\n"
