@@ -33,11 +33,9 @@
 //   6. coperchio con 4 x M2x6: una nervatura sulla USB-C e un limitatore
 //      sulla coda tengono ferma la SuperMini.
 
-// ---- Cosa generare: "box", "lid", "both" (affiancati), "assembly", "pins", "jig" ----
-// ("components", "lid_mounted", "pin_mounted", "jig_mounted" e "check_*" servono
-// solo per i controlli)
+// ---- Cosa generare: "box", "lid", "both" (affiancati), "assembly" ----
+// ("components", "lid_mounted" e "check_*" servono solo per i controlli)
 part = "both";
-pin_index = 0; // per part = "pin_mounted": quale perno di pin_lifts
 
 // ---- Base LaunchLab, solo per controllo visivo (non stampata) ----
 // Percorso di 01_QRE_open_holder_body.stl dalla cartella preview/ del pacchetto
@@ -116,27 +114,6 @@ sf_y      = -9;               // centro lungo Y
 usb_hole_w = 9.8;
 usb_hole_h = 3.9;
 usb_pocket = [13, 0.8];      // larghezza dell'incavo esterno, profondita'
-// Presenza della trottola (docs/presenza-trottola.md): tasto SMD 6x6 sotto il
-// fondo, premuto da un perno che sale dal pistoncino del launcher attraverso un
-// foro nella base. false = fondo senza sede.
-presence  = true;
-pin_y     = 1;     // il pistoncino e' a (0; 0), ma a Y -0,22 finisce il PCB del QRE
-pin_d     = 1.8;   // gambo del perno
-pin_drill = 2.0;   // punta del trapano per la base
-pin_head_d = 4.4;  // testa: preme il tasto e ferma il perno sulla barretta
-pin_tip_z = 2.85;  // punta a riposo, a filo della faccia che poggia sul launcher
-pin_stop_z = 8.75; // sotto la testa: sopra la rampa della barretta (Z 8,7)
-// Quanto sale il pistoncino con la trottola inserita non e' misurato: si stampa
-// un perno per ogni valore e si tiene il piu' corto che fa scattare il tasto.
-pin_lifts = [0.3, 0.5, 0.7, 0.9, 1.1];
-tact_body = [6.2, 6.2, 2.2];  // corpo: x, y, z
-tact_h    = 3.4;   // altezza totale, cappuccio compreso
-tact_cap  = 3.0;   // lato del cappuccio
-tact_legs = 8.0;   // ingombro dei piedini lungo X
-tact_leg_y = 2.25; // piedini a Y +- questo valore dal centro
-tact_travel = 0.25; // corsa del tasto
-tact_pocket = 1.0; // profondita' della sede nel fondo
-jig_t     = 4.5;   // spessore della dima di foratura
 // OLED 128x32 opzionale nel coperchio
 oled      = false;
 oled_pcb  = [12.2, 38.2];    // x, y (modulo ~38 x 12)
@@ -184,16 +161,10 @@ lid_post  = [in_x - 2.6, in_y1 - 2.6, in_y0 + 2.6];
 // SS12F15: flangia appena sopra la LiPo (0,3 mm d'aria)
 sf_z      = z_floor + 0.5 + lipo_h + 0.3 + sf_plate[1] / 2;
 sf_slot   = [sf_lever[0] + sf_travel + 0.6, sf_lever[1] + 0.6]; // feritoia: y, z
-// presenza: punta del cappuccio del tasto e cima del perno a riposo
-z_tact_cap = z_bot + tact_pocket - tact_h;
-function pin_top(lift) = z_tact_cap + tact_travel - lift;
 
 assert(lipo_y0 > in_y0 + 3, "LiPo troppo lunga: non resta spazio per i fili del sensore");
 assert(switch_type != "SS12F15" || sf_z + sf_plate[1] / 2 < z_in_top - 0.3, "SS12F15 non sta tra LiPo e coperchio");
 assert(z_tp_usb + usb_hole_h / 2 + 1.2 < z_sm_usb - usb_hole_h / 2 + 0.01, "fori USB-C sovrapposti");
-assert(tact_pocket <= floor_t - 0.6, "sede del tasto troppo profonda: il fondo resta troppo sottile");
-assert(pin_top(pin_lifts[0]) < z_tact_cap, "perno troppo lungo: premerebbe il tasto a riposo");
-assert(pin_top(pin_lifts[len(pin_lifts) - 1]) > pin_stop_z + 1, "testa del perno troppo sottile");
 
 // ---------------------------------------------------------------------------
 // Scatola
@@ -287,13 +258,6 @@ module cutouts() {
     // fori pilota del coperchio
     for (sx = [-1, 1], y = [lid_post[1], lid_post[2]])
         translate([sx * lid_post[0], y, z_in_top - 7]) cylinder(d = m2_pilot, h = 8);
-    // sede del tasto di presenza, aperta verso il basso, con i canali dei piedini
-    if (presence) translate([0, pin_y, z_bot - 1]) {
-        translate([-tact_body[0] / 2 - 0.15, -tact_body[1] / 2 - 0.15, 0])
-            cube([tact_body[0] + 0.3, tact_body[1] + 0.3, tact_pocket + 1]);
-        for (s = [-1, 1]) translate([-tact_legs / 2 - 0.4, s * tact_leg_y - 0.7, 0])
-            cube([tact_legs + 0.8, 1.4, tact_pocket + 1]);
-    }
 }
 
 module box() {
@@ -364,55 +328,6 @@ module lid() {
 }
 
 // ---------------------------------------------------------------------------
-// Presenza della trottola: perno, dima di foratura, tasto
-// ---------------------------------------------------------------------------
-// Perno a riposo, in coordinate di montaggio. Le tacche sulla testa dicono
-// quale valore di pin_lifts e' (indice + 1 tacche).
-module pin(index) {
-    top = pin_top(pin_lifts[index]);
-    translate([0, pin_y, 0]) difference() {
-        union() {
-            translate([0, 0, pin_tip_z]) cylinder(d = pin_d, h = pin_stop_z - pin_tip_z + eps);
-            translate([0, 0, pin_stop_z]) cylinder(d = pin_head_d, h = top - pin_stop_z);
-        }
-        for (i = [0 : index]) rotate([0, 0, 180 + i * 36])
-            translate([pin_head_d / 2 - 0.5, -0.3, pin_stop_z - 1]) cube([1, 0.6, top - pin_stop_z + 2]);
-    }
-}
-
-// Tutti i perni capovolti: la testa sul piatto, cosi' il gambo non ha supporti.
-module pins_for_print() {
-    for (i = [0 : len(pin_lifts) - 1])
-        translate([i * 8, pin_y, pin_top(pin_lifts[i])]) rotate([180, 0, 0]) pin(i);
-}
-
-// Dima: si avvita ai due rilievi +Y della base e guida la punta nel punto giusto.
-module drill_jig() {
-    difference() {
-        union() {
-            translate([-pilot_x - 3, pilot_y - 3, seat_z]) cube([2 * pilot_x + 6, 6, jig_t]);
-            translate([-4, pin_y - 3, seat_z]) cube([8, pilot_y - pin_y + 3 + eps, jig_t]);
-        }
-        for (s = [-1, 1]) translate([s * pilot_x, pilot_y, seat_z - 1]) {
-            cylinder(d = m2_clear, h = jig_t + 2);
-            // testa incassata: una M2x6 prende comunque 3,5 mm nel rilievo
-            translate([0, 0, 1 + jig_t - 2]) cylinder(d = m2_head, h = 3);
-        }
-        translate([0, pin_y, seat_z - 1]) cylinder(d = pin_drill + 0.15, h = jig_t + 2);
-    }
-}
-
-// Tasto nella sede (blocchi semplificati, cappuccio verso il basso)
-module tact_switch(shr = 0) {
-    translate([0, pin_y, 0]) {
-        color("#202020") blk([-tact_body[0] / 2, -tact_body[1] / 2, z_bot + tact_pocket - tact_body[2]], tact_body, shr);
-        color("silver") blk([-tact_cap / 2, -tact_cap / 2, z_tact_cap], [tact_cap, tact_cap, tact_h - tact_body[2] + eps], shr);
-        color("gold") for (s = [-1, 1])
-            blk([-tact_legs / 2, s * tact_leg_y - 0.35, z_bot + tact_pocket - 0.4], [tact_legs, 0.7, 0.4], shr);
-    }
-}
-
-// ---------------------------------------------------------------------------
 // Uscita
 // ---------------------------------------------------------------------------
 module base_ghost() {
@@ -467,16 +382,6 @@ if (part == "box") {
     components();
 } else if (part == "check_tp" || part == "check_lipo" || part == "check_sm" || part == "check_sw") {
     components(which = part == "check_tp" ? "tp" : part == "check_lipo" ? "lipo" : part == "check_sm" ? "sm" : "sw", shr = 0.1);
-} else if (part == "pins") {
-    pins_for_print();
-} else if (part == "jig") {
-    translate([0, 0, -seat_z]) drill_jig();
-} else if (part == "pin_mounted") {
-    pin(pin_index);
-} else if (part == "jig_mounted") {
-    drill_jig();
-} else if (part == "check_tact") {
-    tact_switch(shr = 0.1);
 } else if (part == "none") {
     // niente: il file e' incluso da spinlite_views.scad
 } else if (part == "lid_mounted") {
