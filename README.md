@@ -1,13 +1,13 @@
 # SpinLite
 
-Conta giri da pochi euro per launcher **Beyblade X**: ESP32-C3 SuperMini + sensore ottico QRE1113 + piccola LiPo, agganciato alla porta del Battle Pass del launcher.
+Conta giri da pochi euro per launcher **Beyblade X**: ESP32-C3 SuperMini + sensore ottico QRE1113 + tasto di presenza della trottola + piccola LiPo, agganciato alla porta del Battle Pass del launcher.
 I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Battle Pass, quindi funzionano le app esistenti (BeyGear, Spin Meter, Beyblader Helper, 321GoShoot). Display OLED 128x32 opzionale.
 
 ![Scatola piatta di SpinLite con il coperchio trasparente](hardware/img/piatta_assieme.png)
 
 ![Schema di cablaggio](docs/img/cablaggio.svg)
 
-**Costo indicativo: circa 15-18 €** (17-20 € con OLED), prezzi di ottobre 2026: vedi la [distinta base](hardware/BOM.md).
+**Costo indicativo: circa 17-21 €** con OLED, 15-19 € senza, prezzi di ottobre 2026: vedi la [distinta base](hardware/BOM.md).
 
 ## Link
 
@@ -16,7 +16,7 @@ I risultati arrivano al telefono via Bluetooth con lo stesso profilo del Bey Bat
 - [Web flasher](https://mirkio90.github.io/spinlite/flasher/)
 - [Distinta base (BOM)](hardware/BOM.md)
 - [Scatola piatta: stampa e montaggio](docs/scatola-piatta.md)
-- [Altri montaggi e parti stampate](hardware/README.md)
+- [Parti stampate e vecchi montaggi](hardware/README.md)
 
 ## Limiti da sapere subito
 
@@ -31,7 +31,7 @@ SpinLite misura l'**albero del launcher**, non la trottola. Con i launcher a cor
 | Schermate OLED (`oled_ui.*`) | disegno testato; driver I2C da provare |
 | Firmware ESP32-C3 (`spinlite.ino`: ADC, BLE, console) | scritto completo, **NON ancora provato su hardware** |
 | Guida e BOM | scritte |
-| Montaggio | [scatola piatta](docs/scatola-piatta.md) agganciata al launcher, con OLED e tasto esterno, verificata solo a CAD e non ancora stampata. Alternativa: scatola sulla base LaunchLab |
+| Montaggio | [scatola piatta](docs/scatola-piatta.md) agganciata al launcher, con OLED, tasto di presenza e tasto esterno, verificata solo a CAD e non ancora stampata. Le scatole precedenti restano come archivio |
 | Dashboard web e flasher | vedi i link sopra |
 
 Finché non è provato sul campo, aspettati bug e soglie da tarare.
@@ -39,10 +39,10 @@ Finché non è provato sul campo, aspettati bug e soglie da tarare.
 ## Sviluppo
 
 ```
-make -C test                  # test su PC (rilevatore, protocollo, OLED)
-pio run                       # compila il firmware
-pio run -e spinlite_oled      # con display OLED
-pio run -t upload             # carica sulla scheda
+make -C test                  # test su PC (rilevatore, protocollo, OLED, impostazioni, presenza)
+pio run -e spinlite_qre       # compila il firmware (QRE1113)
+pio run -e spinlite_qre_oled  # con display OLED
+pio run -e spinlite_qre -t upload  # carica sulla scheda
 ```
 
 Il piano di lavoro e le note tecniche sono in `CLAUDE.md`.

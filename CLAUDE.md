@@ -14,7 +14,7 @@ Aggiornalo quando cambia lo stato (sezione "Stato" e "Prossimi passi").
 
 Il conta giri **più economico possibile** per launcher Beyblade X:
 
-- **ESP32-C3 SuperMini** (circa 3-4 € da AliExpress) + modulo **TCRT5000/LM393** (uscita analogica AO) + LiPo piccola + modulo di ricarica.
+- **ESP32-C3 SuperMini** (circa 3-4 € da AliExpress) + sensore **QRE1113 analogico** + **tasto di presenza** + LiPo piccola + modulo di ricarica.
 - Dati al telefono via **BLE con lo stesso profilo del Bey Battle Pass BX-09**, così funzionano le app esistenti: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot e la dashboard web di MarkChan0225. Nessuna app da scrivere.
 - **OLED 128x32 opzionale** (flag di compilazione `SPINLITE_OLED`).
 - Algoritmo di misura sul segnale **analogico** con soglie adattive in software: è il punto di forza di LaunchLab, che invece costa uno StickS3 da circa 29 $.
@@ -35,7 +35,8 @@ Il conta giri **più economico possibile** per launcher Beyblade X:
 - SpinLite è **MIT**.
 - **BRD è GPL-3.0**: si può consultare per confrontare i valori del protocollo, **mai copiarne codice**. Copiandolo il progetto diventerebbe GPL.
 - I supporti 3D di LaunchLab sono **CC BY-SA**, perché derivano dal BP Gear Port Connector di Migbello (Thingiverse 6856080). Vanno **citati e linkati**, non copiati nel repo né fusi con i nostri modelli.
-- **Decisione (20/10/2026):** sensore di riferimento **QRE1113 analogico** (breakout tipo SparkFun ROB-09453) nella **base QRE v102 di LaunchLab** (compact-base, linkata al commit `87bb60d`), stampata senza modifiche. La nostra scatola (MIT) si **avvita sopra** ai 4 fori pilota M2 su 29 x 24 mm, come il loro "Top Mount" dell'M5. Dalla base prendiamo solo quote d'interfaccia (fori, ingombri), non la geometria. Il TCRT5000 resta un'alternativa con il loro supporto laterale standard-sensor v102.
+- **Decisione (09/11/2026):** il tasto di presenza è **obbligatorio** e **non si fora nulla**. Tolti interruttore firmware, perni e dima; le scatole `spinlite_top.scad` e `spinlite_box.scad` restano come archivio e con il firmware attuale non registrano lanci.
+- **Decisione (20/10/2026), superata dalla scatola piatta:** sensore di riferimento **QRE1113 analogico** (breakout tipo SparkFun ROB-09453) nella **base QRE v102 di LaunchLab** (compact-base, linkata al commit `87bb60d`), stampata senza modifiche. La nostra scatola (MIT) si **avvita sopra** ai 4 fori pilota M2 su 29 x 24 mm, come il loro "Top Mount" dell'M5. Dalla base prendiamo solo quote d'interfaccia (fori, ingombri), non la geometria. Il TCRT5000 resta un'alternativa con il loro supporto laterale standard-sensor v102.
 - Motivi: la porta del Battle Pass ha una finestrella a trapezio da 5-6 mm sopra un anello bianco/nero interno (1-2 mm sotto); il TCRT (lenti 7x6 mm, alto ~19 mm) è troppo grosso, il QRE lavora a ~1 mm. Fondere gli STL rovinerebbe le cerniere print-in-place (servono i "hinge support blocker" del loro 3MF).
 - Il nome BLE di default è `BEYBLADE_TOOL01`, quello del dispositivo originale, perché alcune app lo cercano per nome. Il progetto non è affiliato a Takara Tomy o Hasbro.
 
@@ -55,12 +56,12 @@ firmware/spinlite/
   presence.*        presenza trottola (tasto, GPIO5)         (testato su PC)
   console.*         comandi seriali
   spinlite.ino      collegamento dei moduli, LED, pulsante, OLED, salvataggi
-test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings
+test/               make -C test (g++ C++17, ASan/UBSan, -Werror): detector, protocol, oled, settings, presence
 docs/               GitHub Pages: dashboard Web Bluetooth (protocol.js + node docs/protocol.test.mjs),
                     flasher/ (esp-web-tools), guida.md, img/cablaggio.svg
 hardware/           BOM.md (distinta base ufficiale), README.md (montaggio, base LaunchLab linkata),
-                    enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: alternativa),
-                    enclosure/spinlite_box.scad (scatola laterale, alternativa per TCRT o altri montaggi)
+                    enclosure/spinlite_top.scad (scatola avvitata sopra la base QRE: archivio, senza tasto di presenza),
+                    enclosure/spinlite_box.scad (scatola laterale: archivio, senza tasto di presenza)
                     enclosure/spinlite_flat.scad (corpo basso agganciato al launcher: VERSIONE ATTUALE, docs/scatola-piatta.md)
                     enclosure/spinlite_views.scad (viste con tutti i componenti e i fili), img/ (render + README con licenze)
                     third_party/fetch_launchlab.py -> third_party/launchlab/ (file LaunchLab CC BY-SA, NEL .gitignore)
@@ -74,7 +75,7 @@ Decisione: la **scatola piatta** (`spinlite_flat.scad`) è la versione attuale, 
 
 Fatto e verificato:
 - firmware completo, compila senza warning in locale e in CI (RAM ~9%, flash ~49%);
-- CI verde: 4 test C++ con sanitizer + test Node del parser web;
+- CI verde: 5 test C++ con sanitizer + test Node del parser web;
 - sito online: https://mirkio90.github.io/spinlite/ (dashboard) e /flasher/ con i `.bin` (firmware.factory.bin di pioarduino, offset 0) pubblicati dalla CI;
 - rilevatore sui segnali simulati: errore sotto lo 0,1% da 1.500 a 30.000 RPM, niente falsi lanci, riavvolgimento ignorato (dettagli nella storia git);
 - pacchetti letti correttamente anche dal parser indipendente di MarkChan0225.
@@ -83,11 +84,11 @@ Fatto e verificato:
 
 ## Prossimi passi, in ordine
 
-1. **Prova senza sensore** (la SuperMini c'e' gia'): `docs/prova-senza-sensore.md`, comando `test`, poi handle BLE con nRF Connect. Poi **flashare e provare con il segnale vero** (`pio run -t upload`, poi `pio device monitor`). Controllare all'avvio la riga "ADC: frequenza misurata" (atteso ~10.000 Hz), poi `raw` girando l'albero a mano, regolare vite del TCRT e `minmark`, poi `fronti`.
+1. **Prova senza sensore** (la SuperMini c'e' gia'): `docs/prova-senza-sensore.md`, comando `test`, poi handle BLE con nRF Connect. Poi **flashare e provare con il segnale vero** (`pio run -t upload`, poi `pio device monitor`). Il `test` si arma da solo, i lanci veri invece richiedono il tasto su GPIO5. Controllare all'avvio la riga "ADC: frequenza misurata" (atteso ~10.000 Hz), poi `raw` girando l'albero a mano, regolare vite del TCRT e `minmark`, poi `fronti`.
 2. **Verificare gli handle BLE con nRF Connect**: f001 valore = 15, f002 valore = 17, CCCD = 18. Dipende da quanti attributi NimBLE mette nei servizi GAP/GATT; se non tornano, valutare di aggiungere o togliere attributi prima del nostro service.
 3. **Provare le app**: BeyGear, Spin Meter, Beyblader Helper, 321GoShoot, dashboard del progetto.
 4. Provare l'OLED (driver I2C mai provato) e la lettura batteria col partitore.
-5. **Stampa di prova** della scatola piatta, `hardware/enclosure/spinlite_flat.scad`, partendo dallo spezzone (`part = "prova"`): aggancio al launcher, tasto sul pistoncino, maniglia a T libera, poi misure dei componenti veri (lista in `docs/scatola-piatta.md`). Verificata solo a CAD. La stessa prova vale per `spinlite_top.scad` se si usa la base LaunchLab (metodo in "Note di verifica").
+5. **Stampa di prova** della scatola piatta, `hardware/enclosure/spinlite_flat.scad`, partendo dallo spezzone (`part = "prova"`): aggancio al launcher, tasto sul pistoncino, maniglia a T libera, poi misure dei componenti veri (lista in `docs/scatola-piatta.md`). Verificata solo a CAD.
 6. Prima release: tag `v0.1.0` → la CI pubblica i `.bin`.
 
 Note di verifica della scatola (per rifarle dopo una modifica): gli STL di LaunchLab in coordinate di montaggio sono nella cartella `preview/` del pacchetto top-dock-v098 (base, clip chiuse, spine, barretta, viti). Si esportano `part="box"`, `"lid_mounted"` e `"check_tp|lipo|sm|sw"` (componenti ristretti di 0,1 mm) e si controlla con uno script Python che nessun punto campionato su una superficie cada dentro l'altro solido (raggio verticale, parita' degli attraversamenti). Controprova: contro `04_M5_dock_with_cable_shroud.stl` deve trovare migliaia di punti. OpenSCAD locale e' 2021.01 (niente backend manifold; CGAL rifiuta le mesh LaunchLab).
@@ -135,7 +136,7 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 - Le callback BLE mettono i comandi in una coda; il loop li esegue e invia le pagine una alla volta, a 12 ms l'una dall'altra.
 - **Notifiche automatiche** (come BRD in "compat autonotify", che risulta compatibile con le app): A0 appena l'app si iscrive alle notifiche, poi A0 + dump completo dopo ogni lancio.
 - Flag di A0:
-  - 0x04 quando il rilevatore è PRONTO (nel Battle Pass vero significa "trottola inserita", e noi non abbiamo quel sensore);
+  - 0x04 con la trottola inserita (contatto del tasto di presenza);
   - 0x10 con batteria ≤ 20%;
   - 0x01 con batteria ≤ 5%.
 - UID nei byte 11-16 di A0: MAC della eFuse (`ESP.getEfuseMac()`).
@@ -153,12 +154,12 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 - `storico`, `cancella`
 - `set <parametro> <valore>`, `salva`, `default`
 - `test [rpm] [s]`, `test stop` — lancio finto: onda quadra su GPIO10 (GPTimer a 1 MHz, interrupt che inverte il pin), da collegare con un filo a GPIO3 senza sensore. Guida: `docs/prova-senza-sensore.md`
-- `presenza [on|off]` — tasto opzionale premuto dal pistoncino del launcher (direttamente nella scatola piatta, tramite un perno nell'altra): scarta gli strappi a vuoto e rende vero il bit 0x04 di A0. Default spento. Solo testato su PC e verificato a CAD: `docs/presenza-trottola.md`
+- `presenza` — stato del tasto obbligatorio premuto dal pistoncino del launcher: scarta gli strappi a vuoto e rende vero il bit 0x04 di A0. Solo testato su PC e verificato a CAD: `docs/presenza-trottola.md`
 - Ogni lancio stampa una riga CSV: `LANCIO,rpm,rpm3giri,giro_singolo,giri,durata_ms,segno_min,fine`.
 
 ### Interfaccia
 - LED su GPIO8, acceso a livello basso:
-  - lampeggio breve ogni 2 s in PRONTO;
+  - lampeggio breve ogni 2 s in PRONTO, con la trottola inserita;
   - acceso durante MISURA;
   - doppio lampeggio quando arriva un risultato;
   - lampeggio rapido in caso di guasto del sensore.
@@ -177,8 +178,8 @@ Non adatti al C3 (servirebbe un S3): display a colori grandi e fluidi, elaborazi
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
-| Tasto presenza (opzionale) | GPIO5 e GND |
-| Tasto esterno (opzionale, scatola piatta) | GPIO9 e GND, in parallelo al BOOT |
+| Tasto presenza (obbligatorio) | GPIO5 e GND |
+| Tasto esterno | GPIO9 e GND, in parallelo al BOOT |
 
 Il condensatore sul partitore serve perché l'ADC campiona di continuo: senza, la sorgente da 50 kΩ falsa le letture.
 

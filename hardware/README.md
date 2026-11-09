@@ -40,9 +40,11 @@ Ingombro: circa 113 × 38 mm senza le clip, alta circa 10 mm sopra il launcher, 
 
 Le quote nel blocco "Interfaccia con il launcher" non vanno cambiate senza provare il pezzo.
 
-## Altri montaggi
+## Archivio: montaggi precedenti
 
-Restano nel repo come alternative. Tutto quello che segue riguarda la scatola su base LaunchLab e la scatola laterale, **non** la scatola piatta.
+> Restano nel repo solo come riferimento. Queste scatole **non hanno il tasto di presenza**: sulla base LaunchLab servirebbe forare, e nella scatola laterale non c'è una sede. Il firmware attuale richiede il tasto, quindi con queste scatole non registra lanci.
+
+Tutto quello che segue riguarda la scatola su base LaunchLab e la scatola laterale, **non** la scatola piatta.
 
 ### Con la base LaunchLab
 
@@ -68,7 +70,7 @@ Perché così:
 - la scatola sta sopra il launcher, come il Battle Pass vero, quindi non ingombra la presa per il lancio;
 - la base non viene copiata né modificata: SpinLite resta MIT, la base resta di LaunchLab con la sua licenza.
 
-| Configurazione di riferimento: QRE1113, scatola sopra | Alternativa: TCRT5000 laterale, scatola sul fianco |
+| QRE1113, scatola sopra | TCRT5000 laterale, scatola sul fianco |
 | --- | --- |
 | ![render QRE](img/render_qre.png) | ![render TCRT](img/render_tcrt.png) |
 
@@ -163,8 +165,6 @@ File: **`enclosure/spinlite_top.scad`** (OpenSCAD, MIT). Si avvita sopra la base
 7. **SuperMini**: inserisci prima la USB-C nel foro superiore, poi abbassa la coda sulla traversa, dentro la battuta.
 8. Chiudi il coperchio con **4 viti M2×6**. Una nervatura preme sulla USB-C e un limitatore resta sopra la coda.
 
-**Presenza della trottola (opzionale):** il fondo ha già la sede per un tasto 6×6, premuto da un perno che sale dal pistoncino del launcher. Dima, perni e procedura sono in [presenza della trottola](../docs/presenza-trottola.md).
-
 Il pulsante BOOT, che cambia pagina sull'OLED, si preme dal foro nel coperchio con uno stuzzicadenti. Il LED della SuperMini resta dentro: con un filamento chiaro probabilmente si vede in trasparenza (non verificato).
 
 #### Parametri da controllare
@@ -177,7 +177,6 @@ Il pulsante BOOT, che cambia pagina sull'OLED, si preme dal foro nel coperchio c
 | `sf_*` | SS12F15: flangia, corpo, leva, corsa e **passo dei fori (stimato 15 mm: misuralo)** |
 | `sw_*` | SS12D00: corpo, feritoia, posizione |
 | `sm_boot` | posizione del pulsante BOOT, per il foro nel coperchio |
-| `presence`, `pin_*`, `tact_*` | sede del tasto di presenza, perni, misure del tasto (`tact_h`: controlla il tuo) |
 | `oled` | `true` aggiunge 4 mm di altezza, la finestra nel coperchio e la cornice per il modulo |
 | `fit`, `clearance` | giochi di schede e coperchio |
 | `base_stl` | percorso dell'STL di anteprima di LaunchLab, solo per vederla in `part = "assembly"` |
@@ -186,6 +185,6 @@ Le quote d'interfaccia (`pilot_*`, `seat_z`, `hinge_*`, `plug_*`) sono misurate 
 
 Con `part = "assembly"` vedi scatola, coperchio e componenti al loro posto. Con `base_stl` puoi aggiungere la base. Usa il file `preview/01_QRE_open_holder_body.stl` del pacchetto [top-dock-v098](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip), che è già nelle coordinate di montaggio.
 
-### Scatola laterale (alternativa)
+### Scatola laterale
 
 `enclosure/spinlite_box.scad` è la prima versione: una scatola da fissare a fianco con una fascetta. Resta nel repo per chi usa il TCRT5000 con il supporto laterale di LaunchLab, oppure monta SpinLite in un altro modo. Non è pensata per la base QRE.

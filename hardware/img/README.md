@@ -1,6 +1,6 @@
 # Immagini del montaggio
 
-Render di `../enclosure/spinlite_views.scad` (componenti e fili) e di `../enclosure/spinlite_top.scad` (pezzi da stampare).
+Viste della scatola piatta da `../enclosure/spinlite_flat.scad` e render Blender da `../render/render.py`. Le viste dei montaggi precedenti vengono da `../enclosure/spinlite_views.scad` (componenti e fili) e `../enclosure/spinlite_top.scad` (pezzi da stampare).
 
 I componenti sono **blocchi semplificati** con le misure tipiche usate nei parametri. Anche i percorsi dei fili sono **indicativi**: mostrano dove passano, non la lunghezza esatta. La piedinatura della SuperMini è disegnata come promemoria; controlla sempre la serigrafia della tua scheda.
 
@@ -13,9 +13,9 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `esploso.png` | Ordine di montaggio dal basso: base con sensore, 4 viti M2×6, scatola, TP4056 (spostato indietro perché entra scorrendo sotto la traversa), LiPo con partitore, interruttore, SuperMini, coperchio e viti |
 | `stampa.png` | Scatola e coperchio come vanno sul piatto di stampa |
 | `piatta_assieme.png` | Scatola piatta (`spinlite_flat.scad`) con il coperchio trasparente, l'OLED, il tasto esterno, i componenti e le clip: MIT, senza parti LaunchLab |
-| `render_qre.png`, `render_qre_lato.png` | Render Blender della configurazione di riferimento: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
+| `render_qre.png`, `render_qre_lato.png` | Render Blender del montaggio precedente: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
 | `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png`, `render_piatta_clip.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. La sede delle clip nel fianco del launcher è dedotta dalla forma delle clip, non misurata |
-| `render_tcrt.png` | Render Blender dell'alternativa: supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
+| `render_tcrt.png` | Render Blender del montaggio precedente con supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
 | `render_launcher.png` | Render Blender del solo launcher: fascia nera con la finestrella del disco, più vicina alla corda, e il pistoncino |
 
 Nei render il **launcher** è un modello fatto a mano sulle foto di un launcher a corda vero, in scala dai 7,6 mm tra finestrella e pistoncino: forma e proporzioni sono quelle delle foto, le misure hanno un errore di qualche mm. La corda è dal lato giusto, vicino alla finestrella. La **trottola** è generica. Il verso di montaggio è in [scatola piatta](../../docs/scatola-piatta.md#verso-di-montaggio).
@@ -24,9 +24,11 @@ Colori dei fili: rosso +, nero GND, giallo uscita del sensore (GPIO3), azzurro b
 
 ## Rigenerarle
 
-Render Blender: `python hardware/third_party/fetch_launchlab.py`, poi `python hardware/render/render.py`. Solo la scatola piatta, che non usa i file LaunchLab: `python hardware/render/render.py 64 C`.
+Render Blender: `python hardware/third_party/fetch_launchlab.py`, poi `python hardware/render/render.py`. Solo la scatola piatta e il launcher, che non usano i file LaunchLab: `python hardware/render/render.py 64 CL`.
 
-Viste OpenSCAD:
+Vista d'assieme della scatola piatta: `part="assembly"` in `spinlite_flat.scad`.
+
+Viste OpenSCAD dei montaggi precedenti:
 
 Serve la cartella `preview/` del pacchetto [top-dock-v098 di LaunchLab](https://github.com/shadohead/launchlab/raw/87bb60d619c2127c9efd679d7505a144e52a30d8/site/public/hardware/downloads/top-dock-v098.zip). Dopo lo script di download si trova in `hardware/third_party/launchlab/LaunchLab_v0.98_top-dock/preview` e contiene la base già in coordinate di montaggio. Senza quella cartella, al posto della base compare un segnaposto grigio.
 

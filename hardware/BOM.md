@@ -2,7 +2,7 @@
 
 Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la linka, non la ripete.
 
-- Le tabelle descrivono la **versione attuale**: [scatola piatta](../docs/scatola-piatta.md) con sensore QRE1113 analogico, verificata solo a CAD e non ancora stampata. Per gli altri montaggi vedi [in fondo](#altri-montaggi-cosa-cambia).
+- Le tabelle descrivono la **versione attuale**: [scatola piatta](../docs/scatola-piatta.md) con sensore QRE1113 analogico, verificata solo a CAD e non ancora stampata. I montaggi precedenti sono [in fondo](#archivio-montaggi-precedenti).
 - Prezzi indicativi di **ottobre 2026**, IVA inclusa, spedizione esclusa. Variano col venditore: controllali prima di ordinare.
 - La colonna "Link" riporta un'offerta trovata e controllata. "da scegliere" significa che va bene qualsiasi venditore, purché rispetti la nota.
 
@@ -18,7 +18,7 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 | 6 | Resistenza 100 kΩ | 2 | Partitore per leggere la tensione della batteria. | da scegliere | 0,05 € |
 | 7 | Condensatore ceramico 100 nF ("104") | 1 | Sul punto centrale del partitore, verso GND. A disco, reofori lunghi: si salda in linea. | [AliExpress](https://it.aliexpress.com/item/1005008483990919.html) (variante 100nF 104) | 1,79 € per 50 |
 | 8 | OLED SSD1306 128x32 I2C da 0,91" | 1 | Consigliato: finestra e cornice sono già nel coperchio. 4 pin (GND, VCC, SCL, SDA), senza pettine: 4 fili saldati alle piazzole. Firmware `spinlite_qre_oled`. Chi non lo vuole imposta `oled = false`. | da scegliere | 1,5-2 € |
-| 9 | Tasto **SMD 6×6, altezza 3,4 mm** | 2 | Uno per la presenza della trottola, premuto dal pistoncino ([dettagli](../docs/presenza-trottola.md)), uno come tasto esterno in parallelo al BOOT. Entrambi opzionali. | da scegliere | ~0,5-1 € |
+| 9 | Tasto **SMD 6×6, altezza 3,4 mm** | 2 | Uno per la presenza della trottola, premuto dal pistoncino ([dettagli](../docs/presenza-trottola.md)), uno come tasto esterno in parallelo al BOOT. **Obbligatori:** senza il primo il firmware scarta tutti i lanci. | da scegliere | ~0,5-1 € |
 | 10 | Filo sottile (circa 28-30 AWG), stagno, guaina termorestringente | – | Niente pettini né connettori: tutti i collegamenti sono saldati. | da scegliere | 1 € |
 
 ## Stampa 3D e viteria
@@ -54,7 +54,7 @@ Un kit assortito di viti M2 (circa 3-5 €) basta per molti dispositivi. Il cost
 | Configurazione | Totale |
 | --- | --- |
 | Scatola piatta completa: OLED e 2 tasti | **circa 17-21 €** |
-| Scatola piatta senza OLED e senza tasti | circa 15-18 € |
+| Scatola piatta senza OLED | circa 15-19 € |
 
 Esclusi attrezzi, kit di viti e rotoli interi di filamento.
 
@@ -68,9 +68,9 @@ Cloni diversi possono avere misure diverse di qualche decimo di millimetro. Con 
 4. **SuperMini e TP4056:** `sm_*` e `tp_*`, compresa la sporgenza della USB-C.
 5. **Interruttore:** passo dei fori (`sf_pitch`) e corsa della leva (`sf_travel`), che sono stimati.
 
-## Altri montaggi: cosa cambia
+## Archivio: montaggi precedenti
 
-Descritti in [hardware/README.md](README.md). Rispetto alle tabelle sopra:
+Descritti in [hardware/README.md](README.md). Queste scatole **non hanno il tasto di presenza**, che sulla base LaunchLab richiederebbe di forare: il firmware attuale con loro non registra lanci. Rispetto alle tabelle sopra:
 
 **Scatola avvitata sulla base LaunchLab** (`enclosure/spinlite_top.scad`). Questi pezzi sostituiscono le righe 11-14:
 
@@ -84,7 +84,7 @@ Descritti in [hardware/README.md](README.md). Rispetto alle tabelle sopra:
 | Dado M2 | 2 | Sulle viti dell'interruttore. | da scegliere |
 | Header maschio a 90° da 3 pin + cavetto Dupont femmina a 3 fili | 1 | Collegamento al sensore. | da scegliere |
 
-Serve un solo tasto SMD, per la presenza, e va sotto il fondo con un perno stampato: servono anche una punta Ø2 e 2 fili sottili. Le misure della LiPo si impostano con i parametri `lipo_*`. In alternativa all'SS12F15 c'è l'[SS12D00](https://it.aliexpress.com/item/1005005633418066.html) (1,79 € per 20), con `switch_type = "SS12D00"`. Totale: circa 15-18 € senza OLED, 17-20 € con OLED.
+Non servono i tasti SMD. Le misure della LiPo si impostano con i parametri `lipo_*`. In alternativa all'SS12F15 c'è l'[SS12D00](https://it.aliexpress.com/item/1005005633418066.html) (1,79 € per 20), con `switch_type = "SS12D00"`. Totale: circa 15-18 € senza OLED, 17-20 € con OLED.
 
 **Controllo del QRE1113 con la base LaunchLab:** misura scheda e posizione di foro e sensore rispetto ai bordi, poi confrontale con la sede della base (le quote nominali sono nello STEP di LaunchLab).
 

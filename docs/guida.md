@@ -1,6 +1,6 @@
 # SpinLite: guida completa
 
-SpinLite è un conta giri economico per launcher Beyblade X. Legge il segno ottico sull'albero del launcher con un TCRT5000, calcola gli RPM con un ESP32-C3 e li manda al telefono via Bluetooth, con lo stesso profilo del Bey Battle Pass BX-09. Le app esistenti funzionano senza modifiche.
+SpinLite è un conta giri economico per launcher Beyblade X. Legge il segno ottico sull'albero del launcher con un sensore QRE1113, calcola gli RPM con un ESP32-C3 e li manda al telefono via Bluetooth, con lo stesso profilo del Bey Battle Pass BX-09. Le app esistenti funzionano senza modifiche.
 
 Leggi prima la sezione [Limiti](#limiti): cosa misura SpinLite non è esattamente ciò che misura la trottola.
 
@@ -8,7 +8,7 @@ Leggi prima la sezione [Limiti](#limiti): cosa misura SpinLite non è esattament
 
 La lista completa, con link per ordinare, requisiti e prezzi, è in **[hardware/BOM.md](../hardware/BOM.md)**.
 
-In breve, configurazione di riferimento: ESP32-C3 SuperMini, sensore **QRE1113 analogico**, LiPo 1S, TP4056 con protezione, interruttore, partitore per la batteria, base stampata di LaunchLab più la scatola SpinLite, viti M2. **Circa 15-18 €**, OLED escluso. Con il TCRT5000 (montaggio laterale) circa 9-12 €.
+In breve: ESP32-C3 SuperMini, sensore **QRE1113 analogico**, LiPo 1S, TP4056 con protezione, interruttore, partitore per la batteria, due tasti, OLED, scatola piatta stampata, viti M2. **Circa 17-21 €**, 15-19 € senza OLED.
 
 ## 2. Cablaggio
 
@@ -21,8 +21,9 @@ In breve, configurazione di riferimento: ESP32-C3 SuperMini, sensore **QRE1113 a
 | QRE1113 **OUT**, oppure TCRT5000 **AO** | GPIO3 (sul TCRT il pin DO resta scollegato) |
 | LiPo + (dopo l'interruttore) | partitore 100k/100k → GPIO4, **con 100 nF verso GND** sul punto centrale |
 | Uscita del modulo di ricarica (TP4056 con protezione) | pin 5V della SuperMini, tramite l'interruttore |
+| Tasto di presenza, premuto dal pistoncino | GPIO5 e GND |
+| Tasto esterno | GPIO9 e GND, in parallelo al BOOT |
 | OLED SDA / SCL (opzionale) | GPIO6 / GPIO7, alimentazione 3V3 |
-| Tasto esterno (opzionale, scatola piatta) | GPIO9 e GND, in parallelo al BOOT |
 
 Note:
 
@@ -30,14 +31,15 @@ Note:
 - Collega l'uscita (OUT+ / OUT-) del TP4056, non i pin B+/B- della batteria, al resto del circuito. La LiPo va su B+/B-.
 - Il sensore deve stare su GPIO3 e la batteria su GPIO4: sul C3 l'ADC in modalità continua funziona solo su ADC1 (GPIO0-4).
 - Senza il partitore il firmware funziona lo stesso, ma non conosce la batteria.
+- Il **tasto di presenza è obbligatorio**: senza, ogni lancio viene scartato. Vedi [presenza della trottola](presenza-trottola.md).
 
 ## 3. Montaggio sul launcher
 
 Serve un launcher con la **porta del Battle Pass**: i Takara Tomy a corda e con ingranaggi interni ce l'hanno, gli starter Hasbro europei no.
 
-**Versione attuale: la [scatola piatta](scatola-piatta.md)**, un corpo basso che si aggancia alla porta con due clip e contiene sensore, tasto ed elettronica. Ha la sede per l'OLED e un tasto esterno. Non è ancora stata stampata.
+**Versione attuale: la [scatola piatta](scatola-piatta.md)**, un corpo basso che si aggancia alla porta con due clip e contiene sensore, tasto di presenza ed elettronica. Ha la sede per l'OLED e un tasto esterno. Non serve forare nulla. Non è ancora stata stampata.
 
-In alternativa, il sensore va in una **base stampata di LaunchLab** che si aggancia alla porta con due clip. La scatola SpinLite si avvita sopra con 4 viti M2. Link ai file, istruzioni di stampa e montaggio, adattamenti e licenza (CC BY-SA, derivata dal lavoro di Migbello): **[hardware/README.md](../hardware/README.md)**.
+Le scatole precedenti, sulla base LaunchLab e laterale, restano come archivio in [hardware/README.md](../hardware/README.md): non hanno il tasto di presenza, che lì richiederebbe di forare la base, quindi il firmware attuale non registra lanci.
 
 ### Cosa legge il sensore
 
@@ -49,7 +51,7 @@ Attraverso la finestrella della porta il sensore vede un **anello bianco/nero in
 
 ## 4. Installazione del firmware
 
-Ci sono quattro versioni: sensore **QRE1113** (consigliato) o **TCRT5000**, ciascuno con o senza OLED. Cambia solo la soglia di partenza `minmark`: 80 per il QRE1113, come il profilo di LaunchLab, e 150 per il TCRT5000. Se cambi sensore e ricarichi il firmware, le soglie salvate per l'altro sensore vengono ignorate.
+Ci sono quattro versioni: sensore **QRE1113** (quello della scatola piatta) o **TCRT5000**, ciascuno con o senza OLED. Cambia solo la soglia di partenza `minmark`: 80 per il QRE1113, come il profilo di LaunchLab, e 150 per il TCRT5000. Se cambi sensore e ricarichi il firmware, le soglie salvate per l'altro sensore vengono ignorate.
 
 ### Web flasher (il più semplice)
 
@@ -60,7 +62,7 @@ Apri il [web flasher](../flasher/) con Chrome o Edge, collega la SuperMini via U
 ```
 pio run -e spinlite_qre -t upload       # QRE1113 (consigliato)
 pio run -e spinlite_qre_oled -t upload  # QRE1113 con display OLED
-pio run -t upload                       # TCRT5000
+pio run -e spinlite -t upload           # TCRT5000
 pio run -e spinlite_oled -t upload      # TCRT5000 con display OLED
 pio device monitor                 # console seriale, 115200
 ```
@@ -91,14 +93,14 @@ Collegati a 115200 baud (`pio device monitor`, o un qualsiasi terminale seriale)
 | `default` | torna ai valori di fabbrica e cancella quelli salvati |
 | `storico` | stampa lo storico dei lanci |
 | `cancella` | azzera lo storico |
-| `presenza [on\|off]` | tasto opzionale della trottola: vedi [presenza della trottola](presenza-trottola.md) |
+| `presenza` | stato del tasto della trottola, contatto e armamento: vedi [presenza della trottola](presenza-trottola.md) |
 
 ### Parametri di `set`
 
 | Parametro | Default | A cosa serve |
 | --- | --- | --- |
 | `marks` | 1 | segni ottici per giro dell'albero |
-| `minmark` | 150 | ampiezza minima di un segno, in conteggi ADC. Più bassa = più sensibile, ma più falsi segni |
+| `minmark` | 80 (QRE1113), 150 (TCRT5000) | ampiezza minima di un segno, in conteggi ADC. Più bassa = più sensibile, ma più falsi segni |
 | `minrpm` | 1000 | sotto questa velocità non parte un lancio |
 | `maxrpm` | 40000 | periodi più brevi di questo limite sono scartati come disturbo |
 | `endpct` | 30 | il lancio finisce quando la velocità scende a questa percentuale del picco |
@@ -112,9 +114,9 @@ Esempio: `set minmark 200` poi `salva`.
 
 1. Scrivi `raw`. Vedi livello, rumore e ampiezza.
 2. Gira l'albero **a mano**, piano. Il segno deve far salire l'ampiezza.
-3. Regola la **vite del TCRT** (il trimmer del LM393 non conta: noi leggiamo AO) e la **distanza** dall'albero. L'obiettivo è un'ampiezza dei segni **ben sopra `minmark`** e un rumore basso a riposo.
+3. Controlla la **distanza** del sensore: nella scatola piatta dipende da come è fissato nel vassoio. Con il TCRT5000 si regola anche la vite (il trimmer del LM393 non conta: noi leggiamo AO). L'obiettivo è un'ampiezza dei segni **ben sopra `minmark`** e un rumore basso a riposo.
 4. Scrivi `fronti` e gira ancora l'albero. Devi vedere un fronte valido per ogni segno, nessun fronte valido a riposo. Scrivi di nuovo `fronti` per spegnere la stampa.
-5. Fai un lancio vero. Se va, `salva`.
+5. Fai un lancio vero, con la trottola inserita. Il tasto di presenza deve essere collegato: senza, compare `SCARTATO`. Se va, `salva`.
 
 Se `stato` segnala il sensore scollegato, controlla cavi e alimentazione del modulo.
 
@@ -138,10 +140,12 @@ LANCIO,rpm,rpm3giri,giro_singolo,giri,durata_ms,segno_min,fine
 
 LED blu della scheda (GPIO8):
 
-- lampeggio breve ogni 2 s: pronto;
+- lampeggio breve ogni 2 s: pronto, con la trottola inserita;
 - acceso fisso: misura in corso;
 - doppio lampeggio: è arrivato un risultato;
 - lampeggio rapido: guasto del sensore.
+
+Finché la trottola non è inserita il LED resta spento e l'OLED mostra `ATTESA`.
 
 Pulsante **BOOT** (GPIO9) o tasto esterno, dopo l'avvio: ogni pressione cambia pagina dell'OLED (ultimo → massimo → info). Tenuto premuto all'accensione, mette la scheda in modalità di programmazione.
 
@@ -171,7 +175,7 @@ Alla connessione SpinLite manda subito lo stato, poi stato e storico completo do
 
 Cose del C3 che ti possono confondere:
 
-- A riposo il segnale AO può stare **saturo a circa 4095**. È normale: l'ADC a 12 dB arriva a circa 2,5 V e il TCRT a riposo può stare sopra. È il segno scuro che abbassa la tensione.
+- A riposo il segnale del sensore può stare **saturo a circa 4095**. È normale: l'ADC a 12 dB arriva a circa 2,5 V e il sensore a riposo può stare sopra. È il segno scuro che abbassa la tensione.
 - Alimentando dal pin 5V con la LiPo (3,7-4,2 V) si passa dall'LDO della scheda. Funziona, ma sotto circa **3,5 V** la tensione a 3V3 cala e le misure possono peggiorare. Da verificare sulla tua scheda.
 - Non tenere a massa GPIO2, GPIO8 o GPIO9 all'accensione (strapping).
 - Sotto 2,5 V sul pin batteria il firmware assume "interruttore spento, alimentato da USB" e non mostra la percentuale.
@@ -183,4 +187,5 @@ Cose del C3 che ti possono confondere:
 - [BRD](https://github.com/printfChins/Beyblade-RPM-Detector-Device) di printfChins è **GPL-3.0**: consultato per confrontare i valori del protocollo, nessun codice copiato.
 - Il protocollo Battle Pass è stato ricostruito dalla documentazione di [MarkChan0225](https://github.com/MarkChan0225/beyblade-tachometer-web) e dallo [script Python di danielbyomujuni](https://github.com/danielbyomujuni/beyblade-x-beybattlepass-python).
 - I supporti sensore di LaunchLab sono CC BY-SA (derivati dal lavoro di Migbello), linkati e non copiati.
+- La scatola piatta riprende idee e quote funzionali da [Beyblade-Dragoon-RPM](https://github.com/Luciandraw/Beyblade-Dragoon-RPM) di Luciandraw (modelli CC BY-NC-SA, non copiati). Il tasto di presenza deve idee anche a [OpenRip](https://github.com/moon-lite/OpenRip); [bx-tacho](https://github.com/dazchi/bx-tacho) (GPL-3.0) è stato solo consultato.
 - Progetto non affiliato a Takara Tomy né a Hasbro.

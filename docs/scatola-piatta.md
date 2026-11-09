@@ -4,16 +4,18 @@ La versione attuale del dispositivo: un corpo basso che si aggancia direttamente
 
 **Schermo:** l'OLED 128x32 sta sotto il coperchio, sopra il vassoio, senza alzare il corpo. Firmware `spinlite_qre_oled`. Chi non lo vuole imposta `oled = false` e il coperchio resta chiuso.
 
+**Tasto di presenza:** obbligatorio. Sta nel vassoio e appoggia direttamente sul pistoncino del launcher: niente perni e niente fori da fare. Senza tasto il firmware scarta tutti i lanci. Dettagli in [presenza della trottola](presenza-trottola.md).
+
 ![Vista d'assieme senza coperchio](../hardware/img/piatta_assieme.png)
 
-**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** La versione con la base LaunchLab resta documentata in [hardware/README.md](../hardware/README.md) come alternativa. Cosa comprare: [distinta base](../hardware/BOM.md).
+**Stato: verificata solo a CAD. Nulla è stato stampato né provato sul launcher.** Le scatole precedenti restano in [hardware/README.md](../hardware/README.md) come archivio: non hanno il tasto di presenza, che lì richiederebbe di forare la base. Cosa comprare: [distinta base](../hardware/BOM.md).
 
 ## Cosa cambia
 
 | | Scatola su base LaunchLab | Scatola piatta |
 | --- | --- | --- |
-| Pezzi | base LaunchLab + barretta + scatola + coperchio + perno | corpo + vassoio del sensore + coperchio + 2 clip + cappuccio del tasto |
-| Tasto di presenza | perno, foro da fare, barretta da tagliare | direttamente sul pistoncino |
+| Pezzi | base LaunchLab + barretta + scatola + coperchio | corpo + vassoio del sensore + coperchio + 2 clip + cappuccio del tasto |
+| Tasto di presenza | non previsto: servirebbe forare la base | direttamente sul pistoncino |
 | Altezza sul launcher | circa 28 mm | circa 10 mm |
 | Lunghezza | circa 70 mm | circa 113 mm |
 | Licenze | base CC BY-SA a parte | tutto MIT |
@@ -102,7 +104,7 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 ## Da controllare al primo pezzo stampato
 
 1. **Clip sul launcher.** È il punto più delicato: si devono agganciare e sganciare senza gioco. Sono due parti senza molla, come in Dragoon. Se ballano, si corregge `pivot` o il profilo del dente. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
-2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console). Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
+2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console): se non si chiude, tutti i lanci vengono scartati. Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
 5. **Presa:** il corpo è lungo e piatto come quello di Dragoon, ma la comodità va provata in mano.

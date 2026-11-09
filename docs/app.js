@@ -51,7 +51,7 @@ function showStatus(s) {
   $("total").textContent = s.total;
   $("batt").textContent = s.batteryPercent;
   const tags = [];
-  if (s.ready) tags.push("PRONTO");
+  if (s.ready) tags.push("TROTTOLA INSERITA");
   if (s.batteryCritical) tags.push("Batteria critica");
   else if (s.batteryLow) tags.push("Batteria bassa");
   $("flags").innerHTML = tags.map((t) => `<span class="tag">${t}</span>`).join("") || '<span class="note">nessun flag</span>';

@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" font-family="Arial, Helvetica, sans-serif" font-size="14">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" width="1120" height="560" font-family="Arial, Helvetica, sans-serif" font-size="14">
   <title>Schema di cablaggio SpinLite</title>
-  <rect width="900" height="560" fill="#ffffff"/>
-  <text x="450" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">SpinLite: schema di cablaggio</text>
-  <text x="450" y="48" text-anchor="middle" font-size="12" fill="#555">Rosso = positivo, nero = GND, blu = segnale sensore, verde = batteria (partitore), arancio/viola = I2C</text>
+  <rect width="1120" height="560" fill="#ffffff"/>
+  <text x="560" y="28" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">SpinLite: schema di cablaggio</text>
+  <text x="560" y="48" text-anchor="middle" font-size="12" fill="#555">Rosso = positivo, nero = GND, blu = segnale sensore, verde = batteria (partitore), arancio/viola = I2C, azzurro = tasti</text>
 
   <!-- LiPo -->
   <rect x="20" y="90" width="130" height="70" rx="6" fill="#e8f0fe" stroke="#333" stroke-width="2"/>
   <text x="85" y="120" text-anchor="middle" font-weight="bold">LiPo 1S</text>
-  <text x="85" y="140" text-anchor="middle" font-size="12">300-500 mAh</text>
+  <text x="85" y="140" text-anchor="middle" font-size="12">502030, circa 250 mAh</text>
   <text x="140" y="108" text-anchor="end" font-size="12" fill="#c00">+</text>
   <text x="140" y="150" text-anchor="end" font-size="12">-</text>
 
@@ -32,9 +32,10 @@
   <text x="648" y="230" font-size="13">3V3</text>
   <text x="872" y="150" text-anchor="end" font-size="13">GPIO3 (sensore)</text>
   <text x="872" y="200" text-anchor="end" font-size="13">GPIO4 (batteria)</text>
+  <text x="872" y="250" text-anchor="end" font-size="13">GPIO5 (presenza)</text>
   <text x="872" y="300" text-anchor="end" font-size="13">GPIO6 (SDA)</text>
   <text x="872" y="330" text-anchor="end" font-size="13">GPIO7 (SCL)</text>
-  <text x="760" y="372" text-anchor="middle" font-size="11" fill="#555">DO del TCRT5000 non collegato</text>
+  <text x="872" y="360" text-anchor="end" font-size="13">GPIO9 (BOOT)</text>
 
   <!-- Fili alimentazione -->
   <!-- LiPo + -> B+ -->
@@ -73,21 +74,20 @@
   <text x="604" y="404" font-size="11">GND</text>
   <text x="520" y="290" text-anchor="end" font-size="11" fill="#2e7d32">partitore batteria</text>
 
-  <!-- TCRT5000 -->
+  <!-- Sensore -->
   <rect x="20" y="260" width="200" height="130" rx="6" fill="#fde8e8" stroke="#333" stroke-width="2"/>
-  <text x="120" y="285" text-anchor="middle" font-weight="bold">Modulo TCRT5000 / LM393</text>
+  <text x="120" y="285" text-anchor="middle" font-weight="bold">Sensore QRE1113 analogico</text>
   <text x="30" y="320" font-size="13">VCC</text>
   <text x="30" y="345" font-size="13">GND</text>
-  <text x="30" y="370" font-size="13">AO</text>
-  <text x="210" y="320" text-anchor="end" font-size="11" fill="#777">DO: libero</text>
+  <text x="30" y="370" font-size="13">OUT</text>
 
   <!-- VCC -> 3V3 -->
   <polyline points="70,315 70,430 430,430 430,227 640,227" fill="none" stroke="#c00" stroke-width="3" stroke-dasharray="0"/>
   <!-- GND sensore -> GND -->
   <polyline points="70,340 90,340 90,450 600,450 600,400" fill="none" stroke="#000" stroke-width="3"/>
-  <!-- AO -> GPIO3 -->
+  <!-- OUT -> GPIO3 -->
   <polyline points="70,365 110,365 110,420 460,420 460,160 640,160" fill="none" stroke="#1565c0" stroke-width="3"/>
-  <text x="300" y="414" text-anchor="middle" font-size="11" fill="#1565c0">AO verso GPIO3</text>
+  <text x="300" y="414" text-anchor="middle" font-size="11" fill="#1565c0">OUT verso GPIO3</text>
   <text x="300" y="444" text-anchor="middle" font-size="11" fill="#c00">VCC a 3V3</text>
   <text x="300" y="464" text-anchor="middle" font-size="11" fill="#000">GND comune</text>
 
@@ -99,5 +99,16 @@
   <polyline points="760,430 760,330 872,330" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="5 3"/>
   <polyline points="780,430 780,300 872,300" fill="none" stroke="#ef6c00" stroke-width="2" stroke-dasharray="5 3"/>
   <text x="20" y="540" font-size="12" fill="#555">Il condensatore da 100 nF sul punto centrale del partitore e' necessario: l'ADC campiona di continuo.</text>
-  <text x="20" y="556" font-size="12" fill="#555">Il TCRT5000 sta vicino all'albero del launcher; i cavi del sensore possono essere lunghi poche decine di mm.</text>
+  <text x="20" y="556" font-size="12" fill="#555">Il tasto di presenza e' obbligatorio: senza, il firmware scarta tutti i lanci. Il tasto esterno e' in parallelo al BOOT.</text>
+  <!-- Tasti -->
+  <rect x="930" y="205" width="175" height="85" rx="6" fill="#e0f7fa" stroke="#333" stroke-width="2"/>
+  <text x="1017" y="230" text-anchor="middle" font-weight="bold">Tasto di presenza</text>
+  <text x="1017" y="250" text-anchor="middle" font-size="12">premuto dal pistoncino</text>
+  <text x="1017" y="270" text-anchor="middle" font-size="12">altro contatto a GND</text>
+  <polyline points="880,246 930,246" fill="none" stroke="#00838f" stroke-width="3"/>
+  <rect x="930" y="315" width="175" height="85" rx="6" fill="#e0f7fa" stroke="#333" stroke-width="2"/>
+  <text x="1017" y="340" text-anchor="middle" font-weight="bold">Tasto esterno</text>
+  <text x="1017" y="360" text-anchor="middle" font-size="12">in parallelo al BOOT</text>
+  <text x="1017" y="380" text-anchor="middle" font-size="12">altro contatto a GND</text>
+  <polyline points="880,356 930,356" fill="none" stroke="#00838f" stroke-width="3"/>
 </svg>

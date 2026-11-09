@@ -91,6 +91,8 @@ LANCIO,3000,3000,3001,....,rallentamento
 
 Il LED della scheda resta acceso durante la misura e fa un doppio lampeggio quando arriva il risultato.
 
+Il tasto di presenza non serve per questa prova, perché `test` si arma da solo. Senza tasto il LED non fa il lampeggio di "pronto" e l'OLED mostra `ATTESA`: è normale.
+
 Il **primo numero** della riga `LANCIO` va confrontato con gli "attesi". L'errore dovrebbe stare **sotto lo 0,2%**, cioè 3.000 ± 6.
 
 Prova anche altre velocità, aspettando 2-3 secondi tra una prova e l'altra (il dispositivo si riarma dopo 1 s di quiete):
