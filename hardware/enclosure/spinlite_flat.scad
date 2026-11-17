@@ -41,6 +41,17 @@ clip_y    = 13.14;  // centro delle clip lungo Y
 clip_gap  = 8.0;    // distanza interna tra i bracci della clip
 clip_arm  = 2.0;    // spessore dei bracci
 pivot     = [17.7, 11.7]; // asse delle clip: x, z
+// Fermi a scatto delle clip, come nel Battle Pass originale: due dita elastiche
+// per clip escono dal fianco accanto ai bracci. Chiudendo, il braccio spinge da
+// parte il dentino e lo supera; il dito torna a posto e trattiene il braccio.
+detents     = true;
+detent_t    = 1.0;   // spessore del dito lungo Y: e' la parte che flette
+detent_top  = 9.5;   // cima del dito (parte dal piano del corpo)
+detent_x1   = 23.0;  // fine del dito
+detent_gap  = 0.16;  // aria tra dito e braccio
+detent_bite = 0.30;  // quanto il dentino entra nel percorso del braccio
+detent_nub  = [21.6, 22.05, 22.2, 22.9]; // dentino lungo X: inizio, cima, fine cima, fine (rampa di uscita 45 gradi, di entrata ~30)
+detent_nub_top = 8.9;
 
 // ---- Pareti e viti ----
 wall      = 1.6;
@@ -173,6 +184,27 @@ module hinge_blocks() {
         cube([hinge_x[1] - hinge_x[0] + eps, hinge_y[1] - hinge_y[0], hinge_top - body_z]);
 }
 
+// Dita dei fermi, per una clip (lato +X): fuori dai due bracci, lungo Y
+module detent_fingers() {
+    y0 = clip_y - clip_gap / 2 - clip_arm;   // faccia esterna del braccio verso -Y
+    y1 = clip_y + clip_gap / 2 + clip_arm;   // faccia esterna del braccio verso +Y
+    p = detent_gap + detent_bite;            // sporgenza del dentino
+    n = detent_nub;
+    for (side = [[y1 + detent_gap, 1], [y0 - detent_gap, -1]]) {
+        yf = side[0]; d = side[1];           // faccia del dito verso il braccio, verso esterno
+        translate([hinge_x[0] - 0.5, d > 0 ? yf : yf - detent_t, body_z])
+            cube([detent_x1 - hinge_x[0] + 0.5, detent_t, detent_top - body_z]);
+        // dentino: profilo in pianta, con uno smusso in cima perche' montando la
+        // clip il braccio arriva dall'alto. Entra 0,2 nel dito: un solo solido.
+        hull() {
+            translate([0, 0, body_z]) linear_extrude(detent_nub_top - 0.6 - body_z)
+                polygon([[n[0], yf + d * 0.2], [n[0], yf], [n[1], yf - d * p], [n[2], yf - d * p], [n[3], yf], [n[3], yf + d * 0.2]]);
+            translate([0, 0, detent_nub_top - 0.01]) linear_extrude(0.01)
+                polygon([[n[0], yf + d * 0.2], [n[0], yf], [n[3], yf], [n[3], yf + d * 0.2]]);
+        }
+    }
+}
+
 module post_positions() for (s = [-1, 1], p = posts) translate([s * p[0], p[1], 0]) children();
 
 module supports() {
@@ -245,6 +277,7 @@ module body() {
             }
             hinge_blocks();
             supports();
+            if (detents) for (s = [0, 1]) mirror([s, 0, 0]) detent_fingers();
         }
         cutouts();
     }
