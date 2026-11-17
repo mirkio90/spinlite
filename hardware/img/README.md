@@ -16,6 +16,7 @@ I componenti sono **blocchi semplificati** con le misure tipiche usate nei param
 | `render_qre.png`, `render_qre_lato.png` | Render Blender del montaggio precedente: base QRE1113 di LaunchLab con la scatola SpinLite sopra, su un launcher a corda |
 | `render_piatta.png`, `render_piatta_lato.png`, `render_piatta_fronte.png`, `render_piatta_clip.png` | Render Blender della scatola piatta (`spinlite_flat.scad`) su un launcher a corda. La sede delle clip nel fianco del launcher è dedotta dalla forma delle clip, non misurata |
 | `render_tcrt.png` | Render Blender del montaggio precedente con supporto laterale TCRT5000 di LaunchLab e scatola laterale (`spinlite_box.scad`) fissata al fianco con due fascette |
+| `montaggio/passo_1.png` … `passo_9.png` | Montaggio della scatola piatta passo per passo, da `../enclosure/spinlite_flat_montaggio.scad`: pezzo nuovo staccato e freccia magenta. Si rigenerano con `python hardware/render/render_montaggio.py` |
 | `render_launcher.png` | Render Blender del solo launcher: fascia nera con la finestrella del disco, più vicina alla corda, e il pistoncino |
 
 Nei render il **launcher** è un modello fatto a mano sulle foto di un launcher a corda vero, in scala dai 7,6 mm tra finestrella e pistoncino: forma e proporzioni sono quelle delle foto, le misure hanno un errore di qualche mm. La corda è dal lato giusto, vicino alla finestrella. La **trottola** è generica. Il verso di montaggio è in [scatola piatta](../../docs/scatola-piatta.md#verso-di-montaggio).

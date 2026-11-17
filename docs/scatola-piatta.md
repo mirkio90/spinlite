@@ -100,18 +100,71 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 
 ## Montaggio
 
-1. **QRE1113**, nel vassoio: salda i tre fili direttamente al breakout, senza pettine. Sensore verso il basso nella finestra, PCB sugli appoggi tra le sponde, una goccia di colla a caldo sui bordi.
-2. **Tasto SMD 6×6**, nel vassoio: cappuccio nel foro verso il basso, tra le sponde. Salda due fili su due piedini che si collegano solo a tasto premuto (trovali col tester). Una goccia di colla.
-3. **Vassoio nel corpo**, da sotto: la fascia resta fuori e appoggia al fondo. Fissalo con qualche goccia di colla lungo il bordo; la spinta del pistoncino lo tiene comunque premuto contro il corpo.
-4. **SuperMini**: di traverso, con la USB-C nel foro del fianco -X, scheda sui binari tra le battute.
-5. **Interruttore**: sul fianco +X accanto alla SuperMini, leva nella feritoia, 2 viti M2×6 da fuori e dado dentro.
-6. **TP4056** tra le guide, con la USB-C nel foro del fianco. **LiPo** nel vano, su un velo di gommapiuma.
-7. **Tasto esterno**: sulla torretta accanto al vassoio, cappuccio verso l'alto e piedini lungo il corpo, con una goccia di colla sotto. Due fili su due piedini che si collegano solo a tasto premuto.
-8. Salda i collegamenti come nella [guida](guida.md). Il tasto di presenza va tra GPIO5 e GND, il tasto esterno tra GPIO9 e GND.
-9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso il retro. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
-10. **Clip**: appoggia ognuna sul blocco della cerniera, con il dente verso il launcher.
-11. **Cappuccio** nel foro del coperchio, con la flangia verso l'interno.
-12. **Coperchio** con **9 viti M2×6**. Tacco e appoggio sotto le alette chiudono il perno delle clip nella sede.
+Nelle immagini i pezzi già montati sono al loro posto, quello nuovo è staccato e la freccia magenta indica dove entra. I componenti sono blocchi semplificati, con le misure dei parametri: i tuoi possono essere un po' diversi. Le immagini si rigenerano con `python hardware/render/render_montaggio.py`.
+
+### 1. Sensore e tasto di presenza nel vassoio
+
+![Passo 1](../hardware/img/montaggio/passo_1.png)
+
+- **QRE1113:** salda i tre fili direttamente al breakout, senza pettine. Sensore verso il basso nella finestra, PCB sugli appoggi tra le sponde, una goccia di colla a caldo sui bordi.
+- **Tasto SMD 6×6:** cappuccio nel foro verso il basso, tra le sponde. Salda due fili su due piedini che si collegano solo a tasto premuto (trovali col tester). Una goccia di colla.
+
+### 2. Vassoio nel corpo, da sotto
+
+![Passo 2](../hardware/img/montaggio/passo_2.png)
+
+Il vassoio entra dal fondo del corpo: la fascia resta fuori e appoggia al fondo. Fissalo con qualche goccia di colla lungo il bordo; la spinta del pistoncino lo tiene comunque premuto contro il corpo.
+
+### 3. SuperMini
+
+![Passo 3](../hardware/img/montaggio/passo_3.png)
+
+Di traverso, con la USB-C nel foro del fianco -X, scheda sui binari tra le battute.
+
+### 4. Interruttore
+
+![Passo 4](../hardware/img/montaggio/passo_4.png)
+
+Sul fianco +X accanto alla SuperMini, con la leva nella feritoia. Si fissa con 2 viti M2×6 da fuori e i dadi dentro.
+
+### 5. TP4056 e LiPo
+
+![Passo 5](../hardware/img/montaggio/passo_5.png)
+
+Il TP4056 va tra le guide, con la USB-C nel foro del fianco +X. La LiPo nel vano davanti, su un velo di gommapiuma.
+
+### 6. Tasto esterno
+
+![Passo 6](../hardware/img/montaggio/passo_6.png)
+
+Sulla torretta accanto al vassoio, cappuccio verso l'alto e piedini lungo il corpo, con una goccia di colla sotto. Due fili su due piedini che si collegano solo a tasto premuto.
+
+### 7. Collegamenti
+
+![Schema di cablaggio](img/cablaggio.svg)
+
+Salda i collegamenti come nello schema: tasto di presenza tra GPIO5 e GND, tasto esterno tra GPIO9 e GND. Lascia i fili abbastanza lunghi da poter aprire il coperchio, perché l'OLED è attaccato a lui.
+
+### 8. OLED e cappuccio nel coperchio
+
+![Passo 7](../hardware/img/montaggio/passo_7.png)
+
+Nell'immagine il coperchio è capovolto.
+
+- **OLED:** salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso il retro. Fissalo nella cornice con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
+- **Cappuccio del tasto esterno:** nel suo foro, con la flangia verso l'interno.
+
+### 9. Clip
+
+![Passo 8](../hardware/img/montaggio/passo_8.png)
+
+Appoggia ognuna sul blocco della cerniera, con il dente verso il launcher.
+
+### 10. Coperchio
+
+![Passo 9](../hardware/img/montaggio/passo_9.png)
+
+Chiudi con **9 viti M2×6**. Tacco e appoggio sotto le alette chiudono il perno delle clip nella sede.
 
 ## Da controllare al primo pezzo stampato
 
