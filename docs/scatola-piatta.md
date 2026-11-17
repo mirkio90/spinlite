@@ -51,23 +51,20 @@ Sopra il vano posteriore e il vassoio, sotto il coperchio, c'è l'**OLED** per i
 - **Tasto esterno:** va in parallelo al BOOT (GPIO9), quindi il firmware non cambia. Una pressione cambia pagina dell'OLED. Tenuto premuto mentre accendi, mette la scheda in modalità di programmazione: serve se un firmware sbagliato blocca la USB.
 - **LED:** con la scatola chiusa si vedono attraverso due zone sottili del coperchio, spesse 0,6 mm, ma solo se il coperchio è stampato in un filamento chiaro. Le zone sono larghe perché la posizione dei LED cambia da scheda a scheda.
 
-## Fermi delle clip
+## Blocco delle clip
 
-Come nel Battle Pass originale, la clip chiusa è trattenuta a scatto. Ai lati di ogni clip escono dal fianco due **dita elastiche** con un dentino:
+Nel primo spezzone le clip ballavano e si sganciavano da sole. Ora le blocca il coperchio:
 
-1. chiudendo, il braccio della clip spinge da parte il dentino e lo supera, e il dito flette di 0,3 mm;
-2. a clip chiusa il dito torna dritto e il dentino resta davanti al braccio;
-3. per aprire, la spinta del pollice sulla linguetta deve di nuovo far flettere il dito.
+- ogni clip ha una barretta tra i due bracci, appena fuori asse rispetto al perno;
+- sotto l'aletta del coperchio che tiene il perno c'è un dentino rigido, che a coperchio avvitato sta sopra la barretta con 0,1 mm d'aria;
+- per aprirsi, la clip dovrebbe sollevare la barretta: il dentino lo impedisce dopo circa 2° di rotazione, e impedisce anche alla clip di alzarsi sul perno.
 
-A flettere è il dito, sottile apposta (1 mm), non la clip. Da chiusa la clip ha circa 3° di gioco prima di toccare il dentino. Se lo scatto risulta troppo duro o troppo morbido si cambiano `detent_bite` (quanto entra il dentino) e `detent_t` (spessore del dito).
+Non ci sono parti che flettono. In cambio, **con il coperchio avvitato le clip non si aprono**:
 
-Il gioco lo toglie una **molla sopra la clip**. L'aletta del coperchio che tiene il perno ha una linguetta lunga 7,4 mm e spessa 0,6, staccata da due tagli. Un dentino sotto la sua estremità libera preme su una barretta tra i bracci della clip, un po' fuori asse rispetto al perno, e spinge la clip verso la chiusura.
+1. **per montare:** appoggia il corpo sul launcher con il coperchio tolto o allentato, chiudi le due clip sotto le barrette del launcher, poi avvita il coperchio;
+2. **per togliere:** allenta le viti del coperchio di qualche giro, apri le clip e sgancia.
 
-- A clip chiusa spinge con circa 0,2 N (precarico 0,4 mm): basta a toglierle il gioco.
-- Aprendo, la spinta cresce: circa 0,5 N a 15°.
-- A 25° la linguetta lavora a circa 43 MPa, sotto il limite di PLA e PETG. Oltre i 30° la clip tocca l'aletta e non si apre di più a coperchio chiuso.
-
-Si regola con `spring_preload` e `spring_t`; `top_spring = false` la toglie. Le due cose lavorano insieme: la molla spinge e i fermi trattengono.
+Se il blocco risulta troppo stretto o lascia gioco, si cambia `lock_gap`. `clip_lock = false` lo toglie.
 
 ## Verso di montaggio
 
@@ -116,13 +113,13 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 7. **Tasto esterno**: sulla torretta accanto al vassoio, cappuccio verso l'alto e piedini lungo il corpo, con una goccia di colla sotto. Due fili su due piedini che si collegano solo a tasto premuto.
 8. Salda i collegamenti come nella [guida](guida.md). Il tasto di presenza va tra GPIO5 e GND, il tasto esterno tra GPIO9 e GND.
 9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso il retro. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
-10. **Clip**: appoggia ognuna sul blocco della cerniera tenendola quasi orizzontale, con il dente verso il launcher, poi chiudila: deve scattare oltre i dentini dei fermi.
+10. **Clip**: appoggia ognuna sul blocco della cerniera, con il dente verso il launcher.
 11. **Cappuccio** nel foro del coperchio, con la flangia verso l'interno.
-12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede, e il dentino della molla va a premere sulla barretta della clip.
+12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede, e i dentini sotto le alette bloccano le clip chiuse: avvitalo solo dopo aver agganciato le clip al launcher.
 
 ## Da controllare al primo pezzo stampato
 
-1. **Clip sul launcher.** Si devono agganciare e sganciare senza gioco. Nel primo spezzone, senza fermi, si sganciavano da sole: ora le tengono i fermi a scatto. Controlla che scattino e che restino chiuse anche capovolgendo e scuotendo. Con il coperchio montato la molla deve togliere il gioco senza rendere dura l'apertura. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
+1. **Clip sul launcher.** Nel primo spezzone, senza blocco, si sganciavano da sole. Con il coperchio avvitato devono restare ferme anche capovolgendo, scuotendo e tirando, senza gioco percettibile. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
 2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console): se non si chiude, tutti i lanci vengono scartati. Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
@@ -137,6 +134,6 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 
 - Corpo, vassoio, coperchio e clip sono ognuno un solido unico.
 - Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, con `oled = true` (dopo l'ultima disposizione non è stato ricontrollato `oled = false`).
-- Fermi: la clip è libera da chiusa e fino a 3° di apertura, dal 4° tocca il dentino. Verso i 75° si libera di nuovo: è l'angolo per montarla.
-- Il coperchio non tocca le dita dei fermi. La clip tocca il coperchio solo sul dentino della molla, da chiusa fino a 30° di apertura.
-- Lo spezzone stampato (senza fermi) ha confermato aggancio, finestrella e posizione del pistoncino.
+- Blocco: a coperchio montato la clip è libera fino a 2° e si ferma al 3°; senza coperchio ruota libera fino a 60°.
+- Il coperchio tocca la clip solo con i dentini di blocco, e solo quando la clip prova ad aprirsi.
+- Lo spezzone stampato (senza blocco) ha confermato aggancio, finestrella e posizione del pistoncino.
