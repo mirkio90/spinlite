@@ -32,7 +32,7 @@ sensor_y  = 5.44;   // centro del QRE1113
 sensor_face_z = 5.19; // faccia del QRE1113
 sensor_win = [4.6, 3.6]; // finestra nel fondo: x, y
 button_y  = 13.05;  // centro del pistoncino
-rear_len  = 36;     // dal centro del pistoncino al bordo del launcher lato corda: il retro va a filo (stima dalle foto, misuralo)
+rear_len  = 30;     // dal centro del pistoncino al bordo del launcher lato corda: il retro va a filo (misurato da Mirko)
 back_y    = button_y - rear_len; // parete posteriore, lato corda
 button_tip_z = 5.40; // punta del cappuccio del tasto
 button_hole = 4.3;  // foro nel fondo per il cappuccio
@@ -54,6 +54,16 @@ detent_gap  = 0.16;  // aria tra dito e braccio
 detent_bite = 0.30;  // quanto il dentino entra nel percorso del braccio
 detent_nub  = [21.6, 22.05, 22.2, 22.9]; // dentino lungo X: inizio, cima, fine cima, fine (rampa di uscita 45 gradi, di entrata ~30)
 detent_nub_top = 8.9;
+// Molla sopra la clip: una linguetta ricavata nell'aletta del coperchio preme con
+// un dentino su una barretta tra i bracci, fuori asse rispetto al perno. Spinge la
+// clip verso la chiusura e toglie il gioco; a trattenerla sono i fermi laterali.
+top_spring     = true;
+spring_t       = 0.6;            // spessore della linguetta
+spring_x       = [18.2, 20.2];   // larghezza della linguetta
+spring_root_y  = 17.7;           // attacco della linguetta all'aletta; l'estremita' libera e' verso hinge_y[0]
+spring_nub_y   = [9.6, 11.0];    // dentino, vicino all'estremita' libera
+spring_bar     = [18.4, 20.2, 12.6, 13.3]; // barretta sulla clip: x0, x1, z0, z1
+spring_preload = 0.4;            // quanto il dentino entra nella barretta a clip chiusa
 
 // ---- Pareti e viti ----
 wall      = 1.6;
@@ -66,9 +76,9 @@ eps       = 0.05;
 m2_pilot  = 1.7;
 m2_clear  = 2.3;
 post_d    = 5;
-// colonnine del coperchio, [x, y]: sul fianco +X il dietro e' occupato dall'interruttore
-posts = [[-14.5, back_y + 3], [-14.5, -4], [11.5, 3], [13.0, 21.8], [-13.0, 21.8],
-         [15.8, 58.7], [-15.8, 58.7], [13.2, 70.5], [-13.2, 70.5]];
+// colonnine del coperchio, [x, y]: davanti, sul fianco +X c'e' l'interruttore e sul -X la USB-C della SuperMini
+posts = [[-14.5, -5], [14.5, -5], [13.0, 21.8], [-13.0, 21.8], [-14.5, 59.3],
+         [15.8, 70.7], [-15.8, 70.7], [13.2, 82.5], [-13.2, 82.5]];
 
 // ---- Componenti (misura i tuoi e correggi) ----
 fit       = 0.4;
@@ -93,7 +103,7 @@ lipo_foam = 0.5;
 // Interruttore SS12F15 (corsa e fori stimati, da misurare)
 sf_plate = [19.5, 6.1]; sf_body = [10.5, 6.1, 5.3]; sf_pins = 1.5;
 sf_lever = [3.0, 2.5, 4.0]; sf_travel = 3.5; sf_pitch = 15; sf_hole = 2.3;
-sf_y     = (back_y + wall - 0.4) / 2; // al centro del tratto dritto della parete, tra l'angolo posteriore e la rientranza delle clip
+sf_y     = 40.5;  // fianco +X, accanto alla SuperMini
 usb_hole = [9.8, 3.9];
 usb_pocket = [13, 0.8];
 
@@ -103,7 +113,7 @@ oled_pcb  = [12.2, 38.2, 1.2]; // x, y, spessore (misura il tuo)
 oled_glass = [11.5, 30, 1.4];  // vetro: x, y, spessore
 oled_win  = [6.5, 23];         // area visibile: x, y
 oled_win_dy = 0;               // scostamento dell'area visibile dal centro del PCB (misura il tuo)
-oled_y0   = 2.7;               // bordo del PCB dal lato dei pin, verso la SuperMini (la cornice resta dietro la sua coda)
+oled_y0   = -10;               // bordo del PCB dal lato dei pin: sopra il vano posteriore e il vassoio, la cornice finisce prima della SuperMini
 oled_fit  = 0.3;
 oled_ring = 2.4;               // altezza della cornice sotto il coperchio
 // Tasto esterno, in parallelo al BOOT (GPIO9): stesso tasto SMD della presenza + cappuccio stampato
@@ -116,8 +126,8 @@ btn_flange = 6.5;  // flangia sotto il coperchio: il cappuccio non puo' uscire
 btn_out   = 1.0;   // quanto sporge dal coperchio
 // Zone sottili del coperchio: fanno passare la luce dei LED con filamento chiaro
 led_t     = 0.6;   // spessore residuo
-led_zones = [[-8, -3, -19.5, -2.5], [3, 8, -19.5, -2.5], [-3, 3, -14.8, -2.5], // LED della SuperMini
-             [-9, 10.5, 42.5, 55]];                                               // LED del TP4056
+led_zones = [[-15.5, 1.5, 31.4, 36.4], [-15.5, 1.5, 42.4, 47.4], [-10.8, 1.5, 36.4, 42.4], // LED della SuperMini (di traverso)
+             [-9, 10.5, 54.7, 67.2]];                                               // LED del TP4056
 // Giochi e spezzone di prova
 tray_gap  = 0.25;  // per lato, tra vassoio e apertura nel corpo
 coupon_y  = [-6.5, 24.5];
@@ -137,11 +147,13 @@ tact_cap_l = tact_h - tact_body[2];
 z_tact    = button_tip_z + tact_cap_l; // base del corpo del tasto
 z_qre_pcb = sensor_face_z + qre_h;     // faccia inferiore del PCB del QRE
 
-sm_y0  = back_y + wall + 0.2; sm_y1 = sm_y0 + sm_l;
+// SuperMini di traverso davanti alle clip, USB-C nel fianco -X: lungo X sm_l, lungo Y sm_w
+sm_x0  = -19 + wall + 0.2; sm_x1 = sm_x0 + sm_l;
+sm_y0  = 30.4; sm_y1 = sm_y0 + sm_w; sm_yc = (sm_y0 + sm_y1) / 2;
 z_sm   = z_floor + sm_rail;
 z_sm_usb = z_sm + sm_pcb + sm_usb[1] / 2;
 
-tp_y0  = 38.5; tp_y1 = tp_y0 + tp_w;
+tp_y0  = 50.7; tp_y1 = tp_y0 + tp_w;
 tp_x1  = 19 - wall - 0.2; tp_x0 = tp_x1 - tp_l;
 z_tp_usb = z_floor + tp_pcb + tp_usb[1] / 2;
 
@@ -155,7 +167,8 @@ z_btn     = z_lid - 1.0;                         // faccia inferiore della flang
 z_btn_tact = z_btn - tact_h;                     // base del tasto esterno
 
 assert(!oled || z_oled >= z_tact + tact_body[2] + 2.5, "manca lo spazio per i fili sotto l'OLED");
-assert(!oled || oled_y0 + oled_pcb[1] < tp_y0 + 3, "OLED troppo lungo: arriva sopra il chip del TP4056");
+assert(!oled || oled_y0 + oled_pcb[1] + oled_fit / 2 + 1.2 < sm_y0 - fit / 2, "OLED troppo lungo: la cornice arriva sopra la SuperMini");
+assert(!oled || oled_y0 - oled_fit / 2 - 1.2 > back_y + wall, "OLED contro la parete posteriore");
 assert(!btn || btn_x + btn_flange / 2 <= -oled_pcb[0] / 2 - oled_fit / 2 - 1.2 - 0.2, "cappuccio contro la cornice dell'OLED");
 assert(!btn || z_btn_tact > z_floor, "tasto esterno troppo alto");
 
@@ -170,8 +183,8 @@ assert(tp_x0 > -19 + wall, "TP4056 troppo lungo");
 // ---------------------------------------------------------------------------
 // Pianta
 // ---------------------------------------------------------------------------
-front_y = 90;   // punta del corpo, verso il fondo del launcher
-half = [[back_y, 18], [back_y + 1, 19], [0.5, 19], [2.5, 16], [21.5, 16], [26, 18.3], [30, 19], [59.5, 19], [65.5, 18.2], [71.5, 17.2], [77.5, 16], [83.5, 11.9], [front_y, 11.9]];
+front_y = 102;  // punta del corpo, verso il fondo del launcher
+half = [[back_y, 18], [back_y + 1, 19], [0.5, 19], [2.5, 16], [21.5, 16], [26, 18.3], [30, 19], [71.5, 19], [77.5, 18.2], [83.5, 17.2], [89.5, 16], [95.5, 11.9], [front_y, 11.9]];
 
 module outline() {
     r = [for (p = half) [p[1], p[0]]];
@@ -213,17 +226,10 @@ module detent_fingers() {
 module post_positions() for (p = posts) translate([p[0], p[1], 0]) children();
 
 module supports() {
-    // binari e battute della SuperMini
-    for (s = [-1, 1]) {
-        // binari: finiscono prima dell'apertura del vassoio, sotto la coda della scheda
-        rail_l = min(sm_l - 2, tray_y0 - tray_gap - 0.3 - sm_y0 - 1);
-        translate([s * (sm_w / 2 - 0.5) - 0.5, sm_y0 + 1, z_floor - eps]) cube([1, rail_l, sm_rail + eps]);
-        translate([s > 0 ? sm_w / 2 + fit / 2 : -sm_w / 2 - fit / 2 - 1, sm_y0, z_floor - eps])
-            cube([1, sm_l, sm_rail + sm_pcb + 0.5]);
-    }
-    // battute davanti alla coda, solo ai lati: in mezzo c'e' il vassoio
-    for (s = [-1, 1]) translate([s > 0 ? 8.6 : -sm_w / 2 - fit / 2 - 1, sm_y1 + fit / 2, z_floor - eps])
-        cube([sm_w / 2 + fit / 2 + 1 - 8.6, 1, sm_rail + sm_pcb + 0.5]);
+    // binari e battute della SuperMini, di traverso
+    for (y = [sm_y0 + 0.5, sm_y1 - 1.5]) translate([sm_x0 + 1, y, z_floor - eps]) cube([sm_l - 2, 1, sm_rail + eps]);
+    for (y = [sm_y0 - fit / 2 - 1, sm_y1 + fit / 2]) translate([sm_x0, y, z_floor - eps]) cube([sm_l, 1, sm_rail + sm_pcb + 0.5]);
+    translate([sm_x1 + fit / 2, sm_y0 - fit / 2 - 1, z_floor - eps]) cube([1, sm_w + fit + 2, sm_rail + sm_pcb + 0.5]);
     // guide del TP4056
     for (y = [tp_y0 - fit / 2 - 1.2, tp_y1 + fit / 2])
         translate([tp_x0, y, z_floor - eps]) cube([tp_l - 8, 1.2, 1.6]);
@@ -265,8 +271,8 @@ module cutouts() {
     // apertura per il vassoio del sensore
     translate([-tray_x - tray_gap, tray_y0 - tray_gap, body_z - 1]) cube([2 * tray_x + 2 * tray_gap, tray_y1 - tray_y0 + 2 * tray_gap, floor_t + 2]);
     // USB-C SuperMini, parete posteriore
-    translate([-usb_hole[0] / 2, back_y - 1, z_sm_usb - usb_hole[1] / 2]) cube([usb_hole[0], wall + 2, usb_hole[1]]);
-    translate([-usb_pocket[0] / 2, back_y - 1, z_sm_usb - usb_hole[1] / 2 - 1.2]) cube([usb_pocket[0], usb_pocket[1] + 1, usb_hole[1] + 2.4]);
+    translate([-19 - 1, sm_yc - usb_hole[0] / 2, z_sm_usb - usb_hole[1] / 2]) cube([wall + 2, usb_hole[0], usb_hole[1]]);
+    translate([-19 - 1, sm_yc - usb_pocket[0] / 2, z_sm_usb - usb_hole[1] / 2 - 1.2]) cube([usb_pocket[1] + 1, usb_pocket[0], usb_hole[1] + 2.4]);
     // USB-C TP4056, fianco +X
     translate([19 - wall - 1, (tp_y0 + tp_y1) / 2 - usb_hole[0] / 2, z_tp_usb - usb_hole[1] / 2]) cube([wall + 2, usb_hole[0], usb_hole[1]]);
     translate([19 - usb_pocket[1], (tp_y0 + tp_y1) / 2 - usb_pocket[0] / 2, z_tp_usb - usb_hole[1] / 2 - 1.2]) cube([usb_pocket[1] + 1, usb_pocket[0], usb_hole[1] + 2.4]);
@@ -326,7 +332,8 @@ module lid() {
         union() {
             prism(z_lid, z_top) outline();
             // alette sopra il perno delle clip: lo tengono nella sede
-            for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0], lid_t]);
+            // (2 mm piu' lunghe verso +Y: danno l'attacco alla linguetta della molla)
+            for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0] + (top_spring ? 2 : 0), lid_t]);
             // cornice che centra l'OLED sotto la finestra
             if (oled) translate([0, oled_y, z_lid - oled_ring]) difference() {
                 w = oled_pcb[0] + oled_fit; l = oled_pcb[1] + oled_fit;
@@ -341,15 +348,15 @@ module lid() {
                 // intaglio per la flangia del cappuccio
                 if (btn) translate([btn_x - btn_flange / 2 - 1.5, btn_y - btn_flange / 2 - 0.8, z_lid - lip_h - 1]) cube([btn_flange + 1.5, btn_flange + 1.6, lip_h + 1]);
                 // intagli sopra USB-C e interruttore
-                translate([-usb_pocket[0] / 2, back_y - 1, z_lid - lip_h - 1]) cube([usb_pocket[0], 5, lip_h + 1]);
+                translate([-20, sm_yc - usb_pocket[0] / 2, z_lid - lip_h - 1]) cube([6, usb_pocket[0], lip_h + 1]);
                 translate([14, (tp_y0 + tp_y1) / 2 - usb_pocket[0] / 2, z_lid - lip_h - 1]) cube([6, usb_pocket[0], lip_h + 1]);
                 translate([14, sf_y - sf_plate[0] / 2 - 1, z_lid - lip_h - 1]) cube([6, sf_plate[0] + 2, lip_h + 1]);
             }
             // sulla USB-C della SuperMini e sulla coda
             z_usb = z_sm + sm_pcb + sm_usb[1] + 0.2;
-            translate([-2.5, sm_y0 + 1, z_usb]) cube([5, 5, z_lid - z_usb + eps]);
+            translate([sm_x0 + 1, sm_yc - 2.5, z_usb]) cube([5, 5, z_lid - z_usb + eps]);
             z_tail = z_sm + sm_pcb + sm_top_h - 1.6;
-            translate([-3, sm_y1 - 3, z_tail]) cube([6, 2, z_lid - z_tail + eps]);
+            translate([sm_x1 - 3, sm_yc - 3, z_tail]) cube([2, 6, z_lid - z_tail + eps]);
             // sulla USB-C del TP4056
             z_tpu = z_floor + tp_pcb + tp_usb[1] + 0.2;
             translate([tp_x1 - 6, (tp_y0 + tp_y1) / 2 - 2.5, z_tpu]) cube([5, 5, z_lid - z_tpu + eps]);
@@ -359,7 +366,23 @@ module lid() {
         if (btn) translate([btn_x, btn_y, z_lid - 1]) cylinder(d = btn_hole, h = lid_t + 2);
         // zone sottili, scavate dall'interno
         for (a = led_zones) translate([a[0], a[2], z_lid]) cube([a[1] - a[0], a[3] - a[2], lid_t - led_t]);
+        if (top_spring) for (m = [0, 1]) mirror([m, 0, 0]) spring_cuts();
     }
+    if (top_spring) for (m = [0, 1]) mirror([m, 0, 0]) spring_nub();
+}
+
+// Linguetta della molla nell'aletta (lato +X): due tagli la staccano lungo Y,
+// e dall'interno resta spessa spring_t. L'estremita' libera e' verso hinge_y[0].
+module spring_cuts() {
+    translate([spring_x[0] - 0.5, hinge_y[0] - 1, z_lid - 1]) cube([0.5, spring_root_y - hinge_y[0] + 1, lid_t + 2]);
+    translate([spring_x[1], hinge_y[0] - 1, z_lid - 1]) cube([3, spring_root_y - hinge_y[0] + 1, lid_t + 2]);
+    translate([spring_x[0] - eps, hinge_y[0] - 1, z_lid - 1]) cube([spring_x[1] - spring_x[0] + 2 * eps, spring_root_y - hinge_y[0] + 1, 1 + lid_t - spring_t]);
+}
+
+// Dentino sotto la linguetta: a clip chiusa entra di spring_preload nella barretta
+module spring_nub() {
+    z0 = spring_bar[3] - spring_preload;
+    translate([spring_x[0] + 0.3, spring_nub_y[0], z0]) cube([spring_x[1] - spring_x[0] - 0.6, spring_nub_y[1] - spring_nub_y[0], z_top - spring_t - z0 + 0.2]);
 }
 
 // ---------------------------------------------------------------------------
@@ -382,6 +405,9 @@ module clip() {
     y1 = clip_y + clip_gap / 2;
     for (s = [0, 1]) extrude_y(s == 0 ? y0 - clip_arm : y1, s == 0 ? y0 : y1 + clip_arm) clip_arm_profile();
     extrude_y(y0 - eps, y1 + eps) clip_catch_profile();
+    // barretta su cui preme la molla del coperchio
+    if (top_spring) extrude_y(y0 - eps, y1 + eps)
+        polygon([[spring_bar[0], spring_bar[2]], [spring_bar[1], spring_bar[2]], [spring_bar[1], spring_bar[3]], [spring_bar[0], spring_bar[3]]]);
     // perno
     hull() for (z = [11.5, 11.9]) translate([pivot[0], y1 + eps, z]) rotate([90, 0, 0]) cylinder(d = 2.0, h = y1 - y0 + 2 * eps);
 }
@@ -414,9 +440,9 @@ module tact(shr = 0) translate([0, button_y, 0]) {
 }
 
 module supermini(shr = 0) {
-    color("#111") blk([-sm_w / 2, sm_y0, z_sm], [sm_w, sm_l, sm_pcb], shr);
-    color("silver") blk([-sm_usb[0] / 2, sm_y0 - sm_usb_out, z_sm + sm_pcb], [sm_usb[0], 7.3, sm_usb[1]], shr);
-    color("#333") blk([-sm_w / 2 + 1.5, sm_y1 - 12, z_sm + sm_pcb], [sm_w - 3, 10, 1.2], shr);
+    color("#111") blk([sm_x0, sm_y0, z_sm], [sm_l, sm_w, sm_pcb], shr);
+    color("silver") blk([sm_x0 - sm_usb_out, sm_yc - sm_usb[0] / 2, z_sm + sm_pcb], [7.3, sm_usb[0], sm_usb[1]], shr);
+    color("#333") blk([sm_x1 - 12, sm_y0 + 1.5, z_sm + sm_pcb], [10, sm_w - 3, 1.2], shr);
 }
 
 module tp4056(shr = 0) {
