@@ -43,13 +43,12 @@ clip_y    = 13.14;  // centro delle clip lungo Y
 clip_gap  = 8.0;    // distanza interna tra i bracci della clip
 clip_arm  = 2.0;    // spessore dei bracci
 pivot     = [17.7, 11.7]; // asse delle clip: x, z
-// Blocco delle clip: col coperchio avvitato, un dentino rigido sotto l'aletta
-// sta sopra una barretta tra i bracci della clip, fuori asse rispetto al perno.
-// Aprendosi la barretta salirebbe: il dentino lo impedisce, e impedisce anche alla
-// clip di sollevarsi. Niente parti che flettono. Per sganciare si allenta il coperchio.
-clip_lock = true;
-lock_bar  = [18.4, 20.2, 12.6, 13.3]; // barretta sulla clip: x0, x1, z0, z1
-lock_gap  = 0.1;                      // aria tra dentino e barretta a clip chiusa
+// Perno chiuso: l'aletta del coperchio e' piu' lunga del blocco della cerniera.
+// Sotto di essa un tacco scende oltre il perno e un appoggio gli sta sopra: col
+// coperchio avvitato il perno e' chiuso tra blocco, aletta, tacco e parete del
+// corpo. La clip ruota ma non si sfila e non balla.
+hinge_cap = true;
+cap_gap   = 0.2;   // aria attorno al perno
 
 // ---- Pareti e viti ----
 wall      = 1.6;
@@ -189,6 +188,18 @@ module hinge_blocks() {
 }
 
 
+// Sotto l'aletta (lato +X): appoggio sopra il perno e tacco oltre il perno, fino
+// sotto il suo centro. Il perno e' ovale: alto 2,4 mm, largo 2, e girando arriva
+// a 1,2 mm dall'asse in ogni direzione.
+module hinge_cap() {
+    r = 1.2 + cap_gap;                       // raggio massimo del perno, piu' l'aria
+    x1 = 15 + 6;                             // fine dell'aletta
+    // appoggio sopra
+    translate([pivot[0] - 1.2, hinge_y[0], pivot[1] + r]) cube([x1 - pivot[0] + 1.2, hinge_y[1] - hinge_y[0], z_lid - pivot[1] - r + eps]);
+    // tacco esterno
+    translate([pivot[0] + r, hinge_y[0], hinge_top + 0.3]) cube([x1 - pivot[0] - r, hinge_y[1] - hinge_y[0], z_lid - hinge_top - 0.3 + eps]);
+}
+
 module post_positions() for (p = posts) translate([p[0], p[1], 0]) children();
 
 module supports() {
@@ -298,10 +309,8 @@ module lid() {
             prism(z_lid, z_top) outline();
             // alette sopra il perno delle clip: lo tengono nella sede
             for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0], lid_t]);
-            // dentini di blocco sotto le alette, sopra la barretta delle clip
-            if (clip_lock) for (m = [0, 1]) mirror([m, 0, 0])
-                translate([lock_bar[0] + 0.1, hinge_y[0] + 0.5, lock_bar[3] + lock_gap])
-                    cube([lock_bar[1] - lock_bar[0] - 0.2, hinge_y[1] - hinge_y[0] - 1, z_lid - lock_bar[3] - lock_gap + eps]);
+            // tacco e appoggio sotto le alette: chiudono il perno delle clip
+            if (hinge_cap) for (m = [0, 1]) mirror([m, 0, 0]) hinge_cap();
             // cornice che centra l'OLED sotto la finestra
             if (oled) translate([0, oled_y, z_lid - oled_ring]) difference() {
                 w = oled_pcb[0] + oled_fit; l = oled_pcb[1] + oled_fit;
@@ -357,9 +366,6 @@ module clip() {
     y1 = clip_y + clip_gap / 2;
     for (s = [0, 1]) extrude_y(s == 0 ? y0 - clip_arm : y1, s == 0 ? y0 : y1 + clip_arm) clip_arm_profile();
     extrude_y(y0 - eps, y1 + eps) clip_catch_profile();
-    // barretta trattenuta dal dentino di blocco del coperchio
-    if (clip_lock) extrude_y(y0 - eps, y1 + eps)
-        polygon([[lock_bar[0], lock_bar[2]], [lock_bar[1], lock_bar[2]], [lock_bar[1], lock_bar[3]], [lock_bar[0], lock_bar[3]]]);
     // perno
     hull() for (z = [11.5, 11.9]) translate([pivot[0], y1 + eps, z]) rotate([90, 0, 0]) cylinder(d = 2.0, h = y1 - y0 + 2 * eps);
 }
