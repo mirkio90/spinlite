@@ -51,20 +51,16 @@ Sopra il vano posteriore e il vassoio, sotto il coperchio, c'è l'**OLED** per i
 - **Tasto esterno:** va in parallelo al BOOT (GPIO9), quindi il firmware non cambia. Una pressione cambia pagina dell'OLED. Tenuto premuto mentre accendi, mette la scheda in modalità di programmazione: serve se un firmware sbagliato blocca la USB.
 - **LED:** con la scatola chiusa si vedono attraverso due zone sottili del coperchio, spesse 0,6 mm, ma solo se il coperchio è stampato in un filamento chiaro. Le zone sono larghe perché la posizione dei LED cambia da scheda a scheda.
 
-## Blocco delle clip
+## Perno chiuso
 
-Nel primo spezzone le clip ballavano e si sganciavano da sole. Ora le blocca il coperchio:
+Nel primo spezzone le clip si sfilavano: il perno appoggiava sul blocco della cerniera, l'aletta del coperchio gli stava sopra con 1,5 mm d'aria, e verso l'esterno non lo fermava niente. Staccando SpinLite dal launcher, la clip scivolava via.
 
-- ogni clip ha una barretta tra i due bracci, appena fuori asse rispetto al perno;
-- sotto l'aletta del coperchio che tiene il perno c'è un dentino rigido, che a coperchio avvitato sta sopra la barretta con 0,1 mm d'aria;
-- per aprirsi, la clip dovrebbe sollevare la barretta: il dentino lo impedisce dopo circa 2° di rotazione, e impedisce anche alla clip di alzarsi sul perno.
+L'aletta del coperchio è più lunga del blocco della cerniera, e ora sotto di essa ci sono:
 
-Non ci sono parti che flettono. In cambio, **con il coperchio avvitato le clip non si aprono**:
+- un **appoggio** che scende fin sopra il perno;
+- un **tacco** che scende oltre il perno, fin sotto il suo centro.
 
-1. **per montare:** appoggia il corpo sul launcher con il coperchio tolto o allentato, chiudi le due clip sotto le barrette del launcher, poi avvita il coperchio;
-2. **per togliere:** allenta le viti del coperchio di qualche giro, apri le clip e sgancia.
-
-Se il blocco risulta troppo stretto o lascia gioco, si cambia `lock_gap`. `clip_lock = false` lo toglie.
+A coperchio avvitato il perno è chiuso su quattro lati: blocco sotto, appoggio sopra, tacco fuori, parete del corpo dentro, con 0,2 mm d'aria. La clip ruota normalmente, ma non si sfila e non balla. L'aria si regola con `cap_gap`; `hinge_cap = false` toglie tacco e appoggio.
 
 ## Verso di montaggio
 
@@ -115,11 +111,11 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso il retro. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
 10. **Clip**: appoggia ognuna sul blocco della cerniera, con il dente verso il launcher.
 11. **Cappuccio** nel foro del coperchio, con la flangia verso l'interno.
-12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede, e i dentini sotto le alette bloccano le clip chiuse: avvitalo solo dopo aver agganciato le clip al launcher.
+12. **Coperchio** con **9 viti M2×6**. Tacco e appoggio sotto le alette chiudono il perno delle clip nella sede.
 
 ## Da controllare al primo pezzo stampato
 
-1. **Clip sul launcher.** Nel primo spezzone, senza blocco, si sganciavano da sole. Con il coperchio avvitato devono restare ferme anche capovolgendo, scuotendo e tirando, senza gioco percettibile. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
+1. **Clip sul launcher.** Nel primo spezzone si sfilavano dalla cerniera. Con il coperchio avvitato non devono uscire né ballare, e devono comunque agganciarsi e sganciarsi dal launcher. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
 2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console): se non si chiude, tutti i lanci vengono scartati. Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
@@ -134,6 +130,5 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 
 - Corpo, vassoio, coperchio e clip sono ognuno un solido unico.
 - Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, con `oled = true` (dopo l'ultima disposizione non è stato ricontrollato `oled = false`).
-- Blocco: a coperchio montato la clip è libera fino a 2° e si ferma al 3°; senza coperchio ruota libera fino a 60°.
-- Il coperchio tocca la clip solo con i dentini di blocco, e solo quando la clip prova ad aprirsi.
-- Lo spezzone stampato (senza blocco) ha confermato aggancio, finestrella e posizione del pistoncino.
+- Perno chiuso: con il coperchio la clip ruota libera fino a 60°; spostandola di 0,4 mm verso fuori, in su o in giù tocca tacco, appoggio o blocco, quindi non può sfilarsi.
+- Lo spezzone stampato (senza perno chiuso) ha confermato aggancio, finestrella e posizione del pistoncino.

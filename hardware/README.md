@@ -31,7 +31,7 @@ Ingombro: circa 119 × 38 mm senza le clip, alta circa 10 mm sopra il launcher, 
 | `oled` | `true` (default): finestra nel coperchio e cornice per il modulo. Non cambia l'altezza |
 | `oled_pcb`, `oled_glass`, `oled_win`, `oled_win_dy` | misure del tuo OLED e posizione dell'area visibile |
 | `rear_len` | distanza tra pistoncino e bordo del launcher lato corda: il retro del corpo va a filo (30 mm, misurato) |
-| `clip_lock`, `lock_gap` | blocco delle clip: dentino rigido sotto l'aletta del coperchio, aria verso la barretta della clip |
+| `hinge_cap`, `cap_gap` | tacco e appoggio sotto le alette del coperchio che chiudono il perno delle clip, aria attorno al perno |
 | `btn`, `btn_x`, `btn_y` | tasto esterno in parallelo al BOOT |
 | `led_zones`, `led_t` | zone sottili del coperchio sopra i LED di SuperMini e TP4056 |
 | `tray_gap` | gioco per lato tra vassoio e apertura nel corpo |
