@@ -43,27 +43,13 @@ clip_y    = 13.14;  // centro delle clip lungo Y
 clip_gap  = 8.0;    // distanza interna tra i bracci della clip
 clip_arm  = 2.0;    // spessore dei bracci
 pivot     = [17.7, 11.7]; // asse delle clip: x, z
-// Fermi a scatto delle clip, come nel Battle Pass originale: due dita elastiche
-// per clip escono dal fianco accanto ai bracci. Chiudendo, il braccio spinge da
-// parte il dentino e lo supera; il dito torna a posto e trattiene il braccio.
-detents     = true;
-detent_t    = 1.0;   // spessore del dito lungo Y: e' la parte che flette
-detent_top  = 9.5;   // cima del dito (parte dal piano del corpo)
-detent_x1   = 23.0;  // fine del dito
-detent_gap  = 0.16;  // aria tra dito e braccio
-detent_bite = 0.30;  // quanto il dentino entra nel percorso del braccio
-detent_nub  = [21.6, 22.05, 22.2, 22.9]; // dentino lungo X: inizio, cima, fine cima, fine (rampa di uscita 45 gradi, di entrata ~30)
-detent_nub_top = 8.9;
-// Molla sopra la clip: una linguetta ricavata nell'aletta del coperchio preme con
-// un dentino su una barretta tra i bracci, fuori asse rispetto al perno. Spinge la
-// clip verso la chiusura e toglie il gioco; a trattenerla sono i fermi laterali.
-top_spring     = true;
-spring_t       = 0.6;            // spessore della linguetta
-spring_x       = [18.2, 20.2];   // larghezza della linguetta
-spring_root_y  = 17.7;           // attacco della linguetta all'aletta; l'estremita' libera e' verso hinge_y[0]
-spring_nub_y   = [9.6, 11.0];    // dentino, vicino all'estremita' libera
-spring_bar     = [18.4, 20.2, 12.6, 13.3]; // barretta sulla clip: x0, x1, z0, z1
-spring_preload = 0.4;            // quanto il dentino entra nella barretta a clip chiusa
+// Blocco delle clip: col coperchio avvitato, un dentino rigido sotto l'aletta
+// sta sopra una barretta tra i bracci della clip, fuori asse rispetto al perno.
+// Aprendosi la barretta salirebbe: il dentino lo impedisce, e impedisce anche alla
+// clip di sollevarsi. Niente parti che flettono. Per sganciare si allenta il coperchio.
+clip_lock = true;
+lock_bar  = [18.4, 20.2, 12.6, 13.3]; // barretta sulla clip: x0, x1, z0, z1
+lock_gap  = 0.1;                      // aria tra dentino e barretta a clip chiusa
 
 // ---- Pareti e viti ----
 wall      = 1.6;
@@ -202,26 +188,6 @@ module hinge_blocks() {
         cube([hinge_x[1] - hinge_x[0] + eps, hinge_y[1] - hinge_y[0], hinge_top - body_z]);
 }
 
-// Dita dei fermi, per una clip (lato +X): fuori dai due bracci, lungo Y
-module detent_fingers() {
-    y0 = clip_y - clip_gap / 2 - clip_arm;   // faccia esterna del braccio verso -Y
-    y1 = clip_y + clip_gap / 2 + clip_arm;   // faccia esterna del braccio verso +Y
-    p = detent_gap + detent_bite;            // sporgenza del dentino
-    n = detent_nub;
-    for (side = [[y1 + detent_gap, 1], [y0 - detent_gap, -1]]) {
-        yf = side[0]; d = side[1];           // faccia del dito verso il braccio, verso esterno
-        translate([hinge_x[0] - 0.5, d > 0 ? yf : yf - detent_t, body_z])
-            cube([detent_x1 - hinge_x[0] + 0.5, detent_t, detent_top - body_z]);
-        // dentino: profilo in pianta, con uno smusso in cima perche' montando la
-        // clip il braccio arriva dall'alto. Entra 0,2 nel dito: un solo solido.
-        hull() {
-            translate([0, 0, body_z]) linear_extrude(detent_nub_top - 0.6 - body_z)
-                polygon([[n[0], yf + d * 0.2], [n[0], yf], [n[1], yf - d * p], [n[2], yf - d * p], [n[3], yf], [n[3], yf + d * 0.2]]);
-            translate([0, 0, detent_nub_top - 0.01]) linear_extrude(0.01)
-                polygon([[n[0], yf + d * 0.2], [n[0], yf], [n[3], yf], [n[3], yf + d * 0.2]]);
-        }
-    }
-}
 
 module post_positions() for (p = posts) translate([p[0], p[1], 0]) children();
 
@@ -292,7 +258,6 @@ module body() {
             }
             hinge_blocks();
             supports();
-            if (detents) for (s = [0, 1]) mirror([s, 0, 0]) detent_fingers();
         }
         cutouts();
     }
@@ -332,8 +297,11 @@ module lid() {
         union() {
             prism(z_lid, z_top) outline();
             // alette sopra il perno delle clip: lo tengono nella sede
-            // (2 mm piu' lunghe verso +Y: danno l'attacco alla linguetta della molla)
-            for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0] + (top_spring ? 2 : 0), lid_t]);
+            for (s = [-1, 1]) translate([s > 0 ? 15 : -21, hinge_y[0], z_lid]) cube([6, hinge_y[1] - hinge_y[0], lid_t]);
+            // dentini di blocco sotto le alette, sopra la barretta delle clip
+            if (clip_lock) for (m = [0, 1]) mirror([m, 0, 0])
+                translate([lock_bar[0] + 0.1, hinge_y[0] + 0.5, lock_bar[3] + lock_gap])
+                    cube([lock_bar[1] - lock_bar[0] - 0.2, hinge_y[1] - hinge_y[0] - 1, z_lid - lock_bar[3] - lock_gap + eps]);
             // cornice che centra l'OLED sotto la finestra
             if (oled) translate([0, oled_y, z_lid - oled_ring]) difference() {
                 w = oled_pcb[0] + oled_fit; l = oled_pcb[1] + oled_fit;
@@ -366,23 +334,7 @@ module lid() {
         if (btn) translate([btn_x, btn_y, z_lid - 1]) cylinder(d = btn_hole, h = lid_t + 2);
         // zone sottili, scavate dall'interno
         for (a = led_zones) translate([a[0], a[2], z_lid]) cube([a[1] - a[0], a[3] - a[2], lid_t - led_t]);
-        if (top_spring) for (m = [0, 1]) mirror([m, 0, 0]) spring_cuts();
     }
-    if (top_spring) for (m = [0, 1]) mirror([m, 0, 0]) spring_nub();
-}
-
-// Linguetta della molla nell'aletta (lato +X): due tagli la staccano lungo Y,
-// e dall'interno resta spessa spring_t. L'estremita' libera e' verso hinge_y[0].
-module spring_cuts() {
-    translate([spring_x[0] - 0.5, hinge_y[0] - 1, z_lid - 1]) cube([0.5, spring_root_y - hinge_y[0] + 1, lid_t + 2]);
-    translate([spring_x[1], hinge_y[0] - 1, z_lid - 1]) cube([3, spring_root_y - hinge_y[0] + 1, lid_t + 2]);
-    translate([spring_x[0] - eps, hinge_y[0] - 1, z_lid - 1]) cube([spring_x[1] - spring_x[0] + 2 * eps, spring_root_y - hinge_y[0] + 1, 1 + lid_t - spring_t]);
-}
-
-// Dentino sotto la linguetta: a clip chiusa entra di spring_preload nella barretta
-module spring_nub() {
-    z0 = spring_bar[3] - spring_preload;
-    translate([spring_x[0] + 0.3, spring_nub_y[0], z0]) cube([spring_x[1] - spring_x[0] - 0.6, spring_nub_y[1] - spring_nub_y[0], z_top - spring_t - z0 + 0.2]);
 }
 
 // ---------------------------------------------------------------------------
@@ -405,9 +357,9 @@ module clip() {
     y1 = clip_y + clip_gap / 2;
     for (s = [0, 1]) extrude_y(s == 0 ? y0 - clip_arm : y1, s == 0 ? y0 : y1 + clip_arm) clip_arm_profile();
     extrude_y(y0 - eps, y1 + eps) clip_catch_profile();
-    // barretta su cui preme la molla del coperchio
-    if (top_spring) extrude_y(y0 - eps, y1 + eps)
-        polygon([[spring_bar[0], spring_bar[2]], [spring_bar[1], spring_bar[2]], [spring_bar[1], spring_bar[3]], [spring_bar[0], spring_bar[3]]]);
+    // barretta trattenuta dal dentino di blocco del coperchio
+    if (clip_lock) extrude_y(y0 - eps, y1 + eps)
+        polygon([[lock_bar[0], lock_bar[2]], [lock_bar[1], lock_bar[2]], [lock_bar[1], lock_bar[3]], [lock_bar[0], lock_bar[3]]]);
     // perno
     hull() for (z = [11.5, 11.9]) translate([pivot[0], y1 + eps, z]) rotate([90, 0, 0]) cylinder(d = 2.0, h = y1 - y0 + 2 * eps);
 }
