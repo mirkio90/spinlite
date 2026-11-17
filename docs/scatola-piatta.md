@@ -17,7 +17,7 @@ La versione attuale del dispositivo: un corpo basso che si aggancia direttamente
 | Pezzi | base LaunchLab + barretta + scatola + coperchio | corpo + vassoio del sensore + coperchio + 2 clip + cappuccio del tasto |
 | Tasto di presenza | non previsto: servirebbe forare la base | direttamente sul pistoncino |
 | Altezza sul launcher | circa 28 mm | circa 10 mm |
-| Lunghezza | circa 70 mm | circa 113 mm |
+| Lunghezza | circa 70 mm | circa 119 mm |
 | Licenze | base CC BY-SA a parte | tutto MIT |
 
 ## Da dove vengono le quote
@@ -37,12 +37,13 @@ Nel suo modello le due clip non sono simmetriche di circa 0,7 mm: ho usato la de
 
 Da dietro in avanti:
 
-1. **SuperMini**, con la USB-C nella parete posteriore; **interruttore SS12F15** sul fianco +X.
+1. **Vano posteriore**, vuoto: il retro è a filo del launcher e lì non c'è spazio per le schede.
 2. **QRE1113 e tasto** nel fondo, con le **clip** ai lati.
-3. **TP4056** di traverso, con la USB-C sul fianco +X.
-4. **LiPo 502030**.
+3. **SuperMini** di traverso, con la USB-C nel fianco -X; **interruttore SS12F15** accanto, sul fianco +X.
+4. **TP4056** di traverso, con la USB-C sul fianco +X.
+5. **LiPo 502030**.
 
-Sopra il vassoio, sotto il coperchio, c'è l'**OLED** per il lungo, con i pin verso la SuperMini. Accanto c'è il **tasto esterno**.
+Sopra il vano posteriore e il vassoio, sotto il coperchio, c'è l'**OLED** per il lungo, con i pin verso il retro. Accanto c'è il **tasto esterno**.
 
 ## Interfaccia
 
@@ -60,16 +61,24 @@ Come nel Battle Pass originale, la clip chiusa è trattenuta a scatto. Ai lati d
 
 A flettere è il dito, sottile apposta (1 mm), non la clip. Da chiusa la clip ha circa 3° di gioco prima di toccare il dentino. Se lo scatto risulta troppo duro o troppo morbido si cambiano `detent_bite` (quanto entra il dentino) e `detent_t` (spessore del dito).
 
+Il gioco lo toglie una **molla sopra la clip**. L'aletta del coperchio che tiene il perno ha una linguetta lunga 7,4 mm e spessa 0,6, staccata da due tagli. Un dentino sotto la sua estremità libera preme su una barretta tra i bracci della clip, un po' fuori asse rispetto al perno, e spinge la clip verso la chiusura.
+
+- A clip chiusa spinge con circa 0,2 N (precarico 0,4 mm): basta a toglierle il gioco.
+- Aprendo, la spinta cresce: circa 0,5 N a 15°.
+- A 25° la linguetta lavora a circa 43 MPa, sotto il limite di PLA e PETG. Oltre i 30° la clip tocca l'aletta e non si apre di più a coperchio chiuso.
+
+Si regola con `spring_preload` e `spring_t`; `top_spring = false` la toglie. Le due cose lavorano insieme: la molla spinge e i fermi trattengono.
+
 ## Verso di montaggio
 
 Sul launcher la finestrella del disco è più vicina alla corda, il foro del pistoncino più lontano. Il corpo si monta quindi con la **parte corta e la USB-C della SuperMini verso la corda** e la **parte lunga con la LiPo verso il fondo** del launcher.
 
-| Dal pistoncino verso | Launcher (stima dalle foto) | Corpo | Sporgenza |
+| Dal pistoncino verso | Launcher | Corpo | Sporgenza |
 | --- | --- | --- | --- |
-| Corda | circa 36 mm | 36 mm | a filo |
-| Fondo | circa 62 mm | 77 mm | circa 15 mm |
+| Corda | 30 mm (misurato) | 30 mm | a filo |
+| Fondo | circa 62 mm (stima dalle foto) | 89 mm | circa 27 mm |
 
-Le misure del launcher sono ricavate da una foto, usando come scala i 7,6 mm tra finestrella e pistoncino: l'errore è di qualche mm. **Misura sul tuo launcher** la distanza tra il centro del pistoncino e il bordo lato corda, e impostala in `rear_len`: il retro del corpo segue da solo.
+Il lato corda è misurato col metro sul launcher vero ed è in `rear_len`: il retro del corpo segue da solo. Il lato fondo è stimato da una foto, e dato che la stima del lato corda era sbagliata di 6 mm, anche questa può esserlo: la sporgenza vera va vista sul pezzo.
 
 ![Launcher visto dal lato della corda, con finestrella e pistoncino nella fascia nera](../hardware/img/render_launcher.png)
 
@@ -94,32 +103,32 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 - **Coperchio in filamento chiaro** se vuoi vedere i LED attraverso le zone sottili.
 - Corpo, vassoio e coperchio senza supporti: ognuno appoggia su una faccia piana. Il vassoio è un pezzo a parte proprio per questo: la sua fascia sporge 1 mm sotto il fondo, e se fosse unita al corpo il resto del fondo resterebbe sospeso.
 - Le clip si stampano coricate su un braccio, così gli strati seguono il verso in cui lavorano.
-- Se la tua stampante è piccola, stampa i pezzi uno alla volta: il corpo è lungo 113 mm.
+- Se la tua stampante è piccola, stampa i pezzi uno alla volta: il corpo è lungo 119 mm.
 
 ## Montaggio
 
 1. **QRE1113**, nel vassoio: salda i tre fili direttamente al breakout, senza pettine. Sensore verso il basso nella finestra, PCB sugli appoggi tra le sponde, una goccia di colla a caldo sui bordi.
 2. **Tasto SMD 6×6**, nel vassoio: cappuccio nel foro verso il basso, tra le sponde. Salda due fili su due piedini che si collegano solo a tasto premuto (trovali col tester). Una goccia di colla.
 3. **Vassoio nel corpo**, da sotto: la fascia resta fuori e appoggia al fondo. Fissalo con qualche goccia di colla lungo il bordo; la spinta del pistoncino lo tiene comunque premuto contro il corpo.
-4. **SuperMini**: USB-C nel foro della parete posteriore, scheda sui binari.
-5. **Interruttore**: leva nella feritoia, 2 viti M2×6 da fuori e dado dentro.
+4. **SuperMini**: di traverso, con la USB-C nel foro del fianco -X, scheda sui binari tra le battute.
+5. **Interruttore**: sul fianco +X accanto alla SuperMini, leva nella feritoia, 2 viti M2×6 da fuori e dado dentro.
 6. **TP4056** tra le guide, con la USB-C nel foro del fianco. **LiPo** nel vano, su un velo di gommapiuma.
 7. **Tasto esterno**: sulla torretta accanto al vassoio, cappuccio verso l'alto e piedini lungo il corpo, con una goccia di colla sotto. Due fili su due piedini che si collegano solo a tasto premuto.
 8. Salda i collegamenti come nella [guida](guida.md). Il tasto di presenza va tra GPIO5 e GND, il tasto esterno tra GPIO9 e GND.
-9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso la SuperMini. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
+9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso il retro. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
 10. **Clip**: appoggia ognuna sul blocco della cerniera tenendola quasi orizzontale, con il dente verso il launcher, poi chiudila: deve scattare oltre i dentini dei fermi.
 11. **Cappuccio** nel foro del coperchio, con la flangia verso l'interno.
-12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede.
+12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede, e il dentino della molla va a premere sulla barretta della clip.
 
 ## Da controllare al primo pezzo stampato
 
-1. **Clip sul launcher.** Si devono agganciare e sganciare senza gioco. Nel primo spezzone, senza fermi, si sganciavano da sole: ora le tengono i fermi a scatto. Controlla che scattino e che restino chiuse anche capovolgendo e scuotendo. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
+1. **Clip sul launcher.** Si devono agganciare e sganciare senza gioco. Nel primo spezzone, senza fermi, si sganciavano da sole: ora le tengono i fermi a scatto. Controlla che scattino e che restino chiuse anche capovolgendo e scuotendo. Con il coperchio montato la molla deve togliere il gioco senza rendere dura l'apertura. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
 2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console): se non si chiude, tutti i lanci vengono scartati. Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
 5. **Presa:** il corpo è lungo e piatto come quello di Dragoon, ma la comodità va provata in mano.
 6. **Interruttore:** passo dei fori e corsa della leva sono stimati, come nell'altra scatola (`sf_pitch`, `sf_travel`).
-7. **Retro a filo:** il corpo deve finire al bordo del launcher lato corda, e la maniglia a T riavvolta non deve toccare la parete con la USB-C. Se sporge o rientra, correggi `rear_len`.
+7. **Retro a filo:** il corpo deve finire al bordo del launcher lato corda, e la maniglia a T riavvolta non deve toccarlo. Se sporge o rientra, correggi `rear_len`.
 8. **OLED:** misura il modulo (`oled_pcb`, `oled_glass`) e dov'è l'area visibile (`oled_win_dy`), che spesso non è al centro del PCB. Se il testo risulta capovolto, si cambia una riga del firmware (`0xA1, 0xC8` in `oled_ui.cpp`).
 9. **LED:** verifica che si vedano attraverso le zone sottili. Se non si vedono, con la posizione vera del LED si può aprire un foro.
 10. **Tasto esterno:** la corsa è di 0,25 mm. Il cappuccio deve appoggiare sul tasto senza premerlo a riposo.
@@ -127,7 +136,7 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 ## Verifiche fatte a CAD
 
 - Corpo, vassoio, coperchio e clip sono ognuno un solido unico.
-- Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, con `oled = true` (dopo lo spostamento in avanti non è stato ricontrollato `oled = false`).
+- Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, con `oled = true` (dopo l'ultima disposizione non è stato ricontrollato `oled = false`).
 - Fermi: la clip è libera da chiusa e fino a 3° di apertura, dal 4° tocca il dentino. Verso i 75° si libera di nuovo: è l'angolo per montarla.
-- Il coperchio non tocca le dita dei fermi.
+- Il coperchio non tocca le dita dei fermi. La clip tocca il coperchio solo sul dentino della molla, da chiusa fino a 30° di apertura.
 - Lo spezzone stampato (senza fermi) ha confermato aggancio, finestrella e posizione del pistoncino.

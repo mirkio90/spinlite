@@ -24,14 +24,15 @@ Guida completa, con verso di montaggio, montaggio passo per passo e controlli: *
 | Tutti sul piatto | `"plate"` | circa 20 g |
 | **Spezzone di prova**: solo la zona centrale, con vassoio, clip e cappuccio | `"prova"` | circa 7 g |
 
-Ingombro: circa 113 × 38 mm senza le clip, alta circa 10 mm sopra il launcher, con o senza OLED.
+Ingombro: circa 119 × 38 mm senza le clip, alta circa 10 mm sopra il launcher, con o senza OLED.
 
 | Parametro | Cosa |
 | --- | --- |
 | `oled` | `true` (default): finestra nel coperchio e cornice per il modulo. Non cambia l'altezza |
 | `oled_pcb`, `oled_glass`, `oled_win`, `oled_win_dy` | misure del tuo OLED e posizione dell'area visibile |
-| `rear_len` | distanza tra pistoncino e bordo del launcher lato corda: il retro del corpo va a filo (stima 36 mm, misurala) |
+| `rear_len` | distanza tra pistoncino e bordo del launcher lato corda: il retro del corpo va a filo (30 mm, misurato) |
 | `detents`, `detent_t`, `detent_bite` | fermi a scatto delle clip: attivi, spessore del dito, quanto entra il dentino |
+| `top_spring`, `spring_t`, `spring_preload` | molla sopra la clip, nell'aletta del coperchio: attiva, spessore della linguetta, precarico |
 | `btn`, `btn_x`, `btn_y` | tasto esterno in parallelo al BOOT |
 | `led_zones`, `led_t` | zone sottili del coperchio sopra i LED di SuperMini e TP4056 |
 | `tray_gap` | gioco per lato tra vassoio e apertura nel corpo |
