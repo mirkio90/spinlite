@@ -29,7 +29,7 @@ Quote riprese:
 - altezza della faccia inferiore e della fascia centrale che entra nell'incavo del launcher;
 - posizione del QRE1113 (Y 5,44) e del pistoncino (Y 13,05), e quota del cappuccio del tasto (Z 5,40);
 - posizione del perno delle clip e dei loro denti;
-- ingombro massimo: il corpo sta dentro la sagoma di Dragoon, così non tocca il launcher più del suo.
+- larghezza: il corpo non è più largo della sagoma di Dragoon. In lunghezza invece è spostato in avanti di circa 10 mm, così dietro resta a filo del launcher come il Battle Pass originale.
 
 Nel suo modello le due clip non sono simmetriche di circa 0,7 mm: ho usato la destra, specchiata. Perno e dente coincidono con quelli delle clip di LaunchLab, un secondo progetto indipendente.
 
@@ -50,16 +50,26 @@ Sopra il vassoio, sotto il coperchio, c'è l'**OLED** per il lungo, con i pin ve
 - **Tasto esterno:** va in parallelo al BOOT (GPIO9), quindi il firmware non cambia. Una pressione cambia pagina dell'OLED. Tenuto premuto mentre accendi, mette la scheda in modalità di programmazione: serve se un firmware sbagliato blocca la USB.
 - **LED:** con la scatola chiusa si vedono attraverso due zone sottili del coperchio, spesse 0,6 mm, ma solo se il coperchio è stampato in un filamento chiaro. Le zone sono larghe perché la posizione dei LED cambia da scheda a scheda.
 
+## Fermi delle clip
+
+Come nel Battle Pass originale, la clip chiusa è trattenuta a scatto. Ai lati di ogni clip escono dal fianco due **dita elastiche** con un dentino:
+
+1. chiudendo, il braccio della clip spinge da parte il dentino e lo supera, e il dito flette di 0,3 mm;
+2. a clip chiusa il dito torna dritto e il dentino resta davanti al braccio;
+3. per aprire, la spinta del pollice sulla linguetta deve di nuovo far flettere il dito.
+
+A flettere è il dito, sottile apposta (1 mm), non la clip. Da chiusa la clip ha circa 3° di gioco prima di toccare il dentino. Se lo scatto risulta troppo duro o troppo morbido si cambiano `detent_bite` (quanto entra il dentino) e `detent_t` (spessore del dito).
+
 ## Verso di montaggio
 
 Sul launcher la finestrella del disco è più vicina alla corda, il foro del pistoncino più lontano. Il corpo si monta quindi con la **parte corta e la USB-C della SuperMini verso la corda** e la **parte lunga con la LiPo verso il fondo** del launcher.
 
 | Dal pistoncino verso | Launcher (stima dalle foto) | Corpo | Sporgenza |
 | --- | --- | --- | --- |
-| Corda | circa 36 mm | 46 mm | circa 10 mm |
-| Fondo | circa 62 mm | 67,5 mm | circa 5 mm |
+| Corda | circa 36 mm | 36 mm | a filo |
+| Fondo | circa 62 mm | 77 mm | circa 15 mm |
 
-Le misure del launcher sono ricavate da una foto, usando come scala i 7,6 mm tra finestrella e pistoncino: l'errore è di qualche mm. La corda esce circa 20 mm sotto la faccia superiore, quindi la sporgenza dovrebbe passare sopra la maniglia a T.
+Le misure del launcher sono ricavate da una foto, usando come scala i 7,6 mm tra finestrella e pistoncino: l'errore è di qualche mm. **Misura sul tuo launcher** la distanza tra il centro del pistoncino e il bordo lato corda, e impostala in `rear_len`: il retro del corpo segue da solo.
 
 ![Launcher visto dal lato della corda, con finestrella e pistoncino nella fascia nera](../hardware/img/render_launcher.png)
 
@@ -97,19 +107,19 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 7. **Tasto esterno**: sulla torretta accanto al vassoio, cappuccio verso l'alto e piedini lungo il corpo, con una goccia di colla sotto. Due fili su due piedini che si collegano solo a tasto premuto.
 8. Salda i collegamenti come nella [guida](guida.md). Il tasto di presenza va tra GPIO5 e GND, il tasto esterno tra GPIO9 e GND.
 9. **OLED**: salda quattro fili direttamente alle piazzole, senza pettine, con i pin verso la SuperMini. Fissalo nella cornice del coperchio con il vetro contro la finestra e una goccia di colla sui bordi. SDA su GPIO6, SCL su GPIO7, alimentazione a 3V3.
-10. **Clip**: infila ognuna sul blocco della cerniera, con il dente verso il launcher.
+10. **Clip**: appoggia ognuna sul blocco della cerniera tenendola quasi orizzontale, con il dente verso il launcher, poi chiudila: deve scattare oltre i dentini dei fermi.
 11. **Cappuccio** nel foro del coperchio, con la flangia verso l'interno.
-12. **Coperchio** con **10 viti M2×6**. Le sue alette tengono il perno delle clip nella sede.
+12. **Coperchio** con **9 viti M2×6**. Le sue alette tengono il perno delle clip nella sede.
 
 ## Da controllare al primo pezzo stampato
 
-1. **Clip sul launcher.** È il punto più delicato: si devono agganciare e sganciare senza gioco. Sono due parti senza molla, come in Dragoon. Se ballano, si corregge `pivot` o il profilo del dente. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
+1. **Clip sul launcher.** Si devono agganciare e sganciare senza gioco. Nel primo spezzone, senza fermi, si sganciavano da sole: ora le tengono i fermi a scatto. Controlla che scattino e che restino chiuse anche capovolgendo e scuotendo. Dalle foto le sedi laterali sono all'altezza del pistoncino, come le clip del modello, ma sono cornici sporgenti con una feritoia rettangolare: nei render la loro forma è solo dedotta.
 2. **Tasto e pistoncino.** Il cappuccio è alla stessa quota di Dragoon. Con la trottola inserita il contatto deve risultare premuto (`presenza` in console): se non si chiude, tutti i lanci vengono scartati. Se la trottola entra a fatica, serve un tasto a bassa forza (circa 100 gf).
 3. **Altezza del cappuccio del tuo tasto:** `tact_h` e `tact_body`. La punta resta alla quota giusta da sola, entro i limiti controllati dagli `assert`.
 4. **Breakout QRE:** `qre_pcb` e `qre_h`. Largo 9 mm sta nello spazio con 0,1 mm di margine verso il tasto: se è più largo, un `assert` lo segnala.
 5. **Presa:** il corpo è lungo e piatto come quello di Dragoon, ma la comodità va provata in mano.
 6. **Interruttore:** passo dei fori e corsa della leva sono stimati, come nell'altra scatola (`sf_pitch`, `sf_travel`).
-7. **Maniglia a T:** a corda riavvolta non deve toccare la sporgenza con la USB-C.
+7. **Retro a filo:** il corpo deve finire al bordo del launcher lato corda, e la maniglia a T riavvolta non deve toccare la parete con la USB-C. Se sporge o rientra, correggi `rear_len`.
 8. **OLED:** misura il modulo (`oled_pcb`, `oled_glass`) e dov'è l'area visibile (`oled_win_dy`), che spesso non è al centro del PCB. Se il testo risulta capovolto, si cambia una riga del firmware (`0xA1, 0xC8` in `oled_ui.cpp`).
 9. **LED:** verifica che si vedano attraverso le zone sottili. Se non si vedono, con la posizione vera del LED si può aprire un foro.
 10. **Tasto esterno:** la corsa è di 0,25 mm. Il cappuccio deve appoggiare sul tasto senza premerlo a riposo.
@@ -117,6 +127,7 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 ## Verifiche fatte a CAD
 
 - Corpo, vassoio, coperchio e clip sono ognuno un solido unico.
-- Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, sia con `oled = true` sia con `oled = false`.
-- La clip ruota di 15° verso l'esterno senza toccare corpo e coperchio.
-- La pianta del corpo sta dentro quella di Dragoon, con al massimo 0,3 mm di sporgenza locale.
+- Nessuna collisione tra QRE, tasti, cappuccio, OLED, SuperMini, TP4056, LiPo, interruttore, corpo, vassoio e coperchio, con `oled = true` (dopo lo spostamento in avanti non è stato ricontrollato `oled = false`).
+- Fermi: la clip è libera da chiusa e fino a 3° di apertura, dal 4° tocca il dentino. Verso i 75° si libera di nuovo: è l'angolo per montarla.
+- Il coperchio non tocca le dita dei fermi.
+- Lo spezzone stampato (senza fermi) ha confermato aggancio, finestrella e posizione del pistoncino.

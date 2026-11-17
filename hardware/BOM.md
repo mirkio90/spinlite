@@ -27,7 +27,7 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 | --- | --- | --- | --- | --- | --- |
 | 11 | Filamento **PETG nero** | ~1 g | Vassoio del sensore: una plastica chiara e sottile fa passare la luce ambiente, e il sensore lavora a infrarossi. | da scegliere | – |
 | 12 | Filamento **PETG chiaro** | ~20 g | Corpo, coperchio, clip e cappuccio. Chiaro per vedere i LED attraverso le zone sottili del coperchio. Il PLA va bene per lo spezzone di prova (circa 7 g). | da scegliere | ~0,5 € |
-| 13 | Vite M2×6 a testa cilindrica | 12 | 10 chiudono il coperchio, 2 tengono l'interruttore. | da scegliere | – |
+| 13 | Vite M2×6 a testa cilindrica | 11 | 9 chiudono il coperchio, 2 tengono l'interruttore. | da scegliere | – |
 | 14 | Dado M2 | 2 | Dentro il corpo, sulle viti dell'interruttore. | da scegliere | – |
 
 Un kit assortito di viti M2 (circa 3-5 €) basta per molti dispositivi. Il costo per pezzo è trascurabile. I pezzi da stampare sono in `enclosure/spinlite_flat.scad`, e non serve nient'altro di stampato.
