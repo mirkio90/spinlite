@@ -60,10 +60,16 @@ clearance = 0.2;
 eps       = 0.05;
 m2_pilot  = 1.7;
 m2_clear  = 2.3;
-post_d    = 5;
+// Sedi filettate M2 in ottone, inserite a caldo nelle colonnine: la vite del
+// coperchio filetta nel metallo e non nella plastica. Misura le tue e correggi.
+inserts      = true;
+insert_hole  = 3.2;  // foro per la sede (di solito un po' meno del diametro esterno zigrinato)
+insert_depth = 4.5;  // profondita' del foro: lunghezza della sede + 0,5 mm
+screw_len    = 6;    // viti del coperchio (M2x6): la punta deve restare nel foro sotto la sede
+post_d    = inserts ? 6 : 5;
 // colonnine del coperchio, [x, y]: davanti, sul fianco +X c'e' l'interruttore e sul -X la USB-C della SuperMini
 posts = [[-14.5, -5], [14.5, -5], [13.0, 21.8], [-13.0, 21.8], [-14.5, 59.3],
-         [15.8, 70.7], [-15.8, 70.7], [13.2, 82.5], [-13.2, 82.5]];
+         [15.8, 71.2], [-15.8, 71.2], [13.6, 82.5], [-13.6, 82.5]];
 
 // ---- Componenti (misura i tuoi e correggi) ----
 fit       = 0.4;
@@ -164,6 +170,8 @@ assert(sensor_y + qre_pcb[1] / 2 <= button_y - tact_body[1] / 2, "PCB del QRE co
 assert(sf_z + sf_plate[1] / 2 < z_lid - 0.3, "interruttore troppo alto");
 assert(lipo_y1 + 0.3 < front_y - wall, "LiPo troppo lunga");
 assert(tp_x0 > -19 + wall, "TP4056 troppo lungo");
+assert(!inserts || insert_hole <= post_d - 2.4, "colonnina troppo sottile attorno alla sede");
+assert(!inserts || z_lid - (screw_len - lid_t) - 1.5 > z_floor - floor_t + 0.4, "vite troppo lunga: buca il fondo");
 
 // ---------------------------------------------------------------------------
 // Pianta
@@ -257,7 +265,13 @@ module cutouts() {
     translate([19 - wall - 1, sf_y - sf_slot[0] / 2, sf_z - sf_slot[1] / 2]) cube([wall + 2, sf_slot[0], sf_slot[1]]);
     for (s = [-1, 1]) translate([19 - wall - 1, sf_y + s * sf_pitch / 2, sf_z]) rotate([0, 90, 0]) cylinder(d = sf_hole, h = wall + 2);
     // fori pilota del coperchio
-    post_positions() translate([0, 0, z_lid - 7]) cylinder(d = m2_pilot, h = 8);
+    if (inserts) post_positions() {
+        // foro della sede, con un invito a 45 gradi che la centra quando la scaldi
+        translate([0, 0, z_lid - insert_depth]) cylinder(d = insert_hole, h = insert_depth + 1);
+        translate([0, 0, z_lid - 0.6]) cylinder(d1 = insert_hole, d2 = insert_hole + 1.2, h = 0.6 + eps);
+        // sotto la sede: posto per la punta della vite e per la plastica spinta giu'
+        translate([0, 0, z_lid - (screw_len - lid_t) - 1.5]) cylinder(d = 2.2, h = screw_len);
+    } else post_positions() translate([0, 0, z_lid - 7]) cylinder(d = m2_pilot, h = 8);
 }
 
 module body() {
