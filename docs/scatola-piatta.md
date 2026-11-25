@@ -102,6 +102,16 @@ Se qualcosa non va, si corregge e si ristampa lo spezzone.
 
 Nelle immagini i pezzi già montati sono al loro posto, quello nuovo è staccato e la freccia magenta indica dove entra. I componenti sono blocchi semplificati, con le misure dei parametri: i tuoi possono essere un po' diversi. Le immagini si rigenerano con `python hardware/render/render_montaggio.py`.
 
+### 0. Sedi in ottone nel corpo
+
+Prima di montare i componenti, inserisci le 9 sedi M2 nelle colonnine del corpo:
+
+1. appoggia la sede sul foro, con il lato più stretto in basso: l'invito la tiene centrata;
+2. scaldala con il saldatore, a circa 220 °C per il PLA e 240 °C per il PETG, e spingi piano senza forzare;
+3. fermati quando è a filo della cima della colonnina, togli il saldatore e premi un attimo con una superficie piatta e fredda, così resta dritta.
+
+Sotto ogni sede c'è un foro più stretto, che accoglie la plastica spostata e la punta della vite.
+
 ### 1. Sensore e tasto di presenza nel vassoio
 
 ![Passo 1](../hardware/img/montaggio/passo_1.png)
@@ -164,7 +174,7 @@ Appoggia ognuna sul blocco della cerniera, con il dente verso il launcher.
 
 ![Passo 9](../hardware/img/montaggio/passo_9.png)
 
-Chiudi con **9 viti M2×6**. Tacco e appoggio sotto le alette chiudono il perno delle clip nella sede.
+Chiudi con **9 viti M2×6**, che si avvitano nelle sedi in ottone. Tacco e appoggio sotto le alette chiudono il perno delle clip nella sede.
 
 ## Da controllare al primo pezzo stampato
 

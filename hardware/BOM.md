@@ -29,6 +29,7 @@ Lista ufficiale dei componenti, quella da cui partire per ordinare. La guida la 
 | 12 | Filamento **PETG chiaro** | ~20 g | Corpo, coperchio, clip e cappuccio. Chiaro per vedere i LED attraverso le zone sottili del coperchio. Il PLA va bene per lo spezzone di prova (circa 7 g). | da scegliere | ~0,5 € |
 | 13 | Vite M2×6 a testa cilindrica | 11 | 9 chiudono il coperchio, 2 tengono l'interruttore. | da scegliere | – |
 | 14 | Dado M2 | 2 | Dentro il corpo, sulle viti dell'interruttore. | da scegliere | – |
+| 14b | Sede filettata M2 in ottone, da inserire a caldo | 9 | Una per colonnina del coperchio: la vite filetta nel metallo e regge molte aperture. Il modello prevede un foro da 3,2 mm profondo 4,5, adatto alle sedi lunghe 3-4 mm: misura le tue e correggi `insert_hole` e `insert_depth`. Senza sedi si torna alla vite diretta con `inserts = false`. | da scegliere | – |
 
 Un kit assortito di viti M2 (circa 3-5 €) basta per molti dispositivi. Il costo per pezzo è trascurabile. I pezzi da stampare sono in `enclosure/spinlite_flat.scad`, e non serve nient'altro di stampato.
 
@@ -41,7 +42,7 @@ Un kit assortito di viti M2 (circa 3-5 €) basta per molti dispositivi. Il cost
 
 ## Attrezzi
 
-- Saldatore a punta fine.
+- Saldatore a punta fine. Serve anche per le sedi in ottone; una punta conica o quella apposita per inserti aiuta.
 - Tester, per trovare i piedini dei tasti che si collegano solo a tasto premuto.
 - Cacciavite adatto alle viti M2.
 - Tronchesino, per accorciare i piedini dell'interruttore.
