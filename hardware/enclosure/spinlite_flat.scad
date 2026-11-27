@@ -85,9 +85,11 @@ sm_l = 22.5; sm_w = 18; sm_pcb = 1.0;
 sm_usb = [9.0, 3.3]; sm_usb_out = 0.6;
 sm_rail = 1.0;              // aria sotto la scheda
 sm_top_h = 3.6;
-// TP4056 con USB-C
-tp_l = 28; tp_w = 17.2; tp_pcb = 1.6;
-tp_usb = [9.0, 3.3]; tp_usb_out = 0.6;
+// TP4056 con USB-C (misurato: 27,9 mm sulle due sporgenze del lato piazzole, 27 al centro;
+// scheda 0,7 mm, 4,1 con la USB)
+tp_l = 27.9; tp_w = 17.2; tp_pcb = 0.7;
+tp_usb = [9.0, 3.4]; tp_usb_out = 0.6;
+tp_rail = 0.9;              // rialzo sotto la scheda: porta la USB al centro del foro
 // LiPo 502030
 lipo = [20, 30, 5];         // x, y, z
 lipo_foam = 0.5;
@@ -146,7 +148,8 @@ z_sm_usb = z_sm + sm_pcb + sm_usb[1] / 2;
 
 tp_y0  = 50.7; tp_y1 = tp_y0 + tp_w;
 tp_x1  = 19 - wall - 0.2; tp_x0 = tp_x1 - tp_l;
-z_tp_usb = z_floor + tp_pcb + tp_usb[1] / 2;
+z_tp     = z_floor + tp_rail;
+z_tp_usb = z_tp + tp_pcb + tp_usb[1] / 2;
 
 lipo_y0 = tp_y1 + 2.0; lipo_y1 = lipo_y0 + lipo[1];
 sf_z   = z_floor + 0.2 + sf_plate[1] / 2;
@@ -215,9 +218,13 @@ module supports() {
     for (y = [sm_y0 + 0.5, sm_y1 - 1.5]) translate([sm_x0 + 1, y, z_floor - eps]) cube([sm_l - 2, 1, sm_rail + eps]);
     for (y = [sm_y0 - fit / 2 - 1, sm_y1 + fit / 2]) translate([sm_x0, y, z_floor - eps]) cube([sm_l, 1, sm_rail + sm_pcb + 0.5]);
     translate([sm_x1 + fit / 2, sm_y0 - fit / 2 - 1, z_floor - eps]) cube([1, sm_w + fit + 2, sm_rail + sm_pcb + 0.5]);
-    // guide del TP4056
+    // TP4056: rialzi sotto i bordi lunghi (lontani dalle piazzole alle due estremita'),
+    // guide ai lati e battute agli angoli del lato piazzole, dove la scheda ha le sporgenze
+    tp_g = tp_rail + tp_pcb + 0.5;
+    for (y = [tp_y0 + 0.3, tp_y1 - 1.3]) translate([tp_x0 + 4, y, z_floor - eps]) cube([tp_l - 8, 1, tp_rail + eps]);
     for (y = [tp_y0 - fit / 2 - 1.2, tp_y1 + fit / 2])
-        translate([tp_x0, y, z_floor - eps]) cube([tp_l - 8, 1.2, 1.6]);
+        translate([tp_x0, y, z_floor - eps]) cube([tp_l - 8, 1.2, tp_g]);
+    for (y = [tp_y0 - fit / 2 - 1.2, tp_y1 - 2]) translate([tp_x0 - fit / 2 - 1.2, y, z_floor - eps]) cube([1.2, 2 + fit / 2 + 1.2, tp_g]);
     // guide della LiPo
     for (s = [-1, 1]) translate([s > 0 ? lipo[0] / 2 + fit / 2 : -lipo[0] / 2 - fit / 2 - 1.2, lipo_y0 + 4, z_floor - eps])
         cube([1.2, lipo[1] - 8, 2]);
@@ -349,7 +356,7 @@ module lid() {
             z_tail = z_sm + sm_pcb + sm_top_h - 1.6;
             translate([sm_x1 - 3, sm_yc - 3, z_tail]) cube([2, 6, z_lid - z_tail + eps]);
             // sulla USB-C del TP4056
-            z_tpu = z_floor + tp_pcb + tp_usb[1] + 0.2;
+            z_tpu = z_tp + tp_pcb + tp_usb[1] + 0.2;
             translate([tp_x1 - 6, (tp_y0 + tp_y1) / 2 - 2.5, z_tpu]) cube([5, 5, z_lid - z_tpu + eps]);
         }
         post_positions() translate([0, 0, z_lid - 1]) cylinder(d = m2_clear, h = lid_t + 2);
@@ -418,9 +425,9 @@ module supermini(shr = 0) {
 }
 
 module tp4056(shr = 0) {
-    color("royalblue") blk([tp_x0, tp_y0, z_floor], [tp_l, tp_w, tp_pcb], shr);
-    color("silver") blk([tp_x1 + tp_usb_out - 7.3, (tp_y0 + tp_y1) / 2 - tp_usb[0] / 2, z_floor + tp_pcb], [7.3, tp_usb[0], tp_usb[1]], shr);
-    color("#222") blk([tp_x0 + 8, tp_y0 + 6, z_floor + tp_pcb], [5, 5, 1.6], shr);
+    color("royalblue") blk([tp_x0, tp_y0, z_tp], [tp_l, tp_w, tp_pcb], shr);
+    color("silver") blk([tp_x1 + tp_usb_out - 7.3, (tp_y0 + tp_y1) / 2 - tp_usb[0] / 2, z_tp + tp_pcb], [7.3, tp_usb[0], tp_usb[1]], shr);
+    color("#222") blk([tp_x0 + 8, tp_y0 + 6, z_tp + tp_pcb], [5, 5, 1.6], shr);
 }
 
 // Tasto esterno: stesso tasto della presenza, girato col cappuccio verso l'alto e i piedini lungo Y
